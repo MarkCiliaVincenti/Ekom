@@ -9,6 +9,7 @@ Run the following inside your repo
 git submodule update --init --recursive
 
 Remember to install Ekom.Web NuGet
+And add references to Ekom (and Ekom.Extensions optionally) to both Vettvangur.Site and Vettvangur.Core.
  _
 ## Ekom request in surface controllers / api controllers
 
