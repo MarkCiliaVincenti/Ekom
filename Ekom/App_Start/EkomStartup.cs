@@ -80,8 +80,11 @@ namespace Ekom
         {
             _logger.Info<EkomStartup>("Initializing...");
 
-            _es.Rebuild();
-
+            if (Configuration.Current.ExamineRebuild)
+            {
+                _es.Rebuild();
+            }
+           
             // Fill Caches
             foreach (var cacheEntry in _config.CacheList.Value)
             {

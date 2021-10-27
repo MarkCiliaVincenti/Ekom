@@ -20,8 +20,6 @@ namespace Ekom.App_Start
 {
     class UmbracoEventListeners
     {
-        UmbracoHelper UmbHelper => Umbraco.Web.Composing.Current.UmbracoHelper;
-
         readonly ILogger _logger;
         readonly Configuration _config;
         readonly IBaseCache<IStore> _storeCache;

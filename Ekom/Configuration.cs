@@ -101,6 +101,20 @@ namespace Ekom
         }
 
         /// <summary>
+        /// Ekom.ExamineRebuild
+        /// Default is false, if true on startup we will check if examine is empty and rebuild if so.
+        /// </summary>
+        public virtual bool ExamineRebuild
+        {
+            get
+            {
+                var value = ConfigurationManager.AppSettings["Ekom.ExamineRebuild"];
+
+                return value.ConvertToBool();
+            }
+        }
+
+        /// <summary>
         /// Ekom.VirtualContent
         /// Allows for configuration of content nodes to use for matching all requests
         /// Use case: Data populated from Navision, Ekom used as in memory cache with no backing umbraco nodes.
