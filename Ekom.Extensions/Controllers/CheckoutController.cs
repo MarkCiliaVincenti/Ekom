@@ -145,12 +145,12 @@ namespace Ekom.Extensions.Controllers
                 {
                     if (stockError.OrderLineKey == Guid.Empty)
                     {
-                        return RedirectToCurrentUmbracoPage("stockError&errorType=" + stockError.Exception.Message);
+                        return RedirectToCurrentUmbracoPage("?errorStatus=stockError&errorType=" + stockError.Exception.Message);
                     }
                     else
                     {
                         var type = stockError.IsVariant ? "variant" : "product";
-                        return RedirectToCurrentUmbracoPage($"stockError&errorType={type}&orderline=" + stockError.OrderLineKey);
+                        return RedirectToCurrentUmbracoPage($"?errorStatus=stockError&errorType={type}&orderline=" + stockError.OrderLineKey);
                     }
                 }
                 else if (checkoutResponse.HttpStatusCode == 230)
