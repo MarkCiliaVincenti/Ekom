@@ -111,7 +111,7 @@ export default class OrderContainer extends React.Component<IProps> {
                         <span> - Size: { variant.Properties.size} SKU: { variant.Properties.sku}</span>
                        ))}
 
-                      {orderline.Product.Properties.hasOwnProperty("stores") ? <div>
+                      {orderline.Product.Properties.hasOwnProperty("stores") && orderline.Product.Properties.stores && orderline.Product.Properties.stores.length >= 17 ? <div>
                         <br/>
                         <span>Store:  </span>
                         <strong>{ this.state[orderline.Product.Properties.stores.substring(17, orderline.Product.Properties.stores.length - 17)] }</strong>
