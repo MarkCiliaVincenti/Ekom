@@ -390,13 +390,18 @@ namespace Ekom.Services
                 status);
         }
 
-        public async Task<OrderInfo> UpdateOrderlineQuantityAsync(
+        public async Task<OrderInfo> UpdateOrderLineQuantityAsync(
             Guid orderLineId,
             int quantity,
             string storeAlias,
             OrderSettings settings = null
         )
         {
+            if (quantity == 0)
+            {
+                return await RemoveOrderLineAsync(orderLineId, storeAlias, settings).ConfigureAwait(false);
+            }
+
             var store = _storeSvc.GetStoreByAlias(storeAlias);
 
             if (settings == null)

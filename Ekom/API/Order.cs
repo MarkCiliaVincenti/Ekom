@@ -424,7 +424,7 @@ namespace Ekom.API
             string storeAlias,
             OrderSettings settings = null)
         {
-            return await _orderService.UpdateOrderlineQuantityAsync(orderLineId, quantity, storeAlias, settings)
+            return await _orderService.UpdateOrderLineQuantityAsync(orderLineId, quantity, storeAlias, settings)
                 .ConfigureAwait(false);
         }
 
