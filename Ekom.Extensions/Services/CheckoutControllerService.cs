@@ -63,7 +63,7 @@ namespace Ekom.Extensions.Services
 
         internal async Task<T> PayAsync<T>(Func<CheckoutResponse, T> responseHandler, PaymentRequest paymentRequest, string culture)
         {
-            Logger.Debug<CheckoutControllerService>("Pay - Payment request start");
+            Logger.Info<CheckoutControllerService>("Pay - Payment request start ");
 
             Culture = culture;
 
@@ -75,6 +75,9 @@ namespace Ekom.Extensions.Services
 
             // ToDo: Lock order throughout request
             var order = await Order.Instance.GetOrderAsync().ConfigureAwait(false);
+
+            Logger.Info<CheckoutControllerService>("Pay - Order:  " + order.UniqueId + " Customer: " + +order.CustomerInformation.Customer.UserId);
+
             var storeAlias = order.StoreInfo.Alias;
             IStore store = Store.Instance.GetStore(storeAlias);
 
