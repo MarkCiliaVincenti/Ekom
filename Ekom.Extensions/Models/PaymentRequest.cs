@@ -14,5 +14,6 @@ namespace Ekom.Extensions.Models
         public Guid PaymentProvider { get; set; }
 
         public Guid ShippingProvider { get; set; }
+        public string CustomerEmail { get; set; }
     }
 }
