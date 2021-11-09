@@ -46,6 +46,7 @@ namespace Ekom.App_Start
 
             composition.Register<IStoreService, StoreService>(Lifetime.Transient);
             composition.Register<OrderService>(Lifetime.Transient);
+            composition.Register<CatalogSearchService>(Lifetime.Transient);
             composition.Register<IExamineService, ExamineService>(Lifetime.Transient);
             composition.Register<CheckoutService>(Lifetime.Transient);
             composition.Register<MailService>(Lifetime.Transient);
