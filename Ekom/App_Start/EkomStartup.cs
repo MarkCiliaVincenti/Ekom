@@ -11,6 +11,7 @@ using Umbraco.Core.Persistence;
 using Umbraco.Core.Services.Implement;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
+using Umbraco.Web.Trees;
 
 namespace Ekom
 {
@@ -38,6 +39,15 @@ namespace Ekom
             composition.Register<IConfigHelper, ConfigHelper>();
         }
     }
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
+    public class RemoveCoreMemberSearchableTreeComposer : IUserComposer
+    {
+        public void Compose(Composition composition)
+        {
+            composition.SearchableTrees().Exclude<ContentTreeController>();
+        }
+    }
+
 
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
     /// <summary>

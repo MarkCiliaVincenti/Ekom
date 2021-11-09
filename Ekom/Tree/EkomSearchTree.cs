@@ -6,12 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Web.Models.ContentEditing;
 using Umbraco.Web.Trees;
+using Umbraco.Web;
+using Umbraco.Web.Search;
 
 namespace Ekom.Tree
 {
+    [SearchableTree("searchResultFormatter", "configureContentResult", 0)]
     public class EkomSearchTree : ISearchableTree
     {
-        public string TreeAlias => "ekomTree";
+        public string TreeAlias => Umbraco.Core.Constants.Trees.Content;
 
         private readonly CatalogSearchService _searchService;
         public EkomSearchTree(CatalogSearchService searchService)
@@ -30,16 +33,37 @@ namespace Ekom.Tree
 
                 foreach (var result in results)
                 {
-                    searchResults.Add(
-                        new SearchResultEntity() { 
-                            Name = result.Content.Name, 
-                            Id = result.Content.Id, 
-                            Key = result.Content.Key, 
-                            Score = result.Score,
-                            Path = result.Content.Path,
-                            Icon = result.Content.ContentType.Alias == "ekmProduct" ? "icon-loupe" :"icon-folder"
-                        }
-                    );
+                    var icon = "icon-document";
+
+                    var content = result.Content;
+                    var alias = content.ContentType.Alias;
+                    var name = content.Name;
+
+                    if (alias == "ekmProduct")
+                    {
+                        icon = "icon-loupe";
+                        name = content.Name + " (" + content.Value("sku") + ")" + " (" + content.Parent.Name + ")";
+                    } else if (alias == "ekmCategory")
+                    {
+                        icon = "icon-folder";
+                    } else if (alias == "ekmProductVariant")
+                    {
+                        icon = "icon-layers-alt";
+                    }
+
+                    var item = new SearchResultEntity()
+                    {
+                        Name = name,
+                        Id = content.Id,
+                        Key = content.Key,
+                        Score = result.Score,
+                        Path = content.Path,
+                        Icon = icon
+                    };
+
+                    item.AdditionalData["Url"] = content.Url();
+
+                    searchResults.Add(item);
                 }
             }
             return searchResults;

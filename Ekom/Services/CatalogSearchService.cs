@@ -32,10 +32,13 @@ namespace Ekom.Services
         public IEnumerable<PublishedSearchResult> QueryCatalog(string query, out long totalRecords)
         {
             totalRecords = 0;
+            var luceneQuery = new StringBuilder();
 
-            if (ExamineManager.Instance.TryGetIndex("InternalIndex", out var index) || !(index is IUmbracoIndex umbIndex))
+            try
             {
-                var fields = new List<SearchField>()
+                if (ExamineManager.Instance.TryGetIndex("InternalIndex", out var index) || !(index is IUmbracoIndex umbIndex))
+                {
+                    var fields = new List<SearchField>()
                 {
                     new SearchField()
                     {
@@ -45,7 +48,8 @@ namespace Ekom.Services
                     new SearchField()
                     {
                         Name = "sku",
-                        Booster = "^3.0"
+                        Booster = "^3.0",
+                        SearchType = SearchType.Wildcard
                     },
                     new SearchField()
                     {
@@ -54,86 +58,90 @@ namespace Ekom.Services
                     },
                     new SearchField()
                     {
-                        Name = "description",
-                        Booster = "^1.0",
-                        SearchType = SearchType.Fuzzy
+                        Name = "id",
+                        Booster = "^10.0",
+                        SearchType = SearchType.Exact
                     }
                 };
 
-                var searcher = (BaseLuceneSearcher)index.GetSearcher();
+                    var searcher = (BaseLuceneSearcher)index.GetSearcher();
 
-                var luceneQuery = new StringBuilder();
+                    var queryWithOutStopWords = query.RemoveStopWords();
 
-                var queryWithOutStopWords = query.RemoveStopWords();
+                    var cleanQuery = RemoveDiacritics(string.IsNullOrEmpty(queryWithOutStopWords) ? query : queryWithOutStopWords);
 
-                var cleanQuery = RemoveDiacritics(string.IsNullOrEmpty(queryWithOutStopWords) ? query : queryWithOutStopWords);
+                    var searchTerms = cleanQuery
+                        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(QueryParser.Escape);
 
-                var searchTerms = cleanQuery
-                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(QueryParser.Escape);
+                    int i = 0;
 
-                int i = 0;
-
-                foreach (var term in searchTerms)
-                {
-                    if (i != 0)
+                    foreach (var term in searchTerms)
                     {
-                        luceneQuery.Append(" AND ");
-                    }
+                        if (i != 0)
+                        {
+                            luceneQuery.Append(" AND ");
+                        }
 
-                    if (i == 0)
-                    {
-                        luceneQuery.Append("+");
-                    }
+                        if (i == 0)
+                        {
+                            luceneQuery.Append("+");
+                        }
 
-                    if (fields == null || string.IsNullOrEmpty(queryWithOutStopWords))
-                    {
-                        luceneQuery.Append(" (");
-                            luceneQuery.Append("*" + term + "*");
-                            luceneQuery.Append(" " + term + ("~" + "0.5"));
-                        luceneQuery.Append(")");
-                    }
-                    else
-                    {
-                        luceneQuery.Append(" (");
-                        foreach (var field in fields)
+                        if (string.IsNullOrEmpty(queryWithOutStopWords))
                         {
                             luceneQuery.Append(" (");
-                            if (field.SearchType == SearchType.Wildcard || field.SearchType == SearchType.FuzzyAndWilcard)
+                            luceneQuery.Append("*" + term + "*");
+                            luceneQuery.Append(" " + term + ("~" + "0.5"));
+                            luceneQuery.Append(")");
+                        }
+                        else
+                        {
+                            luceneQuery.Append(" (");
+                            foreach (var field in fields)
                             {
-                                luceneQuery.Append("(" + FieldCultureName(field.Name) + ": " + "*" + term + "*" + ")" + (!string.IsNullOrEmpty(field.Booster) ? field.Booster : ""));
-                            }
+                                luceneQuery.Append(" (");
+                                if (field.SearchType == SearchType.Wildcard || field.SearchType == SearchType.FuzzyAndWilcard)
+                                {
+                                    luceneQuery.Append("(" + FieldCultureName(field.Name) + ": " + "*" + term + "*" + ")" + (!string.IsNullOrEmpty(field.Booster) ? field.Booster : ""));
+                                }
 
-                            if (field.SearchType == SearchType.Fuzzy || field.SearchType == SearchType.FuzzyAndWilcard)
-                            {
-                                luceneQuery.Append(" (" + FieldCultureName(field.Name) + ": " + term + "~" + field.FuzzyConfiguration + ")" + (!string.IsNullOrEmpty(field.Booster) ? field.Booster : ""));
+                                if (field.SearchType == SearchType.Fuzzy || field.SearchType == SearchType.FuzzyAndWilcard)
+                                {
+                                    luceneQuery.Append(" (" + FieldCultureName(field.Name) + ": " + term + "~" + field.FuzzyConfiguration + ")" + (!string.IsNullOrEmpty(field.Booster) ? field.Booster : ""));
+                                }
+
+                                if (field.SearchType == SearchType.Exact)
+                                {
+                                    luceneQuery.Append(" (" + FieldCultureName(field.Name) + ": " + term + ") ");
+                                }
+
+                                luceneQuery.Append(")");
                             }
                             luceneQuery.Append(")");
                         }
-                        luceneQuery.Append(")");
+
+                        i++;
                     }
 
-                    i++;
+                    IQuery searchQuery = searcher.CreateQuery("content");
+
+                    ((LuceneSearchQueryBase)searchQuery).QueryParser.AllowLeadingWildcard = true;
+
+                    var booleanOperation = searchQuery.NativeQuery(luceneQuery.ToString());
+
+                    var results = _query.Search(booleanOperation, 0, 30, out totalRecords).OrderByDescending(x => x.Score);
+
+                    return results;
                 }
 
-                IQuery searchQuery = searcher.CreateQuery("content");
-
-                ((LuceneSearchQueryBase)searchQuery).QueryParser.AllowLeadingWildcard = true;
-
-                var booleanOperation = searchQuery
-                .NativeQuery(luceneQuery.ToString());
-
-                    booleanOperation = booleanOperation.And().GroupedOr(new string[1] {
-                        "__NodeTypeAlias"
-                    }, new string[] { "ekmProduct", "ekmCategory" });
-                
-
-                var results = _query.Search(booleanOperation, 0, 30, out totalRecords).OrderByDescending(x => x.Score);
-
-                return results;
-
             }
-
+            catch (Exception ex)
+            {
+                _logger.Error<CatalogSearchService>(ex, "Failed to query catalog search service. Query: " + query);
+                _logger.Info<CatalogSearchService>(luceneQuery.ToString());
+            }
+     
             return null;
         }
 
