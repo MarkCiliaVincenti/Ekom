@@ -36,7 +36,8 @@ namespace Ekom.Tree
                             Id = result.Content.Id, 
                             Key = result.Content.Key, 
                             Score = result.Score,
-                            Path = result.Content.Path
+                            Path = result.Content.Path,
+                            Icon = result.Content.ContentType.Alias == "ekmProduct" ? "icon-loupe" :"icon-folder"
                         }
                     );
                 }
