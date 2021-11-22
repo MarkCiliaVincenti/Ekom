@@ -37,8 +37,6 @@ namespace Ekom.Cache
         /// </summary>
         public override void FillCache()
         {
-          
-     
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -57,6 +55,7 @@ namespace Ekom.Cache
 
                 var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
 
+               
                 foreach (var r in results)
                 {
                     try

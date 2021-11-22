@@ -162,12 +162,9 @@ namespace Ekom.Models
         {
             var pathField = item.Path;
 
-            var examineItemsFromPath = NodeHelper.GetAllCatalogItemsFromPath(pathField).ToList();
-
-            ParentId = item.Parent.Id;
-
-            Urls = UrlHelper.BuildCategoryUrls(examineItemsFromPath, store);
+            Urls = UrlHelper.BuildCategoryUrls(item.Ancestors(3).Where(x => x.ContentType.Alias == "ekmProduct" || x.ContentType.Alias == "ekmCategory").ToList(), store);
         }
+
         /// <summary>
         /// Construct Category from umbraco publish event
         /// </summary>

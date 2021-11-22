@@ -12,7 +12,6 @@ namespace Ekom.Factories
         {
             return new Category(item, store);
         }
-
         public ICategory Create(IContent item, IStore store)
         {
             return new Category(item, store);

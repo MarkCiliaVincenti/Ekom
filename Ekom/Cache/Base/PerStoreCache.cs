@@ -164,8 +164,8 @@ namespace Ekom.Cache
                 try
                 {
                     // Traverse up parent nodes, checking disabled status and published status
-                    //if (!r.IsItemDisabled(store))
-                    //{
+                    if (!r.IsItemDisabled(store))
+                    {
                         var item = _objFac?.Create(r, store)
                             ?? (TItem)Activator.CreateInstance(typeof(TItem), r, store);
 
@@ -175,7 +175,7 @@ namespace Ekom.Cache
 
                             curStoreCache[r.Key] = item;
                         }
-                    //}
+                    }
                 }
                 catch (Exception ex) // Skip on fail
                 {

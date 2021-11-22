@@ -115,8 +115,6 @@ namespace Ekom.Models
         /// <param name="item"></param>
         public Store(IPublishedContent item) : base(item)
         {
-
-
             if (item.HasValue("storeRootNode"))
             {
                 var storeRootNode = item.Value<IPublishedContent>("storeRootNode");

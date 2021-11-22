@@ -126,11 +126,13 @@ namespace Ekom.Models
         /// Construct Node from Examine item
         /// </summary>
         /// <param name="item"></param>
-        public NodeEntity(IPublishedContent item)
+        public NodeEntity(IPublishedContent node)
         {
-            foreach (var field in item.Properties)
+            _properties = CreateDefaultUmbracoProperties(node);
+
+            foreach (var prop in node.Properties)
             {
-                _properties.Add(field.Alias, item.Value<string>(field.Alias));
+                _properties.Add(prop.Alias, prop.GetValue()?.ToString());
             }
         }
 
@@ -179,6 +181,63 @@ namespace Ekom.Models
                 {
                     "parentID",
                     node.ParentId.ToString()
+                },
+                {
+                    "writerID",
+                    node.WriterId.ToString()
+                },
+                {
+                    "creatorID",
+                    node.CreatorId.ToString()
+                },
+                {
+                    "__NodeTypeAlias",
+                    node.ContentType.Alias
+                },
+                {
+                    "updateDate",
+                    node.UpdateDate.Ticks.ToString()
+                },
+                {
+                    "createDate",
+                    node.CreateDate.Ticks.ToString()
+                },
+            };
+
+            return properties;
+        }
+
+        Dictionary<string, string> CreateDefaultUmbracoProperties(IPublishedContent node)
+        {
+            var properties = new Dictionary<string, string>
+            {
+                {
+                    "__NodeId",
+                    node.Id.ToString()
+                },
+                {
+                    "nodeName",
+                    node.Name
+                },
+                {
+                    "__Key",
+                    node.Key.ToString()
+                },
+                {
+                    "__Path",
+                    node.Path
+                },
+                {
+                    "level",
+                    node.Level.ToString()
+                },
+                {
+                    "sortOrder",
+                    node.SortOrder.ToString()
+                },
+                {
+                    "parentID",
+                    node.Parent.Id.ToString()
                 },
                 {
                     "writerID",

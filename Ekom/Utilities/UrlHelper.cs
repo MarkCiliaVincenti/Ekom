@@ -26,7 +26,7 @@ namespace Ekom.Utilities
         /// <param name="examineItems">All categories in hierarchy inclusive</param>
         /// <param name="store"></param>
         /// <returns>Collection of urls for all domains</returns>
-        public static IEnumerable<string> BuildCategoryUrls(List<ISearchResult> examineItems, IStore store)
+        public static IEnumerable<string> BuildCategoryUrls(List<IPublishedContent> items, IStore store)
         {
             var urls = new HashSet<string>();
 
@@ -38,9 +38,9 @@ namespace Ekom.Utilities
                 {
                     var builder = new StringBuilder(domainPath);
 
-                    foreach (var examineItem in examineItems)
+                    foreach (var item in items)
                     {
-                        var categorySlug = examineItem.GetStoreProperty("slug", store.Alias);
+                        var categorySlug = item.GetStoreProperty("slug", store.Alias);
                         if (!string.IsNullOrWhiteSpace(categorySlug))
                             builder.Append(categorySlug.ToUrlSegment().AddTrailing());
                     }
@@ -54,9 +54,9 @@ namespace Ekom.Utilities
             {
                 var builder = new StringBuilder("/");
 
-                foreach (var examineItem in examineItems)
+                foreach (var item in items)
                 {
-                    var categorySlug = examineItem.GetStoreProperty("slug", store.Alias);
+                    var categorySlug = item.GetStoreProperty("slug", store.Alias);
                     if (!string.IsNullOrWhiteSpace(categorySlug))
                     {
                         builder.Append(categorySlug.ToUrlSegment().AddTrailing());
