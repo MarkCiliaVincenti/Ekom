@@ -13,7 +13,7 @@ namespace Ekom.Cache
     class PaymentProviderCache : PerStoreCache<IPaymentProvider>
     {
         public override string NodeAlias { get; } = "netPaymentProvider";
-
+        private readonly IUmbracoContextFactory _context;
         public PaymentProviderCache(
             Configuration config,
             ILogger logger,
@@ -23,16 +23,15 @@ namespace Ekom.Cache
             IUmbracoContextFactory context
         ) : base(config, logger, factory, storeCache, perStoreFactory, context)
         {
+            _context = context;
         }
 
         public override void FillCache(IStore storeParam = null)
         {
-            if (!string.IsNullOrEmpty(NodeAlias)
-                   && ExamineManager.TryGetIndex(_config.ExamineIndex, out IIndex index))
+            if (!string.IsNullOrEmpty(NodeAlias))
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                var searcher = index.GetSearcher();
 
                 _logger.Debug<PerStoreCache<IPaymentProvider>>("Starting to fill...");
 
@@ -40,24 +39,36 @@ namespace Ekom.Cache
 
                 try
                 {
-                    ISearchResults results = null;
+                    //results = searcher.CreateQuery("content")
+                    //.Field("__NodeTypeAlias", NodeAlias.MultipleCharacterWildcard()).Not().NodeTypeAlias("netPaymentProviders")
+                    //.Execute(int.MaxValue);
 
-                    results = searcher.CreateQuery("content")
-                    .Field("__NodeTypeAlias", NodeAlias.MultipleCharacterWildcard()).Not().NodeTypeAlias("netPaymentProviders")
-                    .Execute(int.MaxValue);
-
-
-                    if (storeParam == null) // Startup initialization
+                    using (var cref = _context.EnsureUmbracoContext())
                     {
-                        foreach (var store in _storeCache.Cache.Select(x => x.Value))
+                        var cache = cref.UmbracoContext.Content;
+                        var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
+
+                        if (ekomRoot == null)
                         {
-                            count += FillStoreCache(store, results);
+                            throw new Exception("Ekom root node not found.");
+                        }
+
+                        var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+
+                        if (storeParam == null) // Startup initialization
+                        {
+                            foreach (var store in _storeCache.Cache.Select(x => x.Value))
+                            {
+                                count += FillStoreCache(store, results);
+                            }
+                        }
+                        else // Triggered with dynamic addition/removal of store
+                        {
+                            count += FillStoreCache(storeParam, results);
                         }
                     }
-                    else // Triggered with dynamic addition/removal of store
-                    {
-                        count += FillStoreCache(storeParam, results);
-                    }
+
+
                 }
                 catch (Exception ex)
                 {

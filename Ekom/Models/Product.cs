@@ -16,6 +16,7 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
 namespace Ekom.Models
@@ -305,11 +306,11 @@ namespace Ekom.Models
         public Product(IStore store) : base(store) { }
 
         /// <summary>
-        /// Construct Product from Examine item
+        /// Construct Product from IPublishedContent item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public Product(ISearchResult item, IStore store) : base(item, store)
+        public Product(IPublishedContent item, IStore store) : base(item, store)
         {
             PopulateCategoryAncestors();
             PopulateCategories();

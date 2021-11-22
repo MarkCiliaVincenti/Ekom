@@ -2,6 +2,7 @@ using Ekom.Interfaces;
 using Examine;
 using System.Collections.Generic;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Models
 {
@@ -24,7 +25,7 @@ namespace Ekom.Models
         /// Construct Zone from Examine Search Result
         /// </summary>
         /// <param name="item"></param>
-        public Zone(ISearchResult item) : base(item) { }
+        public Zone(IPublishedContent item) : base(item) { }
 
         /// <summary>
         /// Construct zone from umbraco publish event

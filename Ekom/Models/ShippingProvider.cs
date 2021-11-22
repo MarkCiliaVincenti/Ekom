@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Models
 {
@@ -71,7 +72,7 @@ namespace Ekom.Models
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public ShippingProvider(ISearchResult item, IStore store) : base(item, store)
+        public ShippingProvider(IPublishedContent item, IStore store) : base(item, store)
         {
             Constraints = new Constraints(this);
         }

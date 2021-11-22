@@ -13,6 +13,7 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
@@ -112,55 +113,41 @@ namespace Ekom.Models
         /// Construct Store from Examine item
         /// </summary>
         /// <param name="item"></param>
-        public Store(ISearchResult item) : base(item)
+        public Store(IPublishedContent item) : base(item)
         {
-            if (!item.Values.Any())
+
+
+            if (item.HasValue("storeRootNode"))
             {
-                throw new StoreConstructorException("Error creating store, no values found on store.");
+                var storeRootNode = item.Value<IPublishedContent>("storeRootNode");
+                if (storeRootNode != null)
+                {
+                    StoreRootNode = storeRootNode.Id;
+                }
+                
+            }
+
+            using (var uCtx = Current.Factory.GetInstance<IUmbracoContextFactory>().EnsureUmbracoContext())
+            {
+                Url = uCtx.UmbracoContext.UrlProvider.GetUrl(StoreRootNode);
+            }
+
+            var storeDomainCache = Current.Factory.GetInstance<IStoreDomainCache>();
+            if (storeDomainCache.Cache.Any(x => x.Value.RootContentId == StoreRootNode))
+            {
+                Domains = storeDomainCache.Cache
+                    .Where(x => x.Value.RootContentId == StoreRootNode)
+                    .Select(x => x.Value)
+                    .ToList();
             }
             else
             {
-                if (int.TryParse(item.Values["storeRootNode"], out int tempStoreRootNode))
-                {
-                    StoreRootNode = tempStoreRootNode;
-                }
-                else
-                {
-                    var guid = GuidUdiHelper.GetGuid(item.Values["storeRootNode"]);
+                //TODO If not culture/domain is set then add default
+                //if (uCtx.HttpContext != null)
+                //{
+                //    Domains = Enumerable.Repeat(new Domain(uCtx.HttpContext.Request.Url?.Host, StoreRootNode), 1);
+                //}
 
-                    var rootNode = ExamineService.Instance.GetExamineNode(guid.ToString());
-                    if (rootNode != null
-                    && int.TryParse(rootNode.Id, out var id))
-                    {
-                        StoreRootNode = id;
-                    }
-                    else
-                    {
-                        throw new StoreConstructorException("Error creating store, Unable to get store root node. Guid: " + guid + " " + (rootNode == null ? "Root node not found in examine. Republish or Rebuild index." : ""));
-                    }
-                }
-
-                using (var uCtx = Current.Factory.GetInstance<IUmbracoContextFactory>().EnsureUmbracoContext())
-                {
-                    Url = uCtx.UmbracoContext.UrlProvider.GetUrl(StoreRootNode);
-                }
-
-                var storeDomainCache = Current.Factory.GetInstance<IStoreDomainCache>();
-                if (storeDomainCache.Cache.Any(x => x.Value.RootContentId == StoreRootNode))
-                {
-                    Domains = storeDomainCache.Cache
-                        .Where(x => x.Value.RootContentId == StoreRootNode)
-                        .Select(x => x.Value)
-                        .ToList();
-                }
-                else
-                {
-                    //TODO If not culture/domain is set then add default
-                    //if (uCtx.HttpContext != null)
-                    //{
-                    //    Domains = Enumerable.Repeat(new Domain(uCtx.HttpContext.Request.Url?.Host, StoreRootNode), 1);
-                    //}
-                }
             }
         }
 

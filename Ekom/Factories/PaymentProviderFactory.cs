@@ -2,12 +2,13 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Examine;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Factories
 {
     class PaymentProviderFactory : IPerStoreFactory<IPaymentProvider>
     {
-        public IPaymentProvider Create(ISearchResult item, IStore store)
+        public IPaymentProvider Create(IPublishedContent item, IStore store)
         {
             return new PaymentProvider(item, store);
         }

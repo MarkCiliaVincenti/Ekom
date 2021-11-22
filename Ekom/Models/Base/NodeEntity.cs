@@ -10,7 +10,8 @@ using System.Collections.ObjectModel;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using Umbraco.Core.Models;
-
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 namespace Ekom.Models
 {
     /// <summary>
@@ -125,11 +126,11 @@ namespace Ekom.Models
         /// Construct Node from Examine item
         /// </summary>
         /// <param name="item"></param>
-        public NodeEntity(ISearchResult item)
+        public NodeEntity(IPublishedContent item)
         {
-            foreach (var field in item.Values)
+            foreach (var field in item.Properties)
             {
-                _properties.Add(field.Key, field.Value);
+                _properties.Add(field.Alias, item.Value<string>(field.Alias));
             }
         }
 

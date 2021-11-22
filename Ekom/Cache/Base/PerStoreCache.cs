@@ -4,12 +4,14 @@ using Ekom.Utilities;
 using Examine;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Examine;
 using Umbraco.Web;
 
@@ -151,7 +153,7 @@ namespace Ekom.Cache
         /// <param name="store">The current store being filled of TItem</param>
         /// <param name="results">Examine search results</param>
         /// <returns>Count of items added</returns>
-        protected virtual int FillStoreCache(IStore store, ISearchResults results)
+        protected virtual int FillStoreCache(IStore store, List<IPublishedContent> results)
         {
             int count = 0;
 
@@ -162,8 +164,8 @@ namespace Ekom.Cache
                 try
                 {
                     // Traverse up parent nodes, checking disabled status and published status
-                    if (!r.IsItemDisabled(store))
-                    {
+                    //if (!r.IsItemDisabled(store))
+                    //{
                         var item = _objFac?.Create(r, store)
                             ?? (TItem)Activator.CreateInstance(typeof(TItem), r, store);
 
@@ -171,10 +173,9 @@ namespace Ekom.Cache
                         {
                             count++;
 
-                            var itemKey = Guid.Parse(r.Key());
-                            curStoreCache[itemKey] = item;
+                            curStoreCache[r.Key] = item;
                         }
-                    }
+                    //}
                 }
                 catch (Exception ex) // Skip on fail
                 {

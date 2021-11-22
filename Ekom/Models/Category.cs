@@ -14,6 +14,7 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
 namespace Ekom.Models
@@ -157,13 +158,13 @@ namespace Ekom.Models
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public Category(ISearchResult item, IStore store) : base(item, store)
+        public Category(IPublishedContent item, IStore store) : base(item, store)
         {
-            var pathField = item.Values["__Path"];
+            var pathField = item.Path;
 
             var examineItemsFromPath = NodeHelper.GetAllCatalogItemsFromPath(pathField).ToList();
 
-            ParentId = Convert.ToInt32(item.Values["parentID"]);
+            ParentId = item.Parent.Id;
 
             Urls = UrlHelper.BuildCategoryUrls(examineItemsFromPath, store);
         }

@@ -16,6 +16,7 @@ using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
@@ -34,7 +35,7 @@ namespace Ekom.Models
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public ProductDiscount(ISearchResult item, IStore store) : base(item, store)
+        public ProductDiscount(IPublishedContent item, IStore store) : base(item, store)
         {
 
         }

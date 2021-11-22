@@ -1,5 +1,6 @@
 using Examine;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Interfaces
 {
@@ -14,7 +15,7 @@ namespace Ekom.Interfaces
         /// </summary>
         /// <param name="item">Examine item</param>
         /// <returns></returns>
-        T Create(ISearchResult item);
+        T Create(IPublishedContent item);
 
         /// <summary>
         /// Create object from Umbraco event with explicit store

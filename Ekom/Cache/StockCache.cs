@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using Umbraco.Core.Logging;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -18,8 +19,9 @@ namespace Ekom.Cache
         public StockCache(
             Configuration config,
             ILogger logger,
-            IStockRepository stockRepo
-        ) : base(config, logger, null, null)
+            IStockRepository stockRepo,
+            IUmbracoContextFactory context
+        ) : base(config, logger, null, null, context)
         {
             _stockRepo = stockRepo;
         }

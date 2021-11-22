@@ -247,6 +247,7 @@ namespace Ekom.Utilities
             return Ids.Count() > catalogItems.Count();
         }
 
+
         /// <summary>
         /// Determine if an <see cref="IContent"/> item is unpublished <para />
         /// Traverses up content tree, checking all parents
@@ -278,12 +279,12 @@ namespace Ekom.Utilities
         /// <param name="allCatalogItems"></param>
         /// <returns>True if disabled</returns>
         public static bool IsItemDisabled(
-            this ISearchResult searchResult,
+            this IPublishedContent result,
             IStore store,
             string path = "",
             IEnumerable<ISearchResult> allCatalogItems = null)
         {
-            var selfDisableField = GetStoreProperty(searchResult, "disable", store.Alias);
+            var selfDisableField =  GetStoreProperty(result, "disable", store.Alias);
 
             if (!string.IsNullOrEmpty(selfDisableField))
             {
@@ -293,7 +294,7 @@ namespace Ekom.Utilities
                 }
             }
 
-            path = string.IsNullOrEmpty(path) ? searchResult.Values["__Path"] : path;
+            path = string.IsNullOrEmpty(path) ? result.Path : path;
 
             allCatalogItems = allCatalogItems == null ? GetAllCatalogItemsFromPath(path) :
                                                         allCatalogItems;
@@ -388,6 +389,42 @@ namespace Ekom.Utilities
                 {
 
                     var value = item.Values[field];
+
+                    return value.GetVortoValue(storeAlias);
+                }
+
+                return string.Empty;
+
+            }
+            catch (Exception ex)
+            {
+                var json = JsonConvert.SerializeObject(item);
+                Current.Logger.Error(
+                    typeof(NodeHelper),
+                    ex,
+                    $"Failed to get StoreProperty. Item : {json} field: {field} store: {storeAlias}"
+                );
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve a store specific property <param/>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="field">Umbraco Alias</param>
+        /// <param name="storeAlias"></param>
+        /// <returns>Property Value</returns>
+        public static string GetStoreProperty(this IPublishedContent item, string field, string storeAlias)
+        {
+            try
+            {
+                var fieldExist = item.HasProperty("field");
+
+                if (fieldExist)
+                {
+
+                    var value = item.Value<string>(field);
 
                     return value.GetVortoValue(storeAlias);
                 }

@@ -11,6 +11,7 @@ using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Composing;
@@ -139,9 +140,9 @@ namespace Ekom.Models.Discounts
         }
 
         /// <summary>
-        /// Construct ShippingProvider from Examine item
+        /// Construct ShippingProvider from IPublishedContent item
         /// </summary>
-        public Discount(ISearchResult item, IStore store) : base(item, store)
+        public Discount(IPublishedContent item, IStore store) : base(item, store)
         {
             Construct();
         }

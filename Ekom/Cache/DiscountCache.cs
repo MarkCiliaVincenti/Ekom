@@ -4,9 +4,11 @@ using Ekom.Utilities;
 using Examine;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
 namespace Ekom.Cache
@@ -36,7 +38,7 @@ namespace Ekom.Cache
         /// <param name="store">The current store being filled of TItem</param>
         /// <param name="results">Examine search results</param>
         /// <returns>Count of items added</returns>
-        protected override int FillStoreCache(IStore store, ISearchResults results)
+        protected override int FillStoreCache(IStore store, List<IPublishedContent> results)
         {
             int count = 0;
 
@@ -54,8 +56,7 @@ namespace Ekom.Cache
 
                         count++;
 
-                        var itemKey = Guid.Parse(r.Key());
-                        curStoreCache[itemKey] = item;
+                        curStoreCache[r.Key] = item;
                     }
                 }
                 catch (Exception ex)

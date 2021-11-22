@@ -7,6 +7,7 @@ using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -15,6 +16,7 @@ namespace Ekom.Cache
         public override string NodeAlias { get; } = "";
 
         readonly IDomainService _domainService;
+        private readonly IUmbracoContextFactory _context;
         /// <summary>
         /// ctor
         /// </summary>
@@ -22,10 +24,12 @@ namespace Ekom.Cache
             Configuration config,
             ILogger logger,
             IFactory factory,
-            IDomainService domainService
-        ) : base(config, logger, factory, null)
+            IDomainService domainService,
+            IUmbracoContextFactory context
+        ) : base(config, logger, factory, null, context)
         {
             _domainService = domainService;
+            _context = context;
         }
 
         /// <summary>

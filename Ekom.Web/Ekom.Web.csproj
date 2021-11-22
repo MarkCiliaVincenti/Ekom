@@ -7,13 +7,13 @@
 
         <!-- Package properties -->
         <PackageId>Ekom.Web.v8</PackageId>
-        <Version>0.3.0</Version>
+        <Version>0.4.0</Version>
         <Title>Ekom.Web.v8</Title>
         <Authors>Vettvangur</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
         <PackageIcon>images\VV_Logo.png</PackageIcon>
-        <Description>App_Plugins and web.config transform</Description>
+        <Description>Cache editor</Description>
         <PackageReleaseNotes>Updated for submodule usage</PackageReleaseNotes>
         <Copyright>Copyright 2019</Copyright>
         <PackageTags></PackageTags>

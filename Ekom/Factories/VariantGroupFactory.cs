@@ -2,12 +2,13 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Examine;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Factories
 {
     class VariantGroupFactory : IPerStoreFactory<IVariantGroup>
     {
-        public IVariantGroup Create(ISearchResult item, IStore store)
+        public IVariantGroup Create(IPublishedContent item, IStore store)
         {
             return new VariantGroup(item, store);
         }

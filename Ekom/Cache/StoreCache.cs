@@ -5,17 +5,19 @@ using Examine;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Examine;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
     class StoreCache : BaseCache<IStore>
     {
         public override string NodeAlias { get; } = "ekmStore";
-
+        private readonly IUmbracoContextFactory _context;
         /// <summary>
         /// ctor
         /// </summary>
@@ -23,9 +25,11 @@ namespace Ekom.Cache
             Configuration config,
             ILogger logger,
             IFactory factory,
-            IObjectFactory<IStore> objectFactory
-        ) : base(config, logger, factory, objectFactory)
+            IObjectFactory<IStore> objectFactory,
+            IUmbracoContextFactory context
+        ) : base(config, logger, factory, objectFactory, context)
         {
+            _context = context;
         }
 
         /// <summary>
@@ -33,20 +37,25 @@ namespace Ekom.Cache
         /// </summary>
         public override void FillCache()
         {
-            if (ExamineManager.TryGetIndex(_config.ExamineIndex, out IIndex index))
+          
+     
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            _logger.Debug<StoreCache>("Starting to fill store cache...");
+            int count = 0;
+
+            using (var cref = _context.EnsureUmbracoContext())
             {
-                // This line can give error Lock obtain timed out.
-                var searcher = index.GetSearcher();
+                var cache = cref.UmbracoContext.Content;
+                var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+                if (ekomRoot == null)
+                {
+                    throw new Exception("Ekom root node not found.");
+                }
 
-                _logger.Debug<StoreCache>("Starting to fill store cache...");
-                int count = 0;
-
-                var results = searcher.CreateQuery()
-                    .NodeTypeAlias(NodeAlias)
-                    .Execute(int.MaxValue);
+                var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
 
                 foreach (var r in results)
                 {
@@ -56,28 +65,22 @@ namespace Ekom.Cache
 
                         count++;
 
-                        var itemKey = Guid.Parse(r.Key());
-                        AddOrReplaceFromCache(itemKey, item);
-                        
+                        AddOrReplaceFromCache(r.Key, item);
+
                     }
                     catch (Exception ex) // Skip on fail
                     {
                         _logger.Warn<StoreCache>(ex, "Failed to map to store. Id: {Id}", r.Id);
                     }
                 }
+            }
 
-                stopwatch.Stop();
-                _logger.Info<StoreCache>(
-                    "Finished filling store cache with {Count} items. Time it took to fill: {Elapsed}",
-                    count,
-                    stopwatch.Elapsed);
-            }
-            else
-            {
-                _logger.Error<StoreCache>(
-                    "No examine index found with the name {ExamineIndex}, Can not fill store cache.",
-                    _config.ExamineIndex);
-            }
+            stopwatch.Stop();
+            _logger.Info<StoreCache>(
+                "Finished filling store cache with {Count} items. Time it took to fill: {Elapsed}",
+                count,
+                stopwatch.Elapsed);
+            
         }
 
         /// <summary>

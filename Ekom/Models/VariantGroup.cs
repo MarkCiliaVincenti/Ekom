@@ -103,10 +103,9 @@ namespace Ekom.Models
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public VariantGroup(ISearchResult item, IStore store) : base(item, store)
+        public VariantGroup(IPublishedContent item, IStore store) : base(item, store)
         {
-            var parentProductExamine = NodeHelper.GetFirstParentWithDocType(item, "ekmProduct");
-            var parentProduct = Catalog.Instance.GetProduct(store.Alias, int.Parse(parentProductExamine.Id));
+            var parentProduct = Catalog.Instance.GetProduct(store.Alias, item.Parent.Id);
             Product = parentProduct;
         }
 

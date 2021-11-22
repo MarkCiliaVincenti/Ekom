@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Models
 {
@@ -45,11 +46,11 @@ namespace Ekom.Models
         }
 
         /// <summary>
-        /// Construct from Examine item
+        /// Construct from IPublishedContent Item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public PerStoreNodeEntity(ISearchResult item, IStore store) : base(item)
+        public PerStoreNodeEntity(IPublishedContent item, IStore store) : base(item)
         {
             Store = store;
         }

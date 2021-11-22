@@ -4,11 +4,13 @@ using Examine;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Examine;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -23,7 +25,7 @@ namespace Ekom.Cache
         protected ILogger _logger;
         protected IObjectFactory<TItem> _objFac;
         protected IFactory _factory;
-
+        private readonly IUmbracoContextFactory _context;
         /// <summary>
         /// This is important since Caches are persistant objects while the ExamineManager should be per request scoped.
         /// </summary>
@@ -33,13 +35,15 @@ namespace Ekom.Cache
             Configuration config,
             ILogger logger,
             IFactory factory,
-            IObjectFactory<TItem> objectFactory
+            IObjectFactory<TItem> objectFactory,
+            IUmbracoContextFactory context
         )
         {
             _config = config;
             _logger = logger;
             _factory = factory;
             _objFac = objectFactory;
+            _context = context;
         }
 
         /// <summary>
@@ -76,50 +80,59 @@ namespace Ekom.Cache
         /// </summary>
         public virtual void FillCache()
         {
-            if (!string.IsNullOrEmpty(NodeAlias)
-            && ExamineManager.TryGetIndex(_config.ExamineIndex, out IIndex index))
+            if (!string.IsNullOrEmpty(NodeAlias))
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-
-                var searcher = index.GetSearcher();
 
                 _logger.Debug<BaseCache<TItem>>("Starting to fill...");
 
                 var count = 0;
 
-                var results = searcher.CreateQuery("content")
-                        .NodeTypeAlias(NodeAlias)
-                        .Execute(int.MaxValue);
-
-                _logger.Info<PerStoreCache<TItem>>(
-                    "FillCache - Examine index {ExamineIndex}, {TotalItemCount} search results",
-                    _config.ExamineIndex,
-                    results.TotalItemCount);
-
-                foreach (var r in results)
+                using (var cref = _context.EnsureUmbracoContext())
                 {
-                    try
+                    var cache = cref.UmbracoContext.Content;
+                    var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
+
+                    if (ekomRoot == null)
                     {
-                        // Traverse up parent nodes, checking only published status
-                        if (!r.IsItemUnpublished())
+                        throw new Exception("Ekom root node not found.");
+                    }
+
+                    var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+
+                    _logger.Info<PerStoreCache<TItem>>(
+                        "FillCache - Examine index {ExamineIndex}, {TotalItemCount} search results",
+                        _config.ExamineIndex,
+                        results.Count);
+
+                    foreach (var r in results)
+                    {
+                        try
                         {
-                            var item = (TItem)(_objFac?.Create(r) ?? Activator.CreateInstance(typeof(TItem), r));
+                            // Traverse up parent nodes, checking only published status
+                            //if (!r.IsItemUnpublished())
+                            //{
+                                var item = (TItem)(_objFac?.Create(r) ?? Activator.CreateInstance(typeof(TItem), r));
 
-                            if (item != null)
-                            {
-                                count++;
+                                if (item != null)
+                                {
+                                    count++;
 
-                                var itemKey = Guid.Parse(r.Key());
-                                AddOrReplaceFromCache(itemKey, item);
-                            }
+                                    AddOrReplaceFromCache(r.Key, item);
+                                }
+                            //}
+                        }
+                        catch (Exception ex) // Skip on fail
+                        {
+                            _logger.Warn<BaseCache<TItem>>(ex, "Failed to map to store. Id: {Id}" + r.Id);
                         }
                     }
-                    catch (Exception ex) // Skip on fail
-                    {
-                        _logger.Warn<BaseCache<TItem>>(ex, "Failed to map to store. Id: {Id}" + r.Id);
-                    }
                 }
+
+
+
+
 
                 stopwatch.Stop();
                 _logger.Info<BaseCache<TItem>>(

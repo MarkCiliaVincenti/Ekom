@@ -15,6 +15,7 @@ using System.Xml.Serialization;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Models
 {
@@ -273,16 +274,13 @@ namespace Ekom.Models
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public Variant(ISearchResult item, IStore store) : base(item, store)
+        public Variant(IPublishedContent item, IStore store) : base(item, store)
         {
-            var examineNode = Current.Factory.GetInstance<IExamineService>().GetExamineNode(ParentId);
+            var parentNode = item.Parent;
 
-            if (examineNode != null)
+            if (parentNode != null)
             {
-                if (Guid.TryParse(examineNode["__Key"], out Guid key))
-                {
-                    VariantGroupKey = key;
-                }
+                VariantGroupKey = parentNode.Key;
             }
         }
 
