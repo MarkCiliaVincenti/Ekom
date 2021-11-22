@@ -1,6 +1,7 @@
 using Ekom.Interfaces;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -13,8 +14,9 @@ namespace Ekom.Cache
             ILogger logger,
             IFactory factory,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IProduct> perStoreFactory
-        ) : base(config, logger, factory, storeCache, perStoreFactory)
+            IPerStoreFactory<IProduct> perStoreFactory,
+            IUmbracoContextFactory context
+        ) : base(config, logger, factory, storeCache, perStoreFactory, context)
         {
         }
     }

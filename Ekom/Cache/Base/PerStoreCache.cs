@@ -11,6 +11,7 @@ using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Examine;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -26,7 +27,7 @@ namespace Ekom.Cache
         protected IBaseCache<IStore> _storeCache;
         protected IPerStoreFactory<TItem> _objFac;
         protected IFactory _factory;
-
+        private readonly IUmbracoContextFactory _context;
         /// <summary>
         /// This is important since Caches are persistant objects while the ExamineManager should be per request scoped.
         /// </summary>
@@ -37,7 +38,8 @@ namespace Ekom.Cache
             ILogger logger,
             IFactory factory,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<TItem> objFac
+            IPerStoreFactory<TItem> objFac,
+            IUmbracoContextFactory context
         )
         {
             _config = config;
@@ -45,6 +47,7 @@ namespace Ekom.Cache
             _factory = factory;
             _storeCache = storeCache;
             _objFac = objFac;
+            _context = context;
         }
 
         /// <summary>
@@ -79,40 +82,47 @@ namespace Ekom.Cache
         /// </param>
         public virtual void FillCache(IStore storeParam = null)
         {
-            if (!string.IsNullOrEmpty(NodeAlias)
-            && ExamineManager.TryGetIndex(_config.ExamineIndex, out IIndex index))
+
+            if (!string.IsNullOrEmpty(NodeAlias))
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                var searcher = index.GetSearcher();
 
                 _logger.Debug<PerStoreCache<TItem>>("Starting to fill...");
                 int count = 0;
 
                 try
                 {
-                    ISearchResults results = null;
-
-                    results = searcher.CreateQuery("content")
-                        .NodeTypeAlias(NodeAlias)
-                        .Execute(int.MaxValue);
-
-                    _logger.Info<PerStoreCache<TItem>>(
-                        "FillCache - Examine index {ExamineIndex}, {TotalItemCount} search results", 
-                        _config.ExamineIndex, 
-                        results.TotalItemCount);
-
-                    if (storeParam == null) // Startup initialization
+                    using (var cref = _context.EnsureUmbracoContext())
                     {
-                        foreach (var store in _storeCache.Cache.Select(x => x.Value))
+                        var cache = cref.UmbracoContext.Content;
+                        var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
+
+                        if (ekomRoot == null)
                         {
-                            count += FillStoreCache(store, results);
+                            throw new Exception("Ekom root node not found.");
+                        }
+
+                        var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+
+                        _logger.Info<PerStoreCache<TItem>>(
+                          "FillCache - {Count} results",
+                          results.Count());
+
+                        if (storeParam == null) // Startup initialization
+                        {
+                            foreach (var store in _storeCache.Cache.Select(x => x.Value))
+                            {
+                                count += FillStoreCache(store, results);
+                            }
+                        }
+                        else // Triggered with dynamic addition/removal of store
+                        {
+                            count += FillStoreCache(storeParam, results);
                         }
                     }
-                    else // Triggered with dynamic addition/removal of store
-                    {
-                        count += FillStoreCache(storeParam, results);
-                    }
+              
+
                 }
                 catch (Exception ex)
                 {

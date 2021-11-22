@@ -6,6 +6,7 @@ using System.Linq;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -18,8 +19,9 @@ namespace Ekom.Cache
             ILogger logger,
             IFactory factory,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IPaymentProvider> perStoreFactory
-        ) : base(config, logger, factory, storeCache, perStoreFactory)
+            IPerStoreFactory<IPaymentProvider> perStoreFactory,
+            IUmbracoContextFactory context
+        ) : base(config, logger, factory, storeCache, perStoreFactory, context)
         {
         }
 

@@ -7,12 +7,16 @@ using Our.Umbraco.Vorto.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Events;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.Entities;
 using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.Querying;
+using Umbraco.Core.Scoping;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
@@ -25,6 +29,7 @@ namespace Ekom.App_Start
         readonly IBaseCache<IStore> _storeCache;
         readonly IStoreDomainCache _storeDomainCache;
         readonly IContentService _cs;
+        readonly IScopeProvider _scopeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoEventListeners"/> class.
@@ -39,20 +44,21 @@ namespace Ekom.App_Start
             Configuration config,
             IBaseCache<IStore> storeCache,
             IStoreDomainCache storeDomainCache,
-            IContentService cs)
+            IContentService cs,
+            IScopeProvider scopeProvider)
         {
             _logger = logger;
             _config = config;
             _storeCache = storeCache;
             _storeDomainCache = storeDomainCache;
             _cs = cs;
+            _scopeProvider = scopeProvider;
         }
 
         public void ContentService_Publishing(
             IContentService cs,
-            PublishEventArgs<IContent> e)
+            PublishEventArgs<IContent> args)
         {
-            // Moved to Saving
         }
 
         public void ContentService_Saving(
@@ -88,6 +94,27 @@ namespace Ekom.App_Start
                 var cacheEntry = FindMatchingCache(node.ContentType.Alias);
 
                 cacheEntry?.AddReplace(node);
+
+                // If slug changes on category then we need to update the cache for all descending products.
+                if (node.ContentType.Alias == "ekmCategory")
+                {
+                    var dirty = (IRememberBeingDirty)node;
+                    var slugHasChanged = dirty.WasPropertyDirty("slug");
+
+                    if (slugHasChanged)
+                    {
+                        var descendants = _cs.GetPagedDescendants(node.Id, 0, int.MaxValue, out _, new Query<IContent>(_scopeProvider.SqlContext).Where(x => !x.Trashed));
+
+                        foreach (var descendant in descendants)
+                        {
+                            var cacheEntryForDesc = FindMatchingCache(descendant.ContentType.Alias);
+
+                            cacheEntryForDesc?.AddReplace(descendant);
+                        }
+
+                    }
+                }
+
             }
         }
 

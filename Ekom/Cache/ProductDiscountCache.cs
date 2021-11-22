@@ -8,6 +8,7 @@ using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Ekom.Cache
 {
@@ -24,8 +25,9 @@ namespace Ekom.Cache
             IBaseCache<IStore> storeCache,
             IPerStoreFactory<IProductDiscount> perStoreFactory,
             IContentService contentService,
-            IPerStoreCache<IProduct> perStoreProductCache
-        ) : base(config, logger, factory, storeCache, perStoreFactory)
+            IPerStoreCache<IProduct> perStoreProductCache,
+            IUmbracoContextFactory context
+        ) : base(config, logger, factory, storeCache, perStoreFactory, context)
         {
             _contentService = contentService;
             _perStoreProductCache = perStoreProductCache;

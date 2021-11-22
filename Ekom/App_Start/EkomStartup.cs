@@ -145,6 +145,20 @@ namespace Ekom
 
         public void Terminate()
         {
+            if (!_config.VirtualContent)
+            {
+                var umbEvListeners = _factory.CreateInstance<UmbracoEventListeners>();
+                // Remove hooks Umbraco Events
+                ContentService.Published -= umbEvListeners.ContentService_Published;
+                ContentService.Unpublished -= umbEvListeners.ContentService_UnPublished;
+                ContentService.Deleted -= umbEvListeners.ContentService_Deleted;
+                ContentService.Trashed -= umbEvListeners.ContentService_Trashed;
+                ContentService.Publishing -= umbEvListeners.ContentService_Publishing;
+                ContentService.Saving -= umbEvListeners.ContentService_Saving;
+                ContentService.Moved -= umbEvListeners.ContentService_Moved;
+                DomainService.Saved -= umbEvListeners.DomainSaved;
+                DomainService.Deleted -= umbEvListeners.DomainDeleted;
+            }
             _hangfireServer.Dispose();
         }
     }
