@@ -165,7 +165,6 @@ namespace Ekom.App_Start
             string alias,
             ContentSavingEventArgs e)
         {
-
             var stores = API.Store.Instance.GetAllStores();
 
             var slugItems = new Dictionary<string, object>();
@@ -186,12 +185,7 @@ namespace Ekom.App_Start
 
                 if (alias == "ekmProduct" || alias == "ekmCategory")
                 {
-                    var cs = Current.Services.ContentService;
-                    var parent = cs.GetById(content.ParentId);
                     
-                    var siblings = cs.GetPagedChildren(parent.Id, 1, int.MaxValue, out _)
-                        .Where(x => x.Id != content.Id && !x.Published);
-
                     var slug = NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
 
                     if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
@@ -199,32 +193,38 @@ namespace Ekom.App_Start
                         slug = title;
                     }
 
-                    // Update Slug if Slug Exists on same Level and is Published
-                    if (!string.IsNullOrEmpty(slug)
-                    && siblings.Any(
-                        x => (string)x.GetVortoValue("slug", store.Alias) == slug.ToLowerInvariant())
-                    )
+                    slug = slug.ToLowerInvariant();
+
+                    var parentCategory = API.Catalog.Instance.GetCategory(store.Alias, content.ParentId);
+
+                    if (parentCategory !=null)
                     {
-                        // Random not a nice solution
-                        Random rnd = new Random();
+                        var products = parentCategory.Products.Where(x => x.Id != content.Id);
+                        var categories = parentCategory.SubCategories.Where(x => x.Id != content.Id);
 
-                        slug = slug + "-" + rnd.Next(1, 150);
+                        if (products.Any(x => x.Slug == slug) || categories.Any(x => x.Slug == slug))
+                        {
+                            Random rnd = new Random();
 
-                        _logger.Warn<UmbracoEventListeners>(
-                            "Duplicate slug found for product : {Id} store: {Store}",
-                            content.Id,
-                            store.Alias);
+                            slug = slug + "-" + rnd.Next(10, 500);
 
-                        e.Messages.Add(
-                            new EventMessage(
-                                "Duplicate Slug Found.",
-                                "Sorry but this slug is already in use, we updated it for you. Store: " + store.Alias,
-                                EventMessageType.Warning
-                            )
-                        );
+                            _logger.Warn<UmbracoEventListeners>(
+                                "Duplicate slug found for product : {Id} store: {Store}",
+                                content.Id,
+                                store.Alias);
+
+                            e.Messages.Add(
+                                new EventMessage(
+                                    "Duplicate Slug Found.",
+                                    "Sorry but this slug is already in use, we updated it for you. Store: " + store.Alias,
+                                    EventMessageType.Warning
+                                )
+                            );
+                        }
+
                     }
 
-                    slugItems.Add(store.Alias, slug.ToUrlSegment().ToLowerInvariant());
+                    slugItems.Add(store.Alias, slug.ToUrlSegment());
                 }
             }
 
