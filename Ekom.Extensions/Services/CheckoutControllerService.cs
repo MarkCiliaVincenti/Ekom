@@ -157,10 +157,17 @@ namespace Ekom.Extensions.Services
                 await Order.Instance.UpdateCustomerInformationAsync(formCollection).ConfigureAwait(false);
             }
 
-            if (order.PaymentProvider == null)
+            if (order.PaymentProvider == null || (order.PaymentProvider != null && order.PaymentProvider.Key == paymentRequest.PaymentProvider))
             {
                 await Order.Instance.UpdatePaymentInformationAsync(
                     paymentRequest.PaymentProvider,
+                    order.StoreInfo.Alias).ConfigureAwait(false);
+            }
+
+            if (order.ShippingProvider == null || (order.ShippingProvider != null && order.ShippingProvider.Key == paymentRequest.ShippingProvider))
+            {
+                await Order.Instance.UpdateShippingInformationAsync(
+                    paymentRequest.ShippingProvider,
                     order.StoreInfo.Alias).ConfigureAwait(false);
             }
 
