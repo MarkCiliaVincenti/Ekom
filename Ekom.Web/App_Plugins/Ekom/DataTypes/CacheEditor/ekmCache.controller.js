@@ -1,4 +1,4 @@
-angular.module("umbraco").controller("Ekom.Cache", function ($scope, assetsService, $http) {
+angular.module("umbraco").controller("Ekom.Cache", function ($scope, assetsService, $http, notificationsService) {
   $scope.loading = false;
   $scope.PopulateCache = function () {
 
@@ -8,9 +8,9 @@ angular.module("umbraco").controller("Ekom.Cache", function ($scope, assetsServi
       url: '/umbraco/backoffice/ekom/api/populateCache',
       method: 'POST',
       dataType: 'json'
-    }).success(function (data) {
+    }).then(function (data) {
 
-      if (data.success) {
+      if (data) {
         notificationsService.success("Success", "Cache has been populated again.");
       } else {
         notificationsService.error("Error", "Error on cache update");
@@ -18,10 +18,6 @@ angular.module("umbraco").controller("Ekom.Cache", function ($scope, assetsServi
 
       $scope.loading = false;
 
-    }).error(function (data) {
-      $scope.loading = false;
-
-      notificationsService.error("Error", "Error on sending data.");
     });
 
   };
