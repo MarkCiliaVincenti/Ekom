@@ -160,9 +160,9 @@ namespace Ekom.Models
         /// <param name="store"></param>
         public Category(IPublishedContent item, IStore store) : base(item, store)
         {
-            var pathField = item.Path;
+            ParentId = item.Parent.Id;
 
-            Urls = UrlHelper.BuildCategoryUrls(item.Ancestors(3).Where(x => x.ContentType.Alias == "ekmProduct" || x.ContentType.Alias == "ekmCategory").ToList(), store);
+            Urls = UrlHelper.BuildCategoryUrls(item.AncestorsOrSelf().Where(x => x.ContentType.Alias == "ekmProduct" || x.ContentType.Alias == "ekmCategory").ToList(), store);
         }
 
         /// <summary>

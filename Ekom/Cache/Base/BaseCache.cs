@@ -102,8 +102,7 @@ namespace Ekom.Cache
                     var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
 
                     _logger.Info<PerStoreCache<TItem>>(
-                        "FillCache - Examine index {ExamineIndex}, {TotalItemCount} search results",
-                        _config.ExamineIndex,
+                        "FillCache, {Count} results",
                         results.Count);
 
                     foreach (var r in results)

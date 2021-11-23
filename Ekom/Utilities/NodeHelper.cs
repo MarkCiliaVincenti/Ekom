@@ -280,9 +280,7 @@ namespace Ekom.Utilities
         /// <returns>True if disabled</returns>
         public static bool IsItemDisabled(
             this IPublishedContent result,
-            IStore store,
-            string path = "",
-            IEnumerable<ISearchResult> allCatalogItems = null)
+            IStore store)
         {
             var selfDisableField =  GetStoreProperty(result, "disable", store.Alias);
 
@@ -294,10 +292,7 @@ namespace Ekom.Utilities
                 }
             }
 
-            path = string.IsNullOrEmpty(path) ? result.Path : path;
-
-            allCatalogItems = allCatalogItems == null ? GetAllCatalogItemsFromPath(path) :
-                                                        allCatalogItems;
+            var allCatalogItems = result.Ancestors().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct"));
 
             foreach (var item in allCatalogItems)
             {
@@ -419,14 +414,13 @@ namespace Ekom.Utilities
         {
             try
             {
-                var fieldExist = item.HasProperty("field");
+                var fieldExist = item.HasProperty(field);
 
                 if (fieldExist)
                 {
+                    var value = item.GetVortoValue<string>(field,storeAlias);
 
-                    var value = item.Value<string>(field);
-
-                    return value.GetVortoValue(storeAlias);
+                    return value;
                 }
 
                 return string.Empty;

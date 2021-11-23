@@ -132,7 +132,7 @@ namespace Ekom.Models
 
             foreach (var prop in node.Properties)
             {
-                _properties.Add(prop.Alias, prop.GetValue()?.ToString());
+                _properties.Add(prop.Alias, prop.GetSourceValue()?.ToString());
             }
         }
 
