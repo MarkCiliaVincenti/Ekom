@@ -29,7 +29,8 @@ namespace Ekom.Cache
         protected IBaseCache<IStore> _storeCache;
         protected IPerStoreFactory<TItem> _objFac;
         protected IFactory _factory;
-        private readonly IUmbracoContextFactory _context;
+        protected readonly IUmbracoContextFactory _context;
+
         /// <summary>
         /// This is important since Caches are persistant objects while the ExamineManager should be per request scoped.
         /// </summary>
@@ -206,7 +207,7 @@ namespace Ekom.Cache
             {
                 try
                 {
-                    if (!node.IsItemDisabled(store.Value))
+                    if (!node.IsItemDisabled(store.Value, allCatalogItems: Node8Helper.Instance.GetAllCatalogAncestors(node)))
                     {
                         var item = _objFac?.Create(node, store.Value)
                             ?? (TItem)Activator.CreateInstance(typeof(TItem), node, store.Value);

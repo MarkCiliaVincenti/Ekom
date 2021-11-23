@@ -6,6 +6,7 @@ using Ekom.Interfaces;
 using Ekom.Models.Data;
 using Ekom.Repository;
 using Ekom.Services;
+using Ekom.Utilities;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
@@ -50,6 +51,7 @@ namespace Ekom.App_Start
             composition.Register<IExamineService, ExamineService>(Lifetime.Transient);
             composition.Register<CheckoutService>(Lifetime.Transient);
             composition.Register<MailService>(Lifetime.Transient);
+            composition.Register<Node8Helper>(Lifetime.Transient);
 
             composition.Register<ICountriesRepository, CountriesRepository>(Lifetime.Transient);
             composition.Register<IStockRepository, StockRepository>(Lifetime.Transient);

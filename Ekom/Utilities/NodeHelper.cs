@@ -42,25 +42,25 @@ namespace Ekom.Utilities
 
         //    return list;
         //}
-        public static List<IPublishedContent> GetAllCatalogAncestors(IPublishedContent item)
-        {
-            var ancestors = item.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
+        //public static List<IPublishedContent> GetAllCatalogAncestors(IPublishedContent item)
+        //{
+        //    var ancestors = item.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
-            ancestors.Reverse();
+        //    ancestors.Reverse();
 
-            return ancestors;
-        }
+        //    return ancestors;
+        //}
 
-        public static List<IPublishedContent> GetAllCatalogAncestors(IContent item)
-        {
-            var node = GetNodeById(item.Id);
+        //public static List<IPublishedContent> GetAllCatalogAncestors(IContent item)
+        //{
+        //    var node = GetNodeById(item.Id);
 
-            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
+        //    var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
-            ancestors.Reverse();
+        //    ancestors.Reverse();
 
-            return ancestors;
-        }
+        //    return ancestors;
+        //}
 
         /// <summary>
         /// Gets a few close parents, skipping two levels of Ekom hierarchy
@@ -199,20 +199,20 @@ namespace Ekom.Utilities
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        public static IPublishedContent GetNodeById(int id)
-        {
-            var umbracoHelper = Current.Factory.GetInstance<UmbracoHelper>();
+        //public static IPublishedContent GetNodeById(int id)
+        //{
+        //    var umbracoHelper = Current.Factory.GetInstance<UmbracoHelper>();
 
-            var node = umbracoHelper.Content(id);
+        //    var node = umbracoHelper.Content(id);
 
-            if (node != null)
-            {
-                return node;
-            }
+        //    if (node != null)
+        //    {
+        //        return node;
+        //    }
 
-            return null;  
+        //    return null;  
 
-        }
+        //}
         /// <summary>
         /// Get <see cref="IPublishedContent"/> node by Udi
         /// </summary>
@@ -294,7 +294,7 @@ namespace Ekom.Utilities
         {
             string path = node.Path;
 
-            foreach (var item in GetAllCatalogAncestors(node))
+            foreach (var item in Node8Helper.Instance.GetAllCatalogAncestors(node))
             {
                 // Unpublished items can't be found in the examine index
                 if (item == null || !item.IsPublished())
@@ -379,7 +379,7 @@ namespace Ekom.Utilities
 
             path = string.IsNullOrEmpty(path) ? node.Path : path;
 
-            allCatalogItems = allCatalogItems == null ? GetAllCatalogAncestors(node) : allCatalogItems;
+            allCatalogItems = allCatalogItems == null ? Node8Helper.Instance.GetAllCatalogAncestors(node) : allCatalogItems;
 
             foreach (var item in allCatalogItems)
             {

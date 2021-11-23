@@ -162,7 +162,7 @@ namespace Ekom.Models
         {
             ParentId = item.Parent.Id;
 
-            Urls = UrlHelper.BuildCategoryUrls(NodeHelper.GetAllCatalogAncestors(item), store);
+            Urls = UrlHelper.BuildCategoryUrls(Node8Helper.Instance.GetAllCatalogAncestors(item), store);
         }
 
         /// <summary>
@@ -173,11 +173,11 @@ namespace Ekom.Models
         public Category(IContent node, IStore store) : base(node, store)
         {
 
-            var item = NodeHelper.GetNodeById(node.Id);
+            var item = Node8Helper.Instance.GetNodeById(node.Id);
 
             ParentId = node.ParentId;
 
-            Urls = UrlHelper.BuildCategoryUrls(NodeHelper.GetAllCatalogAncestors(item), store);
+            Urls = UrlHelper.BuildCategoryUrls(Node8Helper.Instance.GetAllCatalogAncestors(item), store);
         }
     }
 }

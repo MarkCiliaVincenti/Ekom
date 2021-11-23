@@ -375,7 +375,7 @@ namespace Ekom.Models
 
         private void PopulateCategoryAncestors(IContent node)
         {
-            var ancestors = NodeHelper.GetAllCatalogAncestors(node);
+            var ancestors = Node8Helper.Instance.GetAllCatalogAncestors(node);
 
             foreach (var item in ancestors.Where(x => x.IsDocumentType("ekmCategory")))
             {
@@ -389,7 +389,7 @@ namespace Ekom.Models
         }
         private void PopulateCategoryAncestors(IPublishedContent node)
         {
-            var ancestors = NodeHelper.GetAllCatalogAncestors(node);
+            var ancestors = Node8Helper.Instance.GetAllCatalogAncestors(node);
 
             foreach (var item in ancestors.Where(x => x.IsDocumentType("ekmCategory")))
             {
