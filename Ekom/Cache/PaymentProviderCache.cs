@@ -53,7 +53,14 @@ namespace Ekom.Cache
                             throw new Exception("Ekom root node not found.");
                         }
 
-                        var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+                        var paymentProviderRoot = ekomRoot.Children.FirstOrDefault(x => x.IsDocumentType("netPaymentProviders"));
+
+                        if (paymentProviderRoot == null)
+                        {
+                            throw new Exception("Ekom payment providers node not found.");
+                        }
+
+                        var results = paymentProviderRoot.Children.ToList();
 
                         if (storeParam == null) // Startup initialization
                         {

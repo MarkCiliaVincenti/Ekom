@@ -7,15 +7,15 @@
 
         <!-- Package properties -->
         <PackageId>Ekom.Core.v8</PackageId>
-        <Version>0.8.3</Version>
+        <Version>0.8.4</Version>
         <Title>Ekom.Core.v8</Title>
         <Authors>Vettvangur</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
         <PackageIcon>images\VV_Logo.png</PackageIcon>
         <Description>Ekom - Vettvangur E-Commerce solution</Description>
-        <PackageReleaseNotes>Remove Logging</PackageReleaseNotes>
-        <Copyright>Copyright 2019</Copyright>
+        <PackageReleaseNotes>Fix payment provider query</PackageReleaseNotes>
+        <Copyright>Copyright 2021</Copyright>
         <PackageTags></PackageTags>
 
         <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
