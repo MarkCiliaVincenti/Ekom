@@ -1,5 +1,6 @@
 using System;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.Cache
 {
@@ -18,6 +19,11 @@ namespace Ekom.Cache
         /// Handles addition of nodes when umbraco events fire
         /// </summary>
         void AddReplace(IContent node);
+
+        /// <summary>
+        /// Handles addition of nodes when umbraco events fire
+        /// </summary>
+        void AddReplace(IPublishedContent node);
 
         /// <summary>
         /// Handles removal of nodes when umbraco events fire

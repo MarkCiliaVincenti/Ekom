@@ -30,6 +30,7 @@ namespace Ekom.App_Start
         readonly IStoreDomainCache _storeDomainCache;
         readonly IContentService _cs;
         readonly IScopeProvider _scopeProvider;
+        private readonly IUmbracoContextFactory _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoEventListeners"/> class.
@@ -45,7 +46,8 @@ namespace Ekom.App_Start
             IBaseCache<IStore> storeCache,
             IStoreDomainCache storeDomainCache,
             IContentService cs,
-            IScopeProvider scopeProvider)
+            IScopeProvider scopeProvider,
+            IUmbracoContextFactory context)
         {
             _logger = logger;
             _config = config;
@@ -53,6 +55,7 @@ namespace Ekom.App_Start
             _storeDomainCache = storeDomainCache;
             _cs = cs;
             _scopeProvider = scopeProvider;
+            _context = context;
         }
 
         public void ContentService_Publishing(
@@ -100,18 +103,11 @@ namespace Ekom.App_Start
                 {
                     var dirty = (IRememberBeingDirty)node;
                     var slugHasChanged = dirty.WasPropertyDirty("slug");
+                    var disabledChanged = dirty.WasPropertyDirty("disable");
 
-                    if (slugHasChanged)
+                    if (slugHasChanged || disabledChanged)
                     {
-                        var descendants = _cs.GetPagedDescendants(node.Id, 0, int.MaxValue, out _, new Query<IContent>(_scopeProvider.SqlContext).Where(x => !x.Trashed));
-
-                        foreach (var descendant in descendants)
-                        {
-                            var cacheEntryForDesc = FindMatchingCache(descendant.ContentType.Alias);
-
-                            cacheEntryForDesc?.AddReplace(descendant);
-                        }
-
+                        RefreshCacheForDescendants(node.Id);
                     }
                 }
 
@@ -145,6 +141,8 @@ namespace Ekom.App_Start
                 var cacheEntry = FindMatchingCache(node.ContentType.Alias);
 
                 cacheEntry?.Remove(node.Key);
+
+                RefreshCacheForDescendants(node.Id, true);
             }
         }
 
@@ -339,6 +337,37 @@ namespace Ekom.App_Start
                 //    // Update cached IStore
                 //    _storeCache.AddReplace(ekmStoreContent);
                 
+            }
+        }
+
+        private void RefreshCacheForDescendants(int Id, bool remove = false)
+        {
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var cache = cref.UmbracoContext.Content;
+
+                var currentNode = cache.GetById(Id);
+
+                if (currentNode != null)
+                {
+                    var descendants = currentNode.Descendants();
+
+                    foreach (var descendant in descendants)
+                    {
+                        var cacheEntryForDesc = FindMatchingCache(descendant.ContentType.Alias);
+
+                        if (remove)
+                        {
+                            cacheEntryForDesc?.Remove(descendant.Key);
+                        } else
+                        {
+                            cacheEntryForDesc?.AddReplace(descendant);
+                        }
+                        
+                    }
+                }
+
+
             }
         }
     }

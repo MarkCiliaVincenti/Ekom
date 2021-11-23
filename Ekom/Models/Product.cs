@@ -312,7 +312,7 @@ namespace Ekom.Models
         /// <param name="store"></param>
         public Product(IPublishedContent item, IStore store) : base(item, store)
         {
-            PopulateCategoryAncestors();
+            PopulateCategoryAncestors(item);
             PopulateCategories();
 
             Urls = UrlHelper.BuildProductUrls(Slug, Categories, store);
@@ -330,7 +330,7 @@ namespace Ekom.Models
         /// <param name="store"></param>
         public Product(IContent node, IStore store) : base(node, store)
         {
-            PopulateCategoryAncestors();
+            PopulateCategoryAncestors(node);
             PopulateCategories();
 
             Urls = UrlHelper.BuildProductUrls(Slug, Categories, store);
@@ -373,22 +373,31 @@ namespace Ekom.Models
             }
         }
 
-        private void PopulateCategoryAncestors()
+        private void PopulateCategoryAncestors(IContent node)
         {
-            var examineItemsFromPath = NodeHelper.GetAllCatalogItemsFromPath(Path);
+            var ancestors = NodeHelper.GetAllCatalogAncestors(node);
 
-            foreach (var item in examineItemsFromPath)
+            foreach (var item in ancestors.Where(x => x.IsDocumentType("ekmCategory")))
             {
-                var alias = item.Values["__NodeTypeAlias"];
+                var c = API.Catalog.Instance.GetCategory(Store.Alias, item.Id);
 
-                if (alias == "ekmCategory")
+                if (c != null)
                 {
-                    var c = API.Catalog.Instance.GetCategory(Store.Alias, item.Id);
+                    categoryAncestors.Add(c);
+                }
+            }
+        }
+        private void PopulateCategoryAncestors(IPublishedContent node)
+        {
+            var ancestors = NodeHelper.GetAllCatalogAncestors(node);
 
-                    if (c != null)
-                    {
-                        categoryAncestors.Add(c);
-                    }
+            foreach (var item in ancestors.Where(x => x.IsDocumentType("ekmCategory")))
+            {
+                var c = API.Catalog.Instance.GetCategory(Store.Alias, item.Id);
+
+                if (c != null)
+                {
+                    categoryAncestors.Add(c);
                 }
             }
         }

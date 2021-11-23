@@ -154,7 +154,7 @@ namespace Ekom.Models
         /// <param name="store"></param>
         public Category(IStore store) : base(store) { }
         /// <summary>
-        /// Construct Category from Examine item
+        /// Construct Category from IPublishedContent item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
@@ -162,7 +162,7 @@ namespace Ekom.Models
         {
             ParentId = item.Parent.Id;
 
-            Urls = UrlHelper.BuildCategoryUrls(item.AncestorsOrSelf().Where(x => x.ContentType.Alias == "ekmProduct" || x.ContentType.Alias == "ekmCategory").ToList(), store);
+            Urls = UrlHelper.BuildCategoryUrls(NodeHelper.GetAllCatalogAncestors(item), store);
         }
 
         /// <summary>
@@ -172,20 +172,12 @@ namespace Ekom.Models
         /// <param name="store"></param>
         public Category(IContent node, IStore store) : base(node, store)
         {
-            var pathArray = node.Path.Split(',');
 
-            // Skip Root, Ekom container, Catalog container
-            var Ids = pathArray.Skip(3);
-            // Skip this category that's being created
-            Ids = Ids.Take(Ids.Count() - 1);
-
-            var hierarchy = NodeHelper.GetAllCatalogItemsFromPath(Ids)
-                .Select(x => x.GetStoreProperty("slug", store.Alias))
-                .ToList();
+            var item = NodeHelper.GetNodeById(node.Id);
 
             ParentId = node.ParentId;
 
-            Urls = UrlHelper.BuildCategoryUrls(Slug, hierarchy, store);
+            Urls = UrlHelper.BuildCategoryUrls(NodeHelper.GetAllCatalogAncestors(item), store);
         }
     }
 }

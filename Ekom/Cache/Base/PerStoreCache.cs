@@ -235,6 +235,39 @@ namespace Ekom.Cache
         }
 
         /// <summary>
+        /// Adds or replaces an item from all store caches
+        /// </summary>
+        public void AddOrReplaceFromAllCaches(IPublishedContent node)
+        {
+            foreach (var store in _storeCache.Cache)
+            {
+                try
+                {
+                    if (!node.IsItemDisabled(store.Value))
+                    {
+                        var item = _objFac?.Create(node, store.Value)
+                            ?? (TItem)Activator.CreateInstance(typeof(TItem), node, store.Value);
+
+                        if (item != null) Cache[store.Value.Alias][node.Key] = item;
+                    }
+                    else
+                    {
+                        Cache[store.Value.Alias].TryRemove(node.Key, out _);
+                    }
+                }
+                catch (Exception ex) // Skip on fail
+                {
+                    _logger.Warn<PerStoreCache<TItem>>(
+                        ex,
+                        "Error on Add/Replacing item with id: {Id} in store: {Store}",
+                        node.Id,
+                        store.Value.Alias
+                    );
+                }
+            }
+        }
+
+        /// <summary>
         /// Removes an item from all store caches
         /// </summary>
         public void RemoveItemFromAllCaches(Guid id)
@@ -250,6 +283,15 @@ namespace Ekom.Cache
         /// handles addition of nodes when umbraco events fire
         /// </summary>
         public virtual void AddReplace(IContent node)
+        {
+            AddOrReplaceFromAllCaches(node);
+        }
+
+        /// <summary>
+        /// <see cref="ICache"/> implementation,
+        /// handles addition of nodes when umbraco events fire
+        /// </summary>
+        public virtual void AddReplace(IPublishedContent node)
         {
             AddOrReplaceFromAllCaches(node);
         }

@@ -18,29 +18,48 @@ namespace Ekom.Utilities
 {
     public static class NodeHelper
     {
-        public static IEnumerable<ISearchResult> GetAllCatalogItemsFromPath(string path)
+        //public static IEnumerable<ISearchResult> GetAllCatalogItemsFromPath(string path)
+        //{
+        //    var pathArray = path.Split(',');
+
+        //    // Skip Root, Ekom container, Catalog container
+        //    var Ids = pathArray.Skip(3);
+
+        //    return GetAllCatalogItemsFromPath(Ids);
+        //}
+        //public static IEnumerable<ISearchResult> GetAllCatalogItemsFromPath(IEnumerable<string> ids)
+        //{
+        //    var list = new List<ISearchResult>();
+
+        //    foreach (var id in ids)
+        //    {
+        //        var examineItem = ExamineService.Instance.GetExamineNode(int.Parse(id));
+        //        if (examineItem != null)
+        //        {
+        //            list.Add(examineItem);
+        //        }
+        //    }
+
+        //    return list;
+        //}
+        public static List<IPublishedContent> GetAllCatalogAncestors(IPublishedContent item)
         {
-            var pathArray = path.Split(',');
+            var ancestors = item.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
-            // Skip Root, Ekom container, Catalog container
-            var Ids = pathArray.Skip(3);
+            ancestors.Reverse();
 
-            return GetAllCatalogItemsFromPath(Ids);
+            return ancestors;
         }
-        public static IEnumerable<ISearchResult> GetAllCatalogItemsFromPath(IEnumerable<string> ids)
+
+        public static List<IPublishedContent> GetAllCatalogAncestors(IContent item)
         {
-            var list = new List<ISearchResult>();
+            var node = GetNodeById(item.Id);
 
-            foreach (var id in ids)
-            {
-                var examineItem = ExamineService.Instance.GetExamineNode(int.Parse(id));
-                if (examineItem != null)
-                {
-                    list.Add(examineItem);
-                }
-            }
+            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
-            return list;
+            ancestors.Reverse();
+
+            return ancestors;
         }
 
         /// <summary>
@@ -48,42 +67,42 @@ namespace Ekom.Utilities
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static IEnumerable<ISearchResult> GetParents(string path)
-        {
-            var list = new List<ISearchResult>();
+        //public static IEnumerable<ISearchResult> GetParents(string path)
+        //{
+        //    var list = new List<ISearchResult>();
 
-            var pathArray = path.Split(',');
+        //    var pathArray = path.Split(',');
 
-            var Ids = pathArray.Take(pathArray.Length - 1).Skip(3);
+        //    var Ids = pathArray.Take(pathArray.Length - 1).Skip(3);
 
-            foreach (var id in Ids)
-            {
-                var examineItem = ExamineService.Instance.GetExamineNode(int.Parse(id));
+        //    foreach (var id in Ids)
+        //    {
+        //        var examineItem = ExamineService.Instance.GetExamineNode(int.Parse(id));
 
-                list.Add(examineItem);
-            }
+        //        list.Add(examineItem);
+        //    }
 
-            return list;
-        }
+        //    return list;
+        //}
 
         /// <summary>
         /// Recursively gets first <see cref="ISearchResult"/> item with matching doc type, null otherwise
         /// </summary>
-        public static ISearchResult GetFirstParentWithDocType(ISearchResult item, string docTypeAlias)
-        {
-            if (item == null) return item;
+        //public static ISearchResult GetFirstParentWithDocType(ISearchResult item, string docTypeAlias)
+        //{
+        //    if (item == null) return item;
 
-            else if (item.Values["__NodeTypeAlias"] == docTypeAlias)
-            {
-                return item;
-            }
-            else
-            {
-                var parentId = Convert.ToInt32(item.Values["parentID"]);
-                var parent = ExamineService.Instance.GetExamineNode(parentId);
-                return GetFirstParentWithDocType(parent, docTypeAlias);
-            }
-        }
+        //    else if (item.Values["__NodeTypeAlias"] == docTypeAlias)
+        //    {
+        //        return item;
+        //    }
+        //    else
+        //    {
+        //        var parentId = Convert.ToInt32(item.Values["parentID"]);
+        //        var parent = ExamineService.Instance.GetExamineNode(parentId);
+        //        return GetFirstParentWithDocType(parent, docTypeAlias);
+        //    }
+        //}
         /// <summary>
         /// Recursively gets first <see cref="IPublishedContent"/> item with matching doc type, null otherwise
         /// </summary>
@@ -175,7 +194,25 @@ namespace Ekom.Utilities
 
             return list;
         }
+        /// <summary>
+        /// Get <see cref="IPublishedContent"/> node by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Property Value</returns>
+        public static IPublishedContent GetNodeById(int id)
+        {
+            var umbracoHelper = Current.Factory.GetInstance<UmbracoHelper>();
 
+            var node = umbracoHelper.Content(id);
+
+            if (node != null)
+            {
+                return node;
+            }
+
+            return null;  
+
+        }
         /// <summary>
         /// Get <see cref="IPublishedContent"/> node by Udi
         /// </summary>
@@ -234,33 +271,33 @@ namespace Ekom.Utilities
         /// Traverses up content tree, checking all parents
         /// </summary>
         /// <returns>True if disabled</returns>
-        public static bool IsItemUnpublished(this ISearchResult searchResult)
-        {
-            string path = searchResult.Values["__Path"];
-            var catalogItems = GetAllCatalogItemsFromPath(path);
-            var pathArray = path.Split(',');
+        //public static bool IsItemUnpublished(this ISearchResult searchResult)
+        //{
+        //    string path = searchResult.Values["__Path"];
+        //    var catalogItems = GetAllCatalogItemsFromPath(path);
+        //    var pathArray = path.Split(',');
 
-            var Ids = pathArray.Skip(3);
+        //    var Ids = pathArray.Skip(3);
 
-            // Unpublished items can't be found in the external examine index
-            // missing items are not returned on get
-            return Ids.Count() > catalogItems.Count();
-        }
+        //    // Unpublished items can't be found in the external examine index
+        //    // missing items are not returned on get
+        //    return Ids.Count() > catalogItems.Count();
+        //}
 
 
-        /// <summary>
-        /// Determine if an <see cref="IContent"/> item is unpublished <para />
-        /// Traverses up content tree, checking all parents
-        /// </summary>
-        /// <returns>True if disabled</returns>
+        // <summary>
+        // Determine if an<see cref="IContent"/> item is unpublished<para />
+        // Traverses up content tree, checking all parents
+        // </summary>
+        // <returns>True if disabled</returns>
         public static bool IsItemUnpublished(this IContent node)
         {
             string path = node.Path;
 
-            foreach (var item in GetAllCatalogItemsFromPath(path))
+            foreach (var item in GetAllCatalogAncestors(node))
             {
                 // Unpublished items can't be found in the examine index
-                if (item == null)
+                if (item == null || !item.IsPublished())
                 {
                     return true;
                 }
@@ -327,7 +364,7 @@ namespace Ekom.Utilities
             this IContent node,
             IStore store,
             string path = "",
-            IEnumerable<ISearchResult> allCatalogItems = null)
+            List<IPublishedContent> allCatalogItems = null)
         {
 
             var selfDisableField = GetStoreProperty(node, "disable", store.Alias);
@@ -342,7 +379,7 @@ namespace Ekom.Utilities
 
             path = string.IsNullOrEmpty(path) ? node.Path : path;
 
-            allCatalogItems = allCatalogItems == null ? GetParents(path) : allCatalogItems;
+            allCatalogItems = allCatalogItems == null ? GetAllCatalogAncestors(node) : allCatalogItems;
 
             foreach (var item in allCatalogItems)
             {

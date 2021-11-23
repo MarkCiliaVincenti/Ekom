@@ -9,6 +9,7 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Examine;
 using Umbraco.Web;
 
@@ -151,6 +152,20 @@ namespace Ekom.Cache
         public virtual void AddReplace(IContent node)
         {
             if (!node.IsItemUnpublished())
+            {
+                var item = (TItem)(_objFac?.Create(node) ?? Activator.CreateInstance(typeof(TItem), node));
+
+                if (item != null) AddOrReplaceFromCache(node.Key, item);
+            }
+        }
+
+        /// <summary>
+        /// <see cref="ICache"/> implementation, <para/>
+        /// handles addition of nodes when umbraco events fire
+        /// </summary>
+        public virtual void AddReplace(IPublishedContent node)
+        {
+            if (node.IsPublished())
             {
                 var item = (TItem)(_objFac?.Create(node) ?? Activator.CreateInstance(typeof(TItem), node));
 
