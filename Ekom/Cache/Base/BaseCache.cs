@@ -102,10 +102,6 @@ namespace Ekom.Cache
 
                     var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
 
-                    _logger.Info<PerStoreCache<TItem>>(
-                        "FillCache, {Count} results",
-                        results.Count);
-
                     foreach (var r in results)
                     {
                         try
@@ -129,10 +125,6 @@ namespace Ekom.Cache
                         }
                     }
                 }
-
-
-
-
 
                 stopwatch.Stop();
                 _logger.Info<BaseCache<TItem>>(

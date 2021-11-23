@@ -107,10 +107,6 @@ namespace Ekom.Cache
 
                         var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
 
-                        _logger.Info<PerStoreCache<TItem>>(
-                          "FillCache - {Count} results",
-                          results.Count());
-
                         if (storeParam == null) // Startup initialization
                         {
                             foreach (var store in _storeCache.Cache.Select(x => x.Value))
