@@ -196,7 +196,22 @@ namespace Ekom.API
                 throw new ArgumentException(nameof(storeAlias));
             }
 
-            return _productCache.Cache[storeAlias].Where(x => productIds.Contains(x.Value.Id)).Select(x => x.Value).OrderBy(x => x.SortOrder);
+            var products = new List<IProduct>();
+
+            foreach (var id in productIds)
+            {
+
+                var product = _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == id).Value;
+
+                if (product != null)
+                {
+                    products.Add(
+                       product
+                    );
+                }
+            }
+
+            return products;
         }
 
         /// <summary>
@@ -246,7 +261,7 @@ namespace Ekom.API
                 }
             }
 
-            return products.OrderBy(x => x.SortOrder);
+            return products;
         }
 
         /// <summary>
