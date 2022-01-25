@@ -1,3 +1,4 @@
+using Ekom.Domain.Repositories;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Utilities;
@@ -27,13 +28,13 @@ namespace Ekom.Controllers
         Justification = "Async controller action")]
     public class ApiController : UmbracoAuthorizedApiController
     {
-        readonly ICountriesRepository _countriesRepo;
+        readonly CountriesRepository _countriesRepo;
         readonly Configuration _config;
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="countriesRepo"></param>
-        public ApiController(Configuration config, ICountriesRepository countriesRepo)
+        public ApiController(Configuration config, CountriesRepository countriesRepo)
         {
             _config = config;
             _countriesRepo = countriesRepo;

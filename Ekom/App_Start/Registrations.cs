@@ -53,7 +53,7 @@ namespace Ekom.App_Start
             composition.Register<MailService>(Lifetime.Transient);
             composition.Register<Node8Helper>(Lifetime.Transient);
 
-            composition.Register<ICountriesRepository, CountriesRepository>(Lifetime.Transient);
+            composition.Register<CountriesRepository, CountriesRepository>(Lifetime.Transient);
             composition.Register<IStockRepository, StockRepository>(Lifetime.Transient);
             composition.Register<IDiscountStockRepository, DiscountStockRepository>(Lifetime.Transient);
 
@@ -103,7 +103,7 @@ namespace Ekom.App_Start
                     f.GetInstance<IPerStoreCache<IPaymentProvider>>(),
                     f.GetInstance<IBaseCache<IZone>>(),
                     f.GetInstance<IStoreService>(),
-                    f.GetInstance<ICountriesRepository>()
+                    f.GetInstance<CountriesRepository>()
                 )
             );
             composition.Register<Stock>(f =>

@@ -12,7 +12,7 @@ using Umbraco.Core.Logging;
 
 namespace Ekom.Domain.Repositories
 {
-    class CountriesRepository : ICountriesRepository
+    public class CountriesRepository
     {
         private readonly ConcurrentDictionary<string, List<Country>> _cache = new ConcurrentDictionary<string, List<Country>>();
         private readonly ILogger _logger;

@@ -1,4 +1,5 @@
 using Ekom.Cache;
+using Ekom.Domain.Repositories;
 using Ekom.Interfaces;
 using Ekom.Models;
 using System;
@@ -26,7 +27,7 @@ namespace Ekom.API
         readonly IPerStoreCache<IPaymentProvider> _paymentProviderCache;
         readonly IBaseCache<IZone> _zoneCache;
         readonly IStoreService _storeSvc;
-        readonly ICountriesRepository _countryRepo;
+        readonly CountriesRepository _countryRepo;
 
         /// <summary>
         /// ctor
@@ -38,7 +39,7 @@ namespace Ekom.API
             IPerStoreCache<IPaymentProvider> paymentProviderCache,
             IBaseCache<IZone> zoneCache,
             IStoreService storeService,
-            ICountriesRepository countryRepo
+            CountriesRepository countryRepo
         )
         {
             _config = config;
