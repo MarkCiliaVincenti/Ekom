@@ -1408,10 +1408,23 @@ namespace Ekom.Services
                 {
                     var paymentProvider = Providers.Instance.GetPaymentProvider(orderInfo.PaymentProvider.Key);
 
+                    if (paymentProvider == null)
+                    {
+                        _logger.Error<OrderService>(
+                            "Unable to find matching shipping provider {PaymentProviderKey} for Order {UniqueId} ",
+                            orderInfo.PaymentProvider.Key,
+                            orderInfo.UniqueId);
+                    }
+
                     // In case of deletion
                     if (paymentProvider == null
                     || !paymentProvider.Constraints.IsValid(countryCode, total))
                     {
+                        _logger.Debug<OrderService>(
+                            "Removing invalid payment provider {PaymentProviderKey} from Order {UniqueId}",
+                            orderInfo.PaymentProvider.Key,
+                            orderInfo.UniqueId);
+
                         orderInfo.PaymentProvider = null;
                     }
                 }
@@ -1421,9 +1434,20 @@ namespace Ekom.Services
                 {
                     var shippingProvider = Providers.Instance.GetShippingProvider(orderInfo.ShippingProvider.Key);
 
+                    if (shippingProvider == null)
+                    {
+                        _logger.Error<OrderService>(
+                            "Unable to find matching shipping provider {ShippingProviderKey} for Order {UniqueId} ",
+                            orderInfo.ShippingProvider.Key,
+                            orderInfo.UniqueId);
+                    }
                     if (shippingProvider == null
                     || !shippingProvider.Constraints.IsValid(countryCode, total))
                     {
+                        _logger.Debug<OrderService>(
+                            "Removing invalid shipping provider {ShippingProviderKey} from Order {UniqueId}", 
+                            orderInfo.ShippingProvider.Key, 
+                            orderInfo.UniqueId);
                         orderInfo.ShippingProvider = null;
                     }
                 }
