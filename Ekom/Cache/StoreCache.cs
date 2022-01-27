@@ -37,48 +37,55 @@ namespace Ekom.Cache
         /// </summary>
         public override void FillCache()
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            _logger.Debug<StoreCache>("Starting to fill store cache...");
-            int count = 0;
-
-            using (var cref = _context.EnsureUmbracoContext())
+            try
             {
-                var cache = cref.UmbracoContext.Content;
-                var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
 
-                if (ekomRoot == null)
+                _logger.Debug<StoreCache>("Starting to fill store cache...");
+                int count = 0;
+
+                using (var cref = _context.EnsureUmbracoContext())
                 {
-                    throw new Exception("Ekom root node not found.");
+                    var cache = cref.UmbracoContext.Content;
+                    var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
+
+                    if (ekomRoot == null)
+                    {
+                        throw new Exception("Ekom root node not found.");
+                    }
+
+                    var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+
+
+                    foreach (var r in results)
+                    {
+                        try
+                        {
+                            var item = _objFac?.Create(r) ?? new Store(r);
+
+                            count++;
+
+                            AddOrReplaceFromCache(r.Key, item);
+
+                        }
+                        catch (Exception ex) // Skip on fail
+                        {
+                            _logger.Warn<StoreCache>(ex, "Failed to map to store. Id: {Id}", r.Id);
+                        }
+                    }
                 }
 
-                var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
+                stopwatch.Stop();
+                _logger.Info<StoreCache>(
+                    "Finished filling store cache with {Count} items. Time it took to fill: {Elapsed}",
+                    count,
+                    stopwatch.Elapsed);
 
-               
-                foreach (var r in results)
-                {
-                    try
-                    {
-                        var item = _objFac?.Create(r) ?? new Store(r);
-
-                        count++;
-
-                        AddOrReplaceFromCache(r.Key, item);
-
-                    }
-                    catch (Exception ex) // Skip on fail
-                    {
-                        _logger.Warn<StoreCache>(ex, "Failed to map to store. Id: {Id}", r.Id);
-                    }
-                }
+            } catch(Exception ex)
+            {
+                _logger.Error<StoreCache>(ex, "Failed to build store Cache");
             }
-
-            stopwatch.Stop();
-            _logger.Info<StoreCache>(
-                "Finished filling store cache with {Count} items. Time it took to fill: {Elapsed}",
-                count,
-                stopwatch.Elapsed);
             
         }
 
