@@ -48,11 +48,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Extensions", "EkomOld\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Web", "EkomOld\Ekom.Web\Ekom.Web.csproj", "{6AA6D77B-F7F7-4F36-9D42-FB24E9B16CFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ekom.Core", "Ekom\Ekom.Core.csproj", "{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Core", "Ekom\Ekom.Core.csproj", "{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ekom.U8", "Ekom.U8\Ekom.U8.csproj", "{26B06FD6-6737-4EB9-9C65-2023BEBE0CDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.U8", "Ekom.U8\Ekom.U8.csproj", "{26B06FD6-6737-4EB9-9C65-2023BEBE0CDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ekom.U9", "Ekom.U9\Ekom.U9.csproj", "{01D79380-9AFC-4CAF-A19E-7BD7FC68965A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.U9", "Ekom.U9\Ekom.U9.csproj", "{01D79380-9AFC-4CAF-A19E-7BD7FC68965A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
