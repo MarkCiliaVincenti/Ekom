@@ -84,4 +84,8 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="GMO.Vorto.Web.v8" Version="[0.2.0,1.0)" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ekom\EkomOld.csproj" />
+    </ItemGroup>
 </Project>

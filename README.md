@@ -1,3 +1,14 @@
+# New Ekom tips
+vid registerum service'um per Umbraco utgafu, odruvisi fyrir 8 vs 9
+vid lesum config odruvisi (legacy config provider i 8 fyrir web.config t.d.)
+vid hookum mogulega odruvisi inni startup, en kollum vonandi inni einhvern base/core klasa til ad initialize'a nodes og db.
+    Kollum bara í hann úr startup hooks í U8/U9
+
+https://github.com/vettvangur/usermanagementcore
+UserManagementCore has some ideas of how to implement startup logic in U7 which calls methods in core
+We might need to do split similarly regarding AspNet5 (U7+U8) vs AspNetCore (U9)
+Bunch of projects but who doesn't love projects ??
+
 ## Ekom
 
 ## Installing as submodule
@@ -50,14 +61,14 @@ and create the uwbsRequest object with store domainprefix and currency if applic
 
 ##### When do ProductDiscounts get applied?
 When a new OrderLine is created Product.Discount is called, if it returns a match we check the rules above and apply if applicable
-	
+    
 ##### Due to the aforementioned rules it's questionable if ApplyDiscountToOrderLineAsync should accept IDiscount versus only accepting IProductDiscount
 With the current discount options only IDiscount can go to OrderInfo and IProductDiscount are applied straight to OrderLine's
 Some day we might want to allow a type that applies manually to OrderLine's with a coupon, allowing stacking with an OrderInfo discount f.x. ?
 
 ##### When applying a discount to OrderLine's
 We make sure that the current OrderInfo discount, if there is one, allows stacking
-	
+    
 ##### What is stacking
 Applying discounts to specific OrderLine's while applying a seperate discount to the order and general order items.
 This means when calculating totals at the order level, 
@@ -76,10 +87,10 @@ Points to consider for allowing OrderInfo to have ProductDiscounts
 
 ##### Caveats:
 We still have no "Real" order discounts, that is it is not currently possible to create a fixed order discount that gives free shipping the discount is applied per OrderLine and gets multiplied by the amount of lines
-	
+    
 ekmDiscount do not currently support DiscountItems. If you successfully apply a coupon or discount to OrderInfo it will be applied to all OrderLines and all ekmProductDiscount get auto added to products so they won't work with coupons
 (previously ekmProductDiscount's were also all cached and displayed on Product.Price if applicable)
-			
+            
 This means there is no current way to apply a coupon to an order and get a discount for only select items.
 Either all items get the discount or the discount is not coupon based and got auto-applied to OrderLines if applicable
 

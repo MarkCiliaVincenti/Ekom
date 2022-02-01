@@ -22,7 +22,6 @@
 
   <ItemGroup>
       <Reference Include="System.Web.ApplicationServices" />
-      <ProjectReference Include="..\Ekom\Ekom.csproj" />
   </ItemGroup>
 
 </Project>
