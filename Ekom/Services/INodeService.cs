@@ -11,9 +11,9 @@ namespace Ekom.Services
     /// HttpContext scoped service (Umbraco helper stuff) 
     /// og kannski eitthvað meira session scoped fyrir methoda sem vilja uppl. um current member ?
     /// </summary>
-    interface IUmbracoService
+    interface INodeService
     {
-        object GetMember(Guid memberKey);
+        IEnumerable<object> NodesByTypes(string contentTypeAlias);
 
     }
 }
