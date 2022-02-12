@@ -1,20 +1,12 @@
-using Ekom.Interfaces;
-using Ekom.JsonDotNet;
-using Ekom.Models;
-using Ekom.Models.Discounts;
-using Ekom.Models.OrderedObjects;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Our.Umbraco.Vorto.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Umbraco.Core.Composing;
-using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Core;
+using Ekom.Core.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace Ekom.Utilities
+namespace Ekom.Core
 {
     public static class StringExtension
     {
@@ -65,26 +57,25 @@ namespace Ekom.Utilities
 
             return false;
         }
-
-        public static bool IsVortoValue(this string value)
+        public static bool IsJson(this string input)
         {
-
-            try
-            {
-                if (value.IsJson())
-                {
-                    var o = JsonConvert.DeserializeObject<VortoValue>(value);
-
-                    return true;
-                }
-
-            }
-            catch { }
-
-            return false;
-
+            input = input.Trim();
+            return input.StartsWith("{") && input.EndsWith("}")
+                   || input.StartsWith("[") && input.EndsWith("]");
         }
 
+        internal static bool IsBooleanTrue(this string value)
+        {
+            if (value == "1" || value.Equals("true", StringComparison.InvariantCultureIgnoreCase) || value.Equals("enable", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        // Maybe this should return T and not force String
         public static string GetVortoValue(this string value, string storeAlias)
         {
 
@@ -136,6 +127,7 @@ namespace Ekom.Utilities
 
             return string.Empty;
         }
+
 
         public static List<IPrice> GetPriceValuesConstructed(this string priceJson, decimal vat, bool vatIncludedInPrice, CurrencyModel fallbackCurrency = null)
         {
@@ -192,14 +184,14 @@ namespace Ekom.Utilities
                     var currencyValue = price["Currency"].Value<string>();
                     var currency = storeCurrencies.FirstOrDefault(x => x.CurrencyValue == currencyValue) ?? storeCurrencies.FirstOrDefault();
 
-                    IDiscount productDiscount = !string.IsNullOrEmpty(path) 
+                    IDiscount productDiscount = !string.IsNullOrEmpty(path)
                         ? Current.Factory.GetInstance<IProductDiscountService>()
                             .GetProductDiscount(
                                 path,
                                 storeAlias,
                                 price["Price"].Value<string>(),
                                 categories
-                            ) 
+                            )
                         : null;
 
                     prices.Add(new Price(
@@ -207,8 +199,8 @@ namespace Ekom.Utilities
                         currency,
                         vat,
                         vatIncludedInPrice,
-                        productDiscount != null 
-                            ? new OrderedDiscount(productDiscount) 
+                        productDiscount != null
+                            ? new OrderedDiscount(productDiscount)
                             : null)
                     );
                 }
@@ -222,14 +214,14 @@ namespace Ekom.Utilities
                     fallbackCurrency = store.Currency;
                 }
 
-                IDiscount productDiscount = !string.IsNullOrEmpty(path) 
+                IDiscount productDiscount = !string.IsNullOrEmpty(path)
                     ? Current.Factory.GetInstance<IProductDiscountService>()
                         .GetProductDiscount(
                             path,
                             storeAlias,
                             priceJson,
                             categories
-                        ) 
+                        )
                     : null;
 
                 prices = new List<IPrice>
@@ -239,8 +231,8 @@ namespace Ekom.Utilities
                         fallbackCurrency,
                         vat,
                         vatIncludedInPrice,
-                        productDiscount != null 
-                            ? new OrderedDiscount(productDiscount) 
+                        productDiscount != null
+                            ? new OrderedDiscount(productDiscount)
                             : null)
                 };
             }
@@ -305,37 +297,7 @@ namespace Ekom.Utilities
             return values;
         }
 
-        public static bool IsJson(this string input)
-        {
-            input = input.Trim();
-            return input.StartsWith("{") && input.EndsWith("}")
-                   || input.StartsWith("[") && input.EndsWith("]");
-        }
-
-        public static IEnumerable<IPublishedContent> GetMediaNodes(this string nodeIds)
-        {
-            var list = new List<IPublishedContent>();
-
-            if (!string.IsNullOrEmpty(nodeIds))
-            {
-                var imageIds = nodeIds.Split(',');
-
-                foreach (var imgId in imageIds)
-                {
-                    var node = NodeHelper.GetMediaNode(imgId);
-
-                    if (node != null)
-                    {
-                        list.Add(node);
-                    }
-                }
-
-                return list;
-            }
-
-            return Enumerable.Empty<IPublishedContent>();
-        }
-        public static IEnumerable<Image> GetImages(this string nodeIds)
+        public static IEnumerable<Image> GetImages(this string nodeIds, string storeAlias = null)
         {
             var list = new List<Image>();
 
@@ -349,7 +311,7 @@ namespace Ekom.Utilities
 
                     if (node != null)
                     {
-                        list.Add(new Image(node));
+                        list.Add(new Image(node, storeAlias));
                     }
                 }
 
@@ -357,18 +319,6 @@ namespace Ekom.Utilities
             }
 
             return Enumerable.Empty<Image>();
-        }
-
-        internal static bool IsBooleanTrue(this string value)
-        {
-            if (value == "1" || value.Equals("true", StringComparison.InvariantCultureIgnoreCase) || value.Equals("enable", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

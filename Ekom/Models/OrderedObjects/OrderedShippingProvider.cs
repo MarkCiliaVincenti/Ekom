@@ -1,17 +1,15 @@
-using Ekom.Interfaces;
-using Ekom.JsonDotNet;
-using Ekom.Utilities;
+using Ekom.Core.JsonDotNet;
 using Newtonsoft.Json.Linq;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Models.OrderedObjects
+namespace Ekom.Core.Models
 {
     public class OrderedShippingProvider
     {
         private readonly IShippingProvider _provider;
+        private readonly JObject shippingProviderObject;
 
         public OrderedShippingProvider(IShippingProvider provider, StoreInfo storeInfo)
         {
@@ -62,7 +60,7 @@ namespace Ekom.Models.OrderedObjects
             }
             catch (Exception ex)
             {
-                Log.Error("Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"), ex);
+                //Log.Error("Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"), ex);
             }
         }
 

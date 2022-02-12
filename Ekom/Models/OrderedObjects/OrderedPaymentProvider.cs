@@ -1,22 +1,22 @@
-using Ekom.Interfaces;
-using Ekom.JsonDotNet;
-using Ekom.Utilities;
+using Ekom.Core.JsonDotNet;
 using Newtonsoft.Json.Linq;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Models.OrderedObjects
+namespace Ekom.Core.Models
 {
-    public class OrderedShippingProvider
+    /// <summary>
+    /// Object describing a payment provider at the point a transaction was completed.
+    /// </summary>
+    public class OrderedPaymentProvider
     {
-        private readonly IShippingProvider _provider;
+        private readonly IPaymentProvider _provider;
+        private readonly JObject paymentProviderObject;
 
-        public OrderedShippingProvider(IShippingProvider provider, StoreInfo storeInfo)
+        public OrderedPaymentProvider(IPaymentProvider provider, StoreInfo storeInfo)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-
             StoreInfo = storeInfo;
             Id = _provider.Id;
             Key = _provider.Key;
@@ -24,16 +24,17 @@ namespace Ekom.Models.OrderedObjects
             Prices = _provider.Prices;
         }
 
-        public OrderedShippingProvider(JObject shippingProviderObject, StoreInfo storeInfo)
+        public OrderedPaymentProvider(JObject paymentProviderObject, StoreInfo storeInfo)
         {
+            this.paymentProviderObject = paymentProviderObject;
             StoreInfo = storeInfo;
-            Id = shippingProviderObject["Id"].Value<int>();
-            Key = Guid.Parse(shippingProviderObject.GetValue("Key").ToString());
-            Title = shippingProviderObject["Title"].Value<string>();
+            Id = paymentProviderObject["Id"].Value<int>();
+            Key = Guid.Parse(paymentProviderObject.GetValue("Key").ToString());
+            Title = paymentProviderObject["Title"].Value<string>();
 
-            var pricesObj = shippingProviderObject["Prices"];
+            var pricesObj = paymentProviderObject["Prices"];
 
-            var priceObj = shippingProviderObject["Price"];
+            var priceObj = paymentProviderObject["Price"];
 
             try
             {
@@ -59,10 +60,11 @@ namespace Ekom.Models.OrderedObjects
                         };
                     }
                 }
+
             }
             catch (Exception ex)
             {
-                Log.Error("Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"), ex);
+                //Log.Error("Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"), ex);
             }
         }
 
