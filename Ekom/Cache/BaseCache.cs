@@ -2,18 +2,13 @@ using Ekom.Core;
 using Ekom.Core.Cache;
 using Ekom.Core.Interfaces;
 using Ekom.Core.Models;
-using Examine;
+using Ekom.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
-using Umbraco.Core;
-using Umbraco.Core.Composing;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Examine;
-using Umbraco.Web;
 
 namespace Ekom.U8.Cache.Base
 {
@@ -27,26 +22,19 @@ namespace Ekom.U8.Cache.Base
         protected Configuration _config;
         protected ILogger _logger;
         protected IObjectFactory<TItem> _objFac;
-        protected IFactory _factory;
-        private readonly IUmbracoContextFactory _context;
-        /// <summary>
-        /// This is important since Caches are persistant objects while the ExamineManager should be per request scoped.
-        /// </summary>
-        protected IExamineManager ExamineManager => _factory.GetInstance<IExamineManager>();
+        protected IServiceProvider _serviceProvider;
+
+        protected INodeService nodeService => _serviceProvider.GetService<INodeService>();
 
         public BaseCache(
             Configuration config,
-            ILogger logger,
-            IFactory factory,
-            IObjectFactory<TItem> objectFactory,
-            IUmbracoContextFactory context
+            ILogger<BaseCache<TItem>> logger,
+            IObjectFactory<TItem> objectFactory
         )
         {
             _config = config;
             _logger = logger;
-            _factory = factory;
             _objFac = objectFactory;
-            _context = context;
         }
 
         /// <summary>
@@ -88,53 +76,42 @@ namespace Ekom.U8.Cache.Base
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                _logger.Debug<BaseCache<TItem>>("Starting to fill...");
+                _logger.LogDebug("Starting to fill...");
 
                 var count = 0;
 
-                using (var cref = _context.EnsureUmbracoContext())
+                var results = nodeService.NodesByTypes(NodeAlias);
+
+                foreach (var r in results)
                 {
-                    var cache = cref.UmbracoContext.Content;
-                    var ekomRoot = cache.GetAtRoot().FirstOrDefault(x => x.IsDocumentType("ekom"));
-
-                    if (ekomRoot == null)
+                    try
                     {
-                        throw new Exception("Ekom root node not found.");
+                        // Traverse up parent nodes, checking only published status
+                        //if (!r.IsItemUnpublished())
+                        //{
+                        var item = (TItem)(_objFac?.Create(r) ?? Activator.CreateInstance(typeof(TItem), r));
+
+                        if (item != null)
+                        {
+                            count++;
+
+                            AddOrReplaceFromCache(r.Key, item);
+                        }
+                        //}
                     }
-
-                    var results = ekomRoot.DescendantsOfType(NodeAlias).ToList();
-
-                    foreach (var r in results)
+                    catch (Exception ex) // Skip on fail
                     {
-                        try
-                        {
-                            // Traverse up parent nodes, checking only published status
-                            //if (!r.IsItemUnpublished())
-                            //{
-                            var item = (TItem)(_objFac?.Create(r) ?? Activator.CreateInstance(typeof(TItem), r));
-
-                            if (item != null)
-                            {
-                                count++;
-
-                                AddOrReplaceFromCache(r.Key, item);
-                            }
-                            //}
-                        }
-                        catch (Exception ex) // Skip on fail
-                        {
-                            _logger.Warn<BaseCache<TItem>>(ex, "Failed to map to store. Id: {Id}" + r.Id);
-                        }
+                        _logger.LogWarning(ex, "Failed to map to store. Id: {Id}" + r.Id);
                     }
                 }
 
                 stopwatch.Stop();
-                _logger.Info<BaseCache<TItem>>(
+                _logger.LogInformation(
                     "Finished filling base cache with {Count} items. Time it took to fill: {Elapsed}", count, stopwatch.Elapsed);
             }
             else
             {
-                _logger.Error<BaseCache<TItem>>(
+                _logger.LogError(
                     "No examine search found with the name {ExamineIndex}, Can not fill cache.", _config.ExamineIndex);
             }
         }
@@ -145,7 +122,7 @@ namespace Ekom.U8.Cache.Base
         /// </summary>
         public virtual void AddReplace(UmbracoContent content)
         {
-            if (!content.IsItemUnpublished())
+            if (!nodeService.IsItemUnpublished(content))
             {
                 var item = (TItem)(_objFac?.Create(content) ?? Activator.CreateInstance(typeof(TItem), content));
 

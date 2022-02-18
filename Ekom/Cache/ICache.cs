@@ -1,3 +1,4 @@
+using Ekom.Core.Models;
 using System;
 
 namespace Ekom.Core.Cache
@@ -16,12 +17,7 @@ namespace Ekom.Core.Cache
         /// <summary>
         /// Handles addition of nodes when umbraco events fire
         /// </summary>
-        void AddReplace(IContent node);
-
-        /// <summary>
-        /// Handles addition of nodes when umbraco events fire
-        /// </summary>
-        void AddReplace(IPublishedContent node);
+        void AddReplace(UmbracoContent node);
 
         /// <summary>
         /// Handles removal of nodes when umbraco events fire

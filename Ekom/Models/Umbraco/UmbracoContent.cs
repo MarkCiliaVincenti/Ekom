@@ -5,13 +5,13 @@ namespace Ekom.Core.Models
 {
     public class UmbracoContent
     {
-        public UmbracoContent(Dictionary<string, string> defaultProperties, Dictionary<string, string> contentProperies)
+        public UmbracoContent(IDictionary<string, string> defaultProperties, Dictionary<string, string> contentProperies)
         {
-            Properties = defaultProperties;
-
+            _properties = new Dictionary<string, string>(defaultProperties);
+            
             foreach (var prop in contentProperies)
             {
-                Properties.Add(prop.Key, prop.Value);
+                _properties.Add(prop.Key, prop.Value);
             }
 
             Id = Convert.ToInt32(Properties.GetPropertyValue("id"));
@@ -20,10 +20,11 @@ namespace Ekom.Core.Models
             Name = Properties.GetPropertyValue("nodeName");
         }
 
+        readonly Dictionary<string, string> _properties;
         /// <summary>
         /// All node properties
         /// </summary>
-        public Dictionary<string, string> Properties = new Dictionary<string, string>();
+        public IReadOnlyDictionary<string, string> Properties => _properties;
 
         public int Id { get; set; }
         public Guid Key { get; set; }

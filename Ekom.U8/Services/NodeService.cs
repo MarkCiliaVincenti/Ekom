@@ -1,4 +1,6 @@
+using Ekom.Core.Models;
 using Ekom.Services;
+using Ekom.U8.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace Ekom.U8.Services
             _context = context;
         }
 
-        public IEnumerable<object> NodesByTypes(string contentTypeAlias)
+        public IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
@@ -30,8 +32,13 @@ namespace Ekom.U8.Services
 
                 var results = ekomRoot.DescendantsOfType(contentTypeAlias).ToList();
 
-                return results;
+                return results.Select(x => new Umbraco8Content(x));
             }
+        }
+
+        public bool IsItemUnpublished(UmbracoContent content)
+        {
+
         }
     }
 }
