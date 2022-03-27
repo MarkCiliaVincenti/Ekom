@@ -16,6 +16,7 @@ namespace Ekom.U8.Models
                 { "id", content.Id.ToString() },
                 { "__Key", content.Key.ToString() },
                 { "nodeName", content.Name },
+                { "ContentTypeAlias", content.ContentType.Alias }
             },
             content.Properties.ToDictionary(
                 x => x.Alias, 

@@ -1,0 +1,64 @@
+using Ekom.Core.Exceptions;
+using Ekom.Core.Interfaces;
+using Ekom.Core.Models;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Linq;
+
+namespace Ekom.Core.Cache
+{
+    class StockCache : BaseCache<StockData>
+    {
+        readonly IStockRepository _stockRepo;
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public StockCache(
+            Configuration config,
+            ILogger<BaseCache<StockData>> logger,
+            IStockRepository stockRepo
+        ) : base(config, logger, null)
+        {
+            _stockRepo = stockRepo;
+        }
+
+        public override ConcurrentDictionary<Guid, StockData> Cache
+        {
+            get
+            {
+                if (!_config.PerStoreStock)
+                {
+                    return base.Cache;
+                }
+
+                throw new StockException("PerStoreStock configuration enabled, please disable PerStoreStock before accessing this cache.");
+            }
+        }
+
+        public override string NodeAlias { get; } = "";
+
+        public override void FillCache()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            _logger.LogInformation("Starting to fill...");
+
+            var allStock = _stockRepo.GetAllStockAsync().Result;
+            foreach (var stock in allStock.Where(stock => stock.UniqueId.Length == 36))
+            {
+                var key = Guid.Parse(stock.UniqueId);
+
+                Cache[key] = stock;
+            }
+
+            stopwatch.Stop();
+            _logger.LogInformation(
+                "Finished filling cache with {Count} items. Time it took to fill: {Elapsed}",
+                allStock.Count,
+                stopwatch.Elapsed);
+        }
+    }
+}

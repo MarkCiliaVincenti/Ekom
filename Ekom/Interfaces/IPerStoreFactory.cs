@@ -1,6 +1,6 @@
 using Ekom.Core.Models;
 
-namespace Ekom.Interfaces
+namespace Ekom.Core.Interfaces
 {
     /// <summary>
     /// Create object of type T

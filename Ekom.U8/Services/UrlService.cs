@@ -1,13 +1,20 @@
+using Ekom.Core;
 using Ekom.Core.Models;
+using Ekom.Core.Services;
+using Ekom.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using Umbraco.Core;
+using Umbraco.Core.Composing;
+using Umbraco.Web;
 
-namespace Ekom.Core.Services
+namespace Ekom.U8.Services
 {
-    public static class UrlService
+    class UrlService : IUrlService
     {
         /// <summary>
         /// Build URLs for category
@@ -15,13 +22,13 @@ namespace Ekom.Core.Services
         /// <param name="examineItems">All categories in hierarchy inclusive</param>
         /// <param name="store"></param>
         /// <returns>Collection of urls for all domains</returns>
-        public static IEnumerable<string> BuildCategoryUrls(List<IPublishedContent> items, IStore store)
+        public IEnumerable<string> BuildCategoryUrls(List<UmbracoContent> items, IStore store)
         {
             var urls = new HashSet<string>();
 
             if (store.Domains != null)
             {
-                var domains = store.Domains.Select(domain => GetDomainPrefix(domain.DomainName)).DistinctBy(x => x).ToList();
+                var domains = store.Domains.Select(domain => GetDomainPrefix(domain.DomainName)).Distinct().ToList();
 
                 foreach (var domainPath in domains)
                 {
@@ -68,7 +75,7 @@ namespace Ekom.Core.Services
         /// <param name="hierarchy">Ordered list of slugs for all parents</param>
         /// <param name="store"></param>
         /// <returns>Collection of urls for all domains</returns>
-        public static IEnumerable<string> BuildCategoryUrls(string slug, List<string> hierarchy, IStore store)
+        public IEnumerable<string> BuildCategoryUrls(string slug, List<string> hierarchy, IStore store)
         {
             var urls = new HashSet<string>();
 
@@ -106,7 +113,7 @@ namespace Ekom.Core.Services
             return urls.OrderBy(x => x.Length);
         }
 
-        public static IEnumerable<string> BuildProductUrls(string slug, IEnumerable<ICategory> categories, IStore store)
+        public IEnumerable<string> BuildProductUrls(string slug, IEnumerable<ICategory> categories, IStore store)
         {
             var urls = new HashSet<string>();
 
@@ -124,7 +131,7 @@ namespace Ekom.Core.Services
             return urls /*.OrderBy(x => x.Length) */;
         }
 
-        public static string GetDomainPrefix(string url)
+        public string GetDomainPrefix(string url)
         {
             url = url.AddTrailing();
 
@@ -150,7 +157,7 @@ namespace Ekom.Core.Services
         /// Umbraco.Web.Routing.DomainUtilities.GetCultureFromDomains
         /// for inspiration
         /// </summary>
-        internal static string GetNodeEntityUrl(INodeEntityWithUrl node)
+        public string GetNodeEntityUrl(INodeEntityWithUrl node)
         {
             // Urls is a list of relative urls.
             // Umbraco cultures & hostnames can include a prefix

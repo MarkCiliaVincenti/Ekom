@@ -18,6 +18,8 @@ namespace Ekom.Core.Models
             Key = new Guid(Properties.GetPropertyValue("__Key"));
             // Add culture parameter to get the correct nodename based on language ?
             Name = Properties.GetPropertyValue("nodeName");
+            Path = Properties.GetPropertyValue("__Path");
+            ContentTypeAlias = Properties.GetPropertyValue("ContentTypeAlias");
         }
 
         readonly Dictionary<string, string> _properties;
@@ -31,5 +33,11 @@ namespace Ekom.Core.Models
         // Used for MEdia Url. Think we should remove this for simplicity and get the url specificly. Used in the Image class
         public string Url { get; set; }
         public string Name { get; set; }
+        public string Path { get; set; }
+        public string ContentTypeAlias { get; set; }
+        public bool IsDocumentType(string alias)
+        {
+            return ContentTypeAlias == alias;
+        }
     }
 }

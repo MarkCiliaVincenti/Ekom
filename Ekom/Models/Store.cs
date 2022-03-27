@@ -1,8 +1,11 @@
+using Ekom.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Ekom.Core.Cache;
 
 namespace Ekom.Core.Models
 {
@@ -11,6 +14,10 @@ namespace Ekom.Core.Models
     /// </summary>
     public class Store : NodeEntity, IStore
     {
+        protected IServiceProvider _serviceProvider;
+
+        private INodeService nodeService => _serviceProvider.GetService<INodeService>();
+        private IStoreDomainCache storeDomainCache => _serviceProvider.GetService<IStoreDomainCache>();
         /// <summary>
         /// Usually a two letter code, f.x. EU/IS/DK
         /// </summary>
@@ -102,22 +109,21 @@ namespace Ekom.Core.Models
         /// <param name="item"></param>
         public Store(UmbracoContent item) : base(item)
         {
+
             if (item.Properties.HasPropertyValue("storeRootNode"))
             {
-                var storeRootNode = item.Value<IPublishedContent>("storeRootNode");
+                var storeRootNodeUdi = item.Properties.GetPropertyValue("storeRootNode");
+
+                var storeRootNode = nodeService.NodeById(storeRootNodeUdi);
+
                 if (storeRootNode != null)
                 {
                     StoreRootNode = storeRootNode.Id;
                 }
-                
+
+                Url = nodeService.GetUrl(storeRootNodeUdi);
             }
 
-            using (var uCtx = Current.Factory.GetInstance<IUmbracoContextFactory>().EnsureUmbracoContext())
-            {
-                Url = uCtx.UmbracoContext.UrlProvider.GetUrl(StoreRootNode);
-            }
-
-            var storeDomainCache = Current.Factory.GetInstance<IStoreDomainCache>();
             if (storeDomainCache.Cache.Any(x => x.Value.RootContentId == StoreRootNode))
             {
                 Domains = storeDomainCache.Cache

@@ -1,8 +1,7 @@
-using Ekom.Core.Cache;
 using System;
 using System.Collections.Concurrent;
 
-namespace Ekom.U8.Cache.Base
+namespace Ekom.Core.Cache
 {
     /// <summary>
     /// For custom caches or global non store dependant caches

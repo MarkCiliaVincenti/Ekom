@@ -6,13 +6,16 @@ namespace Ekom.Services
 {
     interface INodeService
     {
-        IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias); 
+        IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias);
+        IEnumerable<UmbracoContent> NodeAncestors(string t);
+        IEnumerable<UmbracoContent> NodeChildren(string t);
         bool IsItemUnpublished(UmbracoContent content);
-        object NodeById<T>(string t);
-        object NodeById<T>(Guid t);
-        object NodeById<T>(int t);
-        object MediaById<T>(string t);
-        object MediaById<T>(Guid t);
-        object MediaById<T>(int t);
+        UmbracoContent NodeById(Guid t);
+        UmbracoContent NodeById(int t);
+        UmbracoContent NodeById(string t);
+        UmbracoContent MediaById(Guid t);
+        UmbracoContent MediaById(int t);
+        UmbracoContent MediaById(string t);
+        string GetUrl(string t);
     }
 }

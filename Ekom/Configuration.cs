@@ -1,3 +1,4 @@
+using Ekom.Core.Cache;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -208,6 +209,41 @@ namespace Ekom.Core
         public virtual bool DisableStock
             => ConfigurationManager.AppSettings["Ekom.DisableStock"].ConvertToBool();
 
+        /// <summary>
+        /// Lists in initialization order all caches and the document type alias of
+        /// the object they cache.
+        /// This object is lazy initialized to make sure that all types have been registered with IoC container
+        /// before we attempt to resolve.
+        /// 
+        /// The order in this list is important as addition and removal from caches triggers updates on succeeding caches.
+        /// </summary>
+        internal virtual Lazy<List<ICache>> CacheList { get; } = new Lazy<List<ICache>>(()
+            => new List<ICache>
+            {
+                //{ UmbracoCurrent.Factory.GetInstance<IStoreDomainCache>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IBaseCache<IStore>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<ICategory>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IProductDiscount>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IProduct>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IVariant>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IVariantGroup>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IBaseCache<IZone>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IPaymentProvider>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IShippingProvider>>() },
+                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IDiscount>>() },
+            }
+        );
+
+        /// <summary> 
+        /// Returns all <see cref="ICache"/> in the sequence succeeding the given cache 
+        /// </summary> 
+        internal IEnumerable<ICache> Succeeding(ICache cache)
+        {
+            var indexOf = CacheList.Value.FindIndex(x => x == cache);
+
+            return CacheList.Value.Skip(indexOf + 1);
+        }
+
         internal const string DiscountStockTableName = "EkomDiscountStock";
 
         internal static readonly TimeSpan orderInfoCacheTime = TimeSpan.FromDays(1);
@@ -224,5 +260,7 @@ namespace Ekom.Core
                 return ci;
             }
         }
+
+        public static object UmbracoCurrent { get; private set; }
     }
 }
