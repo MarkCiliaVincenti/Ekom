@@ -1,5 +1,4 @@
-using Ekom.Cache;
-using Ekom.Models.Data;
+using Ekom.Core.Models;
 using System.Collections.Concurrent;
 
 namespace Ekom.Core.Interfaces

@@ -57,7 +57,7 @@ namespace Ekom.Core.Services
                 urls.Add(url);
             }
 
-            return urls.DistinctBy(x => x).OrderBy(x => x.Length);
+            return urls.Distinct().OrderBy(x => x.Length);
         }
 
         /// <summary>

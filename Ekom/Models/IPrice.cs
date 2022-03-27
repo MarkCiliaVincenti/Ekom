@@ -1,5 +1,3 @@
-using Ekom.Models;
-using Ekom.Models.OrderedObjects;
 using System;
 
 namespace Ekom.Core.Models

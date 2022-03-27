@@ -24,6 +24,18 @@
         "resolved": "16.10.56",
         "contentHash": "uTvu9fbmHTtRFY5xUgG45waU+ARad0JxyG/2btOC9Su6RTo3PrGVXKU2vHDtVELqlJsnKImhMaPH3YR0XCVwDg=="
       },
+      "Umbraco.NetPayment.v8": {
+        "type": "Direct",
+        "requested": "[11.7.1, 12.0.0)",
+        "resolved": "11.7.1",
+        "contentHash": "h6pRx5pO7M1htsjHlqt+lpbB7N1HzHpxmvebduTcWqQAD7kDNvhtRTeaz59FI6R2Ukg+14S8hpJ3+dqHYOYmGA==",
+        "dependencies": {
+          "GMO.Vorto.v8": "0.3.1",
+          "System.IO.Abstractions": "12.2.1",
+          "UmbracoCms.Core": "[8.1.5, 9.0.0)",
+          "UmbracoCms.Web": "[8.1.5, 9.0.0)"
+        }
+      },
       "UmbracoCms.Core": {
         "type": "Direct",
         "requested": "[8.6.1, 9.0.0)",
@@ -104,6 +116,23 @@
         "contentHash": "HdpECa0qKu64lgowpm6JdQWHrD1GkMkodfS7Adossm2Tlv1f0FXh3dZuvOdeMk/+ecgDpM3n6dsFzDbHStVTYg==",
         "dependencies": {
           "Lucene.Net": "[3.0.3, 4.0.0)"
+        }
+      },
+      "GMO.Vorto.v8": {
+        "type": "Transitive",
+        "resolved": "0.3.1",
+        "contentHash": "nTXSccUBBWjk6iLq/Qj+DF9fDPnJNx8oeqTxEy1zadIBPhIgGv6pIttXAlF5+ceQwZKeATL6h96cnaDInqNI7w==",
+        "dependencies": {
+          "ClientDependency": "1.9.7",
+          "LightInject": "5.4.0",
+          "Microsoft.AspNet.Mvc": "5.2.7",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
+          "Microsoft.Owin.Security": "4.0.1",
+          "Microsoft.Owin.Security.Cookies": "4.0.1",
+          "Microsoft.Owin.Security.OAuth": "4.0.1",
+          "Newtonsoft.Json": "12.0.1",
+          "Serilog": "2.8.0",
+          "UmbracoCms.Web": "8.1.0"
         }
       },
       "Hangfire": {
@@ -475,6 +504,11 @@
         "type": "Transitive",
         "resolved": "4.4.1",
         "contentHash": "U/KcC19fyLsPN1GLmeU2zQq15MMVcPwMOYPADVo1+WIoJpvMHxrzvl+BLLZwTEZSneGwaPFZ0aWr0nJ7B7LSdA=="
+      },
+      "System.IO.Abstractions": {
+        "type": "Transitive",
+        "resolved": "12.2.1",
+        "contentHash": "tE2LDTWpn4J2bpCqAvPCkcrsAhPQo+KPb2RfztqhSuGX6F5juxlWTvL0HN/fhwRAdVnhfOHbKHRRRDJiWvQ0tg=="
       },
       "System.Threading.Tasks.Dataflow": {
         "type": "Transitive",

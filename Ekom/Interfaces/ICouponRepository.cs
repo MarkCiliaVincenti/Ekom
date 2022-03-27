@@ -1,4 +1,4 @@
-using Ekom.Models.Data;
+using Ekom.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

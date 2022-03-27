@@ -1,3 +1,4 @@
+using Ekom.Core.Cache;
 using System;
 using System.Collections.Concurrent;
 

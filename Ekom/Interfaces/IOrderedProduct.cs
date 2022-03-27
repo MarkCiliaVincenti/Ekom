@@ -1,3 +1,4 @@
+using Ekom.Core.Models;
 using System.Collections.Generic;
 
 namespace Ekom.Core.Interfaces
