@@ -1,73 +1,67 @@
-using Ekom.Interfaces;
-using Ekom.Models.Data;
-using Ekom.Utilities;
-using Hangfire.States;
-using NPoco.Linq;
+using Ekom.Core.Exceptions;
+using Ekom.Core.Models;
+using Ekom.Core.Services;
+using LinqToDB;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Umbraco.Core;
-using Umbraco.Core.Cache;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Scoping;
 
-namespace Ekom.Repository
+namespace Ekom.Core.Repositories
 {
-    class OrderRepository : IOrderRepository
+    class OrderRepository
     {
         readonly ILogger _logger;
         readonly Configuration _config;
-        readonly AppCaches _appCaches;
-        readonly IScopeProvider _scopeProvider;
+        readonly IMemoryCache _memoryCache;
+        readonly DatabaseFactory _databaseFactory;
         /// <summary>
         /// ctor
         /// </summary>
         public OrderRepository(
             ILogger<OrderRepository> logger,
             Configuration config,
-            AppCaches appCaches,
-            IScopeProvider scopeProvider)
+            DatabaseFactory databaseFactory, 
+            IMemoryCache memoryCache)
         {
             _logger = logger;
             _config = config;
-            _appCaches = appCaches;
-            _scopeProvider = scopeProvider;
+            _databaseFactory = databaseFactory;
+            _memoryCache = memoryCache;
         }
 
         public async Task<OrderData> GetOrderAsync(Guid uniqueId)
         {
-            using (var scope = _scopeProvider.CreateScope())
+            using (var db = _databaseFactory.GetDatabase())
             {
-                var data = await scope.Database.Query<OrderData>()
+                var data = await db.OrderData
                     .Where(x => x.UniqueId == uniqueId)
                     .SingleOrDefaultAsync()
                     .ConfigureAwait(false);
 
-                scope.Complete();
                 return data;
             }
         }
 
         public async Task InsertOrderAsync(OrderData orderData)
         {
-            using (var db = _scopeProvider.CreateScope())
+            using (var db = _databaseFactory.GetDatabase())
             {
-                await db.Database.InsertAsync(orderData).ConfigureAwait(false);
-                db.Complete();
+                await db.InsertAsync(orderData).ConfigureAwait(false);
             }
         }
 
         public async Task UpdateOrderAsync(OrderData orderData)
         {
-            using (var db = _scopeProvider.CreateScope())
+            using (var db = _databaseFactory.GetDatabase())
             {
-                await db.Database.UpdateAsync(orderData).ConfigureAwait(false);
+                await db.UpdateAsync(orderData).ConfigureAwait(false);
                 //Clear cache after update.
-                _appCaches.RuntimeCache.ClearByKey(orderData.UniqueId.ToString());
-
-                db.Complete();
+                _memoryCache.Remove(orderData.UniqueId);
             }
         }
 
@@ -82,9 +76,9 @@ namespace Ekom.Repository
             params OrderStatus[] orderStatuses
         )
         {
-            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
+            using (var db = _databaseFactory.GetDatabase())
             {
-                var query = scope.Database.Query<OrderData>()
+                var query = db.OrderData
                     .Where(x => orderStatuses.Contains((OrderStatus)x.OrderStatusCol));
 
                 if (filter != null)

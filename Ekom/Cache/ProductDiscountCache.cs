@@ -19,14 +19,12 @@ namespace Ekom.Core.Cache
             ILogger<IPerStoreCache<IProductDiscount>> logger,
             IBaseCache<IStore> storeCache,
             IPerStoreFactory<IProductDiscount> perStoreFactory,
-            IPerStoreCache<IProduct> perStoreProductCache
-        ) : base(config, logger, storeCache, perStoreFactory)
+            IPerStoreCache<IProduct> perStoreProductCache,
+            IServiceProvider serviceProvider
+        ) : base(config, logger, storeCache, perStoreFactory, serviceProvider)
         {
             _perStoreProductCache = perStoreProductCache;
         }
-
-        protected IServiceProvider _serviceProvider;
-        protected INodeService nodeService => _serviceProvider.GetService<INodeService>();
 
         public override void AddReplace(UmbracoContent node)
         {

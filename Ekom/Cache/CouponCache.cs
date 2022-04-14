@@ -1,5 +1,6 @@
 using Ekom.Core.Interfaces;
 using Ekom.Core.Models;
+using Ekom.Core.Services;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,13 +15,13 @@ namespace Ekom.Core.Cache
     class CouponCache : ICouponCache
     {
         readonly ILogger _logger;
-        readonly IUmbracoDatabaseFactory _databaseFactory;
+        readonly DatabaseFactory _databaseFactory;
 
         public GlobalCouponCache Cache { get; } = new GlobalCouponCache();
 
         public CouponCache(
             ILogger<CouponCache> logger,
-            IUmbracoDatabaseFactory databaseFactory
+            DatabaseFactory databaseFactory
         )
         {
             _logger = logger;
@@ -36,10 +37,10 @@ namespace Ekom.Core.Cache
             _logger.LogInformation("Starting to fill coupon cache...");
 
             List<CouponData> allCoupons;
-            using (var db = _databaseFactory.CreateDatabase())
+            using (var db = _databaseFactory.GetDatabase())
             {
                 //var db = scope.Database;
-                allCoupons = db.FetchAsync<CouponData>().Result;
+                allCoupons = db.CouponData.ToList();
                 //scope.Complete();
             }
 

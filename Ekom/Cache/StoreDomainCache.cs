@@ -14,8 +14,6 @@ namespace Ekom.Core.Cache
     {
         public override string NodeAlias { get; } = "";
 
-        protected IServiceProvider _serviceProvider;
-        protected IObjectFactory<UmbracoDomain> _objFac;
         protected IUmbracoService umbracoService => _serviceProvider.GetService<IUmbracoService>();
 
         /// <summary>
@@ -24,12 +22,12 @@ namespace Ekom.Core.Cache
         public StoreDomainCache(
             Configuration config,
             ILogger<BaseCache<UmbracoDomain>> logger,
-            IObjectFactory<UmbracoDomain> objectFactory
-        ) : base(config, logger, objectFactory)
+            IObjectFactory<UmbracoDomain> objectFactory,
+            IServiceProvider serviceProvider
+        ) : base(config, logger, objectFactory, serviceProvider)
         {
             _config = config;
             _logger = logger;
-            _objFac = objectFactory;
         }
 
         /// <summary>

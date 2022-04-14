@@ -31,13 +31,14 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<TItem>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<TItem> objFac
-        )
+            IPerStoreFactory<TItem> objFac, 
+            IServiceProvider serviceProvider)
         {
             _config = config;
             _logger = logger;
             _storeCache = storeCache;
             _objFac = objFac;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

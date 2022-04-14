@@ -1,6 +1,7 @@
 using Ekom.Core.Interfaces;
 using Ekom.Core.Models;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Ekom.Core.Cache
 {
@@ -12,8 +13,9 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<IVariantGroup>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IVariantGroup> perStoreFactory
-        ) : base(config, logger, storeCache, perStoreFactory)
+            IPerStoreFactory<IVariantGroup> perStoreFactory,
+            IServiceProvider serviceProvider
+        ) : base(config, logger, storeCache, perStoreFactory, serviceProvider)
         {
         }
     }

@@ -9,6 +9,11 @@ UserManagementCore has some ideas of how to implement startup logic in U7 which 
 We might need to do split similarly regarding AspNet5 (U7+U8) vs AspNetCore (U9)
 Bunch of projects but who doesn't love projects ??
 
+# Ekom Core ToDo:
+Memory cache implementation for aspnet core vs aspnet framework
+https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-6.0#systemruntimecachingmemorycache
+Remove key by guid object vs string
+
 ## Ekom
 
 ## Installing as submodule

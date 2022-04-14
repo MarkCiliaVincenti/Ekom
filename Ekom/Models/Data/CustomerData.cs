@@ -1,14 +1,15 @@
-using NPoco;
+using LinqToDB.Mapping;
 
 namespace Ekom.Core.Models
 {
     /// <summary>
     /// Unfinished
     /// </summary>
-    [TableName("EkomCustomerData")]
-    [PrimaryKey("UniqueId", AutoIncrement = false)]
+    [Table(Name = "EkomCustomerData")]
     public class CustomerData
     {
+        [PrimaryKey]
+        public string UniqueId { get; internal set; }
 
     }
 }

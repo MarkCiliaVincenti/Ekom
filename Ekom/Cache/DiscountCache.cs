@@ -21,14 +21,11 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<IDiscount>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IDiscount> perStoreFactory
-        )
-            : base(config, logger, storeCache, perStoreFactory)
+            IPerStoreFactory<IDiscount> perStoreFactory, 
+            IServiceProvider serviceProvider)
+            : base(config, logger, storeCache, perStoreFactory, serviceProvider)
         {
         }
-
-        protected IServiceProvider _serviceProvider;
-        protected INodeService nodeService => _serviceProvider.GetService<INodeService>();
 
         /// <summary>
         /// Fill the given stores cache of TItem

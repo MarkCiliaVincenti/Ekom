@@ -26,12 +26,13 @@ namespace Ekom.Core.Cache
         public BaseCache(
             Configuration config,
             ILogger<BaseCache<TItem>> logger,
-            IObjectFactory<TItem> objectFactory
-        )
+            IObjectFactory<TItem> objectFactory, 
+            IServiceProvider serviceProvider)
         {
             _config = config;
             _logger = logger;
             _objFac = objectFactory;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>

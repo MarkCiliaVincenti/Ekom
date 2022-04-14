@@ -20,12 +20,11 @@ namespace Ekom.Core.Cache
         public StoreCache(
             Configuration config,
             ILogger<BaseCache<IStore>> logger,
-            IObjectFactory<IStore> objectFactory
-        ) : base(config, logger, objectFactory)
+            IObjectFactory<IStore> objectFactory,
+            IServiceProvider serviceProvider
+        ) : base(config, logger, objectFactory, serviceProvider)
         {
         }
-        protected IServiceProvider _serviceProvider;
-        protected INodeService nodeService => _serviceProvider.GetService<INodeService>();
 
         /// <summary>
         /// Fill Store cache with all products in examine

@@ -1,4 +1,6 @@
 using Ekom.Core.Cache;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,7 +14,15 @@ namespace Ekom.Core
     /// </summary>
     public class Configuration
     {
-        
+        readonly IConfiguration _configuration;
+
+        public Configuration(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public static IServiceProvider Resolver { get; set; }
+
         internal const string Cookie_UmbracoDomain = "EkomUmbracoDomain";
 
         /// <summary>
@@ -23,7 +33,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.PerStoreStock"];
+                var value = _configuration["Ekom.PerStoreStock"];
 
                 return value.ConvertToBool();
             }
@@ -37,7 +47,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.ExamineIndex"];
+                var value = _configuration["Ekom.ExamineIndex"];
 
                 return value ?? "ExternalIndex";
             }
@@ -51,7 +61,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.ShareBasket"];
+                var value = _configuration["Ekom.ShareBasket"];
 
                 return value.ConvertToBool();
             }
@@ -65,7 +75,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.BasketCookieLifetime"];
+                var value = _configuration["Ekom.BasketCookieLifetime"];
 
                 double _value = 1;
 
@@ -86,7 +96,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.CustomImage"];
+                var value = _configuration["Ekom.CustomImage"];
 
                 return value ?? "images";
             }
@@ -100,7 +110,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.ExamineRebuild"];
+                var value = _configuration["Ekom.ExamineRebuild"];
 
                 return value.ConvertToBool();
             }
@@ -115,7 +125,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.VirtualContent"];
+                var value = _configuration["Ekom.VirtualContent"];
 
                 return value.ConvertToBool();
             }
@@ -129,7 +139,7 @@ namespace Ekom.Core
         {
             get
             {
-                return int.Parse(ConfigurationManager.AppSettings["Ekom.CategoryRootLevel"] ?? "3");
+                return int.Parse(_configuration["Ekom.CategoryRootLevel"] ?? "3");
             }
         }
 
@@ -138,14 +148,14 @@ namespace Ekom.Core
         /// Give value in minutes when overriding default
         /// </summary>
         public virtual TimeSpan ReservationTimeout
-            => TimeSpan.FromMinutes(double.Parse(ConfigurationManager.AppSettings["Ekom.ReservationTimeout"] ?? "30"));
+            => TimeSpan.FromMinutes(double.Parse(_configuration["Ekom.ReservationTimeout"] ?? "30"));
 
         /// <summary>
         /// Should Ekom create a ekmCustomerData table and use it to store customer + order data 
         /// submitted to the checkout controller?
         /// </summary>
         public virtual bool StoreCustomerData
-            => ConfigurationManager.AppSettings["Ekom.CustomerData"].ConvertToBool();
+            => _configuration["Ekom.CustomerData"].ConvertToBool();
 
         /// <summary>
         /// </summary>
@@ -153,7 +163,7 @@ namespace Ekom.Core
         {
             get
             {
-                var configVal = ConfigurationManager.AppSettings["Ekom.VatCalcRounding"];
+                var configVal = _configuration["Ekom.VatCalcRounding"];
 
                 if (!Enum.TryParse(configVal, out Rounding preferredRounding))
                 {
@@ -172,7 +182,7 @@ namespace Ekom.Core
         {
             get
             {
-                var configVal = ConfigurationManager.AppSettings["Ekom.Order.VatCalcRounding"];
+                var configVal = _configuration["Ekom.Order.VatCalcRounding"];
 
                 if (!Enum.TryParse(configVal, out Rounding preferredRounding))
                 {
@@ -192,7 +202,7 @@ namespace Ekom.Core
         {
             get
             {
-                var value = ConfigurationManager.AppSettings["Ekom.UserBasket"];
+                var value = _configuration["Ekom.UserBasket"];
 
                 return value.ConvertToBool();
             }
@@ -202,12 +212,12 @@ namespace Ekom.Core
         /// Used by MailService, defaults to umbracoSettings.config configured email
         /// </summary>
         public virtual string EmailNotifications
-            => ConfigurationManager.AppSettings["Ekom.EmailNotifications"];
+            => _configuration["Ekom.EmailNotifications"];
 
         /// <summary>
         /// </summary>
         public virtual bool DisableStock
-            => ConfigurationManager.AppSettings["Ekom.DisableStock"].ConvertToBool();
+            => _configuration["Ekom.DisableStock"].ConvertToBool();
 
         /// <summary>
         /// Lists in initialization order all caches and the document type alias of
@@ -220,17 +230,17 @@ namespace Ekom.Core
         internal virtual Lazy<List<ICache>> CacheList { get; } = new Lazy<List<ICache>>(()
             => new List<ICache>
             {
-                //{ UmbracoCurrent.Factory.GetInstance<IStoreDomainCache>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IBaseCache<IStore>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<ICategory>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IProductDiscount>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IProduct>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IVariant>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IVariantGroup>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IBaseCache<IZone>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IPaymentProvider>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IShippingProvider>>() },
-                //{ UmbracoCurrent.Factory.GetInstance<IPerStoreCache<IDiscount>>() },
+                { Resolver.GetService<IStoreDomainCache>() },
+                { Resolver.GetService<IBaseCache<IStore>>() },
+                { Resolver.GetService<IPerStoreCache<ICategory>>() },
+                { Resolver.GetService<IPerStoreCache<IProductDiscount>>() },
+                { Resolver.GetService<IPerStoreCache<IProduct>>() },
+                { Resolver.GetService<IPerStoreCache<IVariant>>() },
+                { Resolver.GetService<IPerStoreCache<IVariantGroup>>() },
+                { Resolver.GetService<IBaseCache<IZone>>() },
+                { Resolver.GetService<IPerStoreCache<IPaymentProvider>>() },
+                { Resolver.GetService<IPerStoreCache<IShippingProvider>>() },
+                { Resolver.GetService<IPerStoreCache<IDiscount>>() },
             }
         );
 

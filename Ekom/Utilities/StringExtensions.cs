@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ekom.Core.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -185,7 +186,7 @@ namespace Ekom.Core
                     var currency = storeCurrencies.FirstOrDefault(x => x.CurrencyValue == currencyValue) ?? storeCurrencies.FirstOrDefault();
 
                     IDiscount productDiscount = !string.IsNullOrEmpty(path)
-                        ? Current.Factory.GetInstance<IProductDiscountService>()
+                        ? Configuration.Resolver.GetService<IProductDiscountService>()
                             .GetProductDiscount(
                                 path,
                                 storeAlias,
@@ -215,7 +216,7 @@ namespace Ekom.Core
                 }
 
                 IDiscount productDiscount = !string.IsNullOrEmpty(path)
-                    ? Current.Factory.GetInstance<IProductDiscountService>()
+                    ? Configuration.Resolver.GetService<IProductDiscountService>()
                         .GetProductDiscount(
                             path,
                             storeAlias,

@@ -17,13 +17,11 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<IPaymentProvider>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IPaymentProvider> perStoreFactory
-        ) : base(config, logger, storeCache, perStoreFactory)
+            IPerStoreFactory<IPaymentProvider> perStoreFactory,
+            IServiceProvider serviceProvider
+        ) : base(config, logger, storeCache, perStoreFactory, serviceProvider)
         {
         }
-
-        protected IServiceProvider _serviceProvider;
-        protected INodeService nodeService => _serviceProvider.GetService<INodeService>();
 
         public override void FillCache(IStore storeParam = null)
         {
@@ -38,7 +36,6 @@ namespace Ekom.Core.Cache
 
                 try
                 {
-
                     var paymentProviderRoot = nodeService.NodesByTypes("netPaymentProviders").FirstOrDefault();
 
                     if (paymentProviderRoot == null)
@@ -59,9 +56,6 @@ namespace Ekom.Core.Cache
                     {
                         count += FillStoreCache(storeParam, results);
                     }
-                    
-
-
                 }
                 catch (Exception ex)
                 {
