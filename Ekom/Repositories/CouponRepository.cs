@@ -1,4 +1,5 @@
 using Ekom.Core.Exceptions;
+using Ekom.Core.Interfaces;
 using Ekom.Core.Models;
 using Ekom.Core.Services;
 using Ekom.Services;

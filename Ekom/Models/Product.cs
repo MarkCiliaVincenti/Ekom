@@ -1,3 +1,4 @@
+using Ekom.Core.Cache;
 using Ekom.Core.Services;
 using Newtonsoft.Json;
 using System;
@@ -5,7 +6,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Core.Models
