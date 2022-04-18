@@ -18,9 +18,7 @@ namespace Ekom.Core.API
         /// <summary>
         /// Providers Instance
         /// </summary>
-        public static IServiceProvider Resolver { get; set; }
-
-        public static Providers Instance => Resolver.GetService<Providers>();
+        public static Providers Instance => Configuration.Resolver.GetService<Providers>();
 
         readonly Configuration _config;
         readonly ILogger<Providers> _logger;

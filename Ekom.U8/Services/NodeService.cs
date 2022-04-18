@@ -38,7 +38,6 @@ namespace Ekom.U8.Services
             }
         }
 
-
         public IEnumerable<UmbracoContent> NodeAncestors(string id)
         {
             var node = GetNodeById(id);
@@ -47,7 +46,16 @@ namespace Ekom.U8.Services
 
             return ancestors;
         }
+        public IEnumerable<UmbracoContent> NodeCatalogAncestors(string id)
+        {
+            var node = GetNodeById(id);
 
+            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco8Content(x));
+
+            ancestors.Reverse();
+
+            return ancestors;
+        }
         public IEnumerable<UmbracoContent> NodeChildren(string id)
         {
             var node = GetNodeById(id);

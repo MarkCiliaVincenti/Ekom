@@ -18,10 +18,7 @@ namespace Ekom.Core.API
         /// <summary>
         /// Catalog Instance
         /// </summary>
-  
-        public static IServiceProvider Resolver { get; set; }
-
-        public static Catalog Instance => Resolver.GetService<Catalog>();
+        public static Catalog Instance => Configuration.Resolver.GetService<Catalog>();
 
         readonly Configuration _config;
         readonly ILogger<Catalog> _logger;

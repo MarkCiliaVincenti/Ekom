@@ -3,7 +3,6 @@ using Ekom.Core.Models;
 using Ekom.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,9 +16,8 @@ namespace Ekom.Core.API
         /// <summary>
         /// Discount Instance
         /// </summary>
-        public static IServiceProvider Resolver { get; set; }
 
-        public static Discounts Instance => Resolver.GetService<Discounts>();
+        public static Discounts Instance => Configuration.Resolver.GetService<Discounts>();
 
         readonly ILogger<Discounts> _logger;
         readonly Configuration _config;

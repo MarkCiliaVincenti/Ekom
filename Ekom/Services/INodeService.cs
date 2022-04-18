@@ -8,6 +8,7 @@ namespace Ekom.Services
     {
         IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias);
         IEnumerable<UmbracoContent> NodeAncestors(string t);
+        IEnumerable<UmbracoContent> NodeCatalogAncestors(string t);
         IEnumerable<UmbracoContent> NodeChildren(string t);
         bool IsItemUnpublished(UmbracoContent content);
         UmbracoContent NodeById(Guid t);

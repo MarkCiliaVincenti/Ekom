@@ -17,9 +17,7 @@ namespace Ekom.Core.API
         /// <summary>
         /// Store Instance
         /// </summary>
-        public static IServiceProvider Resolver { get; set; }
-
-        public static Store Instance => Resolver.GetService<Store>();
+        public static Store Instance => Configuration.Resolver.GetService<Store>();
 
         readonly ILogger<Store> _logger;
         readonly IStoreService _storeSvc;

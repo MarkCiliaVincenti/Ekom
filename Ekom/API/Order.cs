@@ -19,9 +19,7 @@ namespace Ekom.Core.API
         /// <summary>
         /// Order Instance
         /// </summary>
-        public static IServiceProvider Resolver { get; set; }
-
-        public static Order Instance => Resolver.GetService<Order>();
+        public static Order Instance => Configuration.Resolver.GetService<Order>();
 
         #region Events
 

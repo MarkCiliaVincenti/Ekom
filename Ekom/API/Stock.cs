@@ -41,10 +41,8 @@ namespace Ekom.Core.API
     {
         /// <summary>
         /// Stock Instance
-        /// </summary>
-        public static IServiceProvider Resolver { get; set; }
-
-        public static Stock Instance => Resolver.GetService<Stock>();
+        /// </summary>}
+        public static Stock Instance => Configuration.Resolver.GetService<Stock>();
 
         readonly ILogger<Stock> _logger;
         readonly Configuration _config;

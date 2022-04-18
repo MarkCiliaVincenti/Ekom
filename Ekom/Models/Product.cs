@@ -1,5 +1,7 @@
 using Ekom.Core.Cache;
 using Ekom.Core.Services;
+using Ekom.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,17 +20,17 @@ namespace Ekom.Core.Models
     {
         private IPerStoreCache<IVariant> __variantCache;
         private IPerStoreCache<IVariant> _variantCache =>
-            __variantCache ?? (__variantCache = Current.Factory.GetInstance<IPerStoreCache<IVariant>>());
+            __variantCache ?? (__variantCache = Configuration.Resolver.GetService<IPerStoreCache<IVariant>>());
 
         private IPerStoreCache<IVariantGroup> __variantGroupCache;
         private IPerStoreCache<IVariantGroup> _variantGroupCache =>
-            __variantGroupCache ?? (__variantGroupCache = Current.Factory.GetInstance<IPerStoreCache<IVariantGroup>>());
+            __variantGroupCache ?? (__variantGroupCache = Configuration.Resolver.GetService<IPerStoreCache<IVariantGroup>>());
 
         public virtual IDiscount ProductDiscount(string price = null)
         {
             price = string.IsNullOrEmpty(price) ? Price.OriginalValue.ToString() : price;
 
-            return Current.Factory.GetInstance<ProductDiscountService>()
+            return Configuration.Resolver.GetService<ProductDiscountService>()
                     .GetProductDiscount(
                         Path,
                         Store.Alias,
@@ -82,7 +84,7 @@ namespace Ekom.Core.Models
         // </summary>
         public virtual IEnumerable<Image> Images()
         {
-            var _images = Properties.GetPropertyValue(Configuration.Current.CustomImage, Store.Alias);
+            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
 
             var imageNodes = _images.GetImages();
 
@@ -116,9 +118,9 @@ namespace Ekom.Core.Models
 
                     if (!string.IsNullOrEmpty(primaryGroupValue) && VariantGroups.Any())
                     {
-                        var node = NodeHelper.GetNodeByUdi(primaryGroupValue);
+                        var node = Configuration.Resolver.GetService<INodeService>().NodeById(primaryGroupValue);
 
-                        if (node != null && node.ContentType.Alias == "ekmProductVariantGroup")
+                        if (node != null && node.ContentTypeAlias == "ekmProductVariantGroup")
                         {
                             var variantGroup = __variantGroupCache.Cache[Store.Alias][node.Key];
 
@@ -168,7 +170,7 @@ namespace Ekom.Core.Models
         }
 
         /// <inheritdoc/>
-        public virtual string Url => UrlHelper.GetNodeEntityUrl(this);
+        public virtual string Url => Configuration.Resolver.GetService<IUrlService>().GetNodeEntityUrl(this);
 
         /// <summary>
         /// All product urls, computed from stores and categories.
@@ -185,7 +187,7 @@ namespace Ekom.Core.Models
         {
             get
             {
-                var httpCtx = Current.Factory.GetInstance<HttpContextBase>();
+                var httpCtx = Configuration.Resolver.GetService<HttpContextBase>();
 
                 var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
 
@@ -305,7 +307,7 @@ namespace Ekom.Core.Models
             PopulateCategoryAncestors(item);
             PopulateCategories();
 
-            Urls = UrlHelper.BuildProductUrls(Slug, Categories, store);
+            Urls = Configuration.Resolver.GetService<IUrlService>().BuildProductUrls(Slug, Categories, store);
 
             if (!Urls.Any() || string.IsNullOrEmpty(Title))
             {
@@ -346,7 +348,7 @@ namespace Ekom.Core.Models
 
         private void PopulateCategoryAncestors(UmbracoContent node)
         {
-            var ancestors = Node8Helper.Instance.GetAllCatalogAncestors(node);
+            var ancestors = Configuration.Resolver.GetService<INodeService>().NodeCatalogAncestors(node.Id.ToString());
 
             foreach (var item in ancestors.Where(x => x.IsDocumentType("ekmCategory")))
             {
