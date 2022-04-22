@@ -345,12 +345,9 @@ namespace Ekom.Core.Services
 
                 if (_config.UserBasket)
                 {
-                    var member = _memberService.GetByUsername(_httpCtx.User.Identity.Name);
-                    if (member.HasProperty("orderId"))
-                    {
-                        member.SetValue("orderId", "");
-                    }
-                    _memberService.Save(member);
+                    _memberService.Save(new Dictionary<string, object>() {
+                        { "orderId", "" }
+                    }, _httpCtx.User.Identity.Name);
                 }
                 else
                 {
@@ -1061,12 +1058,10 @@ namespace Ekom.Core.Services
             {
                 orderUniqueId = Guid.NewGuid();
 
-                var member = _memberService.GetByUsername(_httpCtx.User.Identity.Name);
-                if (member.HasProperty("orderId"))
-                {
-                    member.SetValue("orderId", orderUniqueId.ToString());
-                }
-                _memberService.Save(member);
+                _memberService.Save(new Dictionary<string, object>() {
+                        { "orderId", "" }
+                    }, orderUniqueId.ToString());
+
             }
             else
             {
