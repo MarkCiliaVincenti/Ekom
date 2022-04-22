@@ -3,7 +3,7 @@ using System;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 
-namespace Vettvangur.UserManagement.Umbraco8
+namespace Ekom.U8
 {
     /// <summary> 
     /// Creates an <see cref="ILog"/> instance for the provided <see cref="Type"/> 

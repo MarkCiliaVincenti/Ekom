@@ -7,7 +7,7 @@ namespace Ekom.Core.Services
     {
         IEnumerable<IStore> GetAllStores();
         IStore GetStoreByAlias(string alias);
-        IStore GetStoreByDomain(string domain = "");
+        IStore GetStoreByDomain(string domain = "", string culture = "");
         IStore GetStoreFromCache();
     }
 }

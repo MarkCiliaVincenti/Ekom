@@ -43,7 +43,7 @@ namespace Ekom.Core.Services
         public MailService()
         {
             var smtpSection = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
-            Recipient = contentSectionConfig.NotificationEmailAddress;
+            Recipient = Configuration.Instance.EmailNotifications;
 
             //MailServer - Represents the SMTP Server
             _host = smtpSection.Network.Host;

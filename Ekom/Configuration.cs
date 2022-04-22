@@ -57,6 +57,20 @@ namespace Ekom.Core
         }
 
         /// <summary>
+        /// Ekom.CustomIndex
+        /// This will create an custom examine index that can be used for faster lookup or search named EkomIndex
+        /// </summary>
+        public virtual bool CustomIndex
+        {
+            get
+            {
+                var value = _configuration["Ekom.CustomIndex"];
+
+                return value.ConvertToBool();
+            }
+        }
+
+        /// <summary>
         /// Ekom.ShareBasket
         /// This will allow baskets to be shared between stores but we aware that it requires the same currencies to be available cross stores or it will break down.
         /// </summary>

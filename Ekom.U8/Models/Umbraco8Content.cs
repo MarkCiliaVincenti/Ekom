@@ -22,5 +22,20 @@ namespace Ekom.U8.Models
                 x => x.Alias, 
                 x => x.GetValue().ToString()))
         { }
+
+        public Umbraco8Content(PublishedSearchResult content)
+            : base(new Dictionary<string, string>
+            {
+                { "id", content.Content.Id.ToString() },
+                { "__Key", content.Content.Key.ToString() },
+                { "nodeName", content.Content.Name },
+                { "ContentTypeAlias", content.Content.ContentType.Alias }
+            },
+            content.Content.Properties.ToDictionary(
+                x => x.Alias,
+                x => x.GetValue().ToString()))
+        { }
+
+
     }
 }

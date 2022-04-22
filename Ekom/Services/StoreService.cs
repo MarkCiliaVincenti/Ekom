@@ -24,7 +24,7 @@ namespace Ekom.Core.Services
             _storeCache = storeCache;
         }
 
-        public IStore GetStoreByDomain(string domain = "")
+        public IStore GetStoreByDomain(string domain = "", string culture = "")
         {
             IStore store = null;
 
@@ -35,14 +35,14 @@ namespace Ekom.Core.Services
                 var storeDomain
                     = _domainCache.Cache
                                       .FirstOrDefault
-                                          (x => domain.Equals(x.Value.DomainName, System.StringComparison.InvariantCultureIgnoreCase))
+                                          (x => domain.Equals(x.Value.DomainName, StringComparison.InvariantCultureIgnoreCase))
                                       .Value;
 
                 if (storeDomain != null)
                 {
                     store = _storeCache.Cache
                                       .FirstOrDefault
-                                        (x => x.Value.StoreRootNode == storeDomain.RootContentId)
+                                        (x => x.Value.StoreRootNode == storeDomain.RootContentId && x.Value.Culture.Name == culture)
                                       .Value;
                 }
             }
@@ -80,6 +80,11 @@ namespace Ekom.Core.Services
         public IEnumerable<IStore> GetAllStores()
         {
             return _storeCache.Cache.Select(x => x.Value).OrderBy(x => x.SortOrder);
+        }
+
+        public IEnumerable<UmbracoDomain> GetDomains()
+        {
+            return _domainCache.Cache.Select(x => x.Value);
         }
 
     }

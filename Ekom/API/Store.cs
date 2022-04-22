@@ -59,7 +59,16 @@ namespace Ekom.Core.API
         }
 
         /// <summary>
-        /// 
+        /// Get store by domain
+        /// </summary>
+        /// <returns></returns>
+        public IStore GetStoreByDomain(string domain, string culture)
+        {
+            return _storeSvc.GetStoreByDomain(domain, culture);
+        }
+
+        /// <summary>
+        /// Get all stores
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IStore> GetAllStores()

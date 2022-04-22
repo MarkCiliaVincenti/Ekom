@@ -1,4 +1,6 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ekom.Core.Models
 {
@@ -10,8 +12,23 @@ namespace Ekom.Core.Models
         /// <summary>
         /// Countries encompassing this Zone
         /// </summary>
-        public IEnumerable<string> Countries => Properties.ContainsKey("zoneSelector") ? Properties["zoneSelector"].Split(',') : Properties["zone"].Split(',');
+        public IEnumerable<string> Countries
+        {
+            get
+            {
+                try
+                {
+                    var countries = JsonConvert.DeserializeObject<string[]>(Properties["zoneSelector"]);
 
+                    return countries;
+
+                }
+                catch
+                {
+                    return Properties["zoneSelector"].Split(',');
+                }
+            }
+        }
         /// <summary>
         /// ctor
         /// </summary>

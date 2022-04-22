@@ -1,9 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Vettvangur.UserManagement.Umbraco8
+namespace Ekom.U8
 {
     /// <summary>
     /// Umbraco logger compat for <see cref="ILogger"/>.

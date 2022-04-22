@@ -76,7 +76,7 @@ namespace Ekom.Core.Models
                     OrderInfo.StoreInfo.Currency,
                     Vat,
                     OrderInfo.StoreInfo.VatIncludedInPrice,
-                    Discount,
+                    discount,
                     Quantity);
             }
         }

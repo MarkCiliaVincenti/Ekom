@@ -345,15 +345,23 @@ namespace Ekom.Core.API
             {
                 throw new ArgumentNullException(nameof(Id));
             }
+
             if (string.IsNullOrEmpty(storeAlias))
             {
                 throw new ArgumentException(nameof(storeAlias));
             }
 
-            if (GuidUdi.TryParse(Id, out GuidUdi udi))
+
+            if (Id.Contains("umb"))
             {
-                return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Key == udi.Guid).Value;
+                var value = Id.Substring(Id.LastIndexOf('/') + 1);
+
+                if (Guid.TryParse(value, out Guid guid))
+                {
+                    return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Key == guid).Value;
+                }
             }
+
             if (int.TryParse(Id, out int id))
             {
                 return GetCategory(storeAlias, id);
