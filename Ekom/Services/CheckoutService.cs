@@ -10,6 +10,9 @@ using System.Web.Hosting;
 
 namespace Ekom.Core.Services
 {
+    /// <summary>
+    /// Handles order finalisation after successful payment or order completion
+    /// </summary>
     class CheckoutService
     {
         readonly ILogger<CheckoutService> _logger;

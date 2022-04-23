@@ -14,6 +14,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security.AntiXss;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Scoping;
+using Umbraco.NetPayment;
+using Umbraco.NetPayment.API;
+using Umbraco.NetPayment.Helpers;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace Ekom.Extensions.Services
 {
@@ -81,7 +88,7 @@ namespace Ekom.Extensions.Services
                 return responseHandler(res);
             }
 
-            // Reset hangfire jobs in cases were user cancels on payment page and changes cart f.x.
+            // Reset hangfire jobs in cases where user cancels on payment page and changes cart f.x.
             if (order.HangfireJobs.Any())
             {
                 foreach (var job in order.HangfireJobs)

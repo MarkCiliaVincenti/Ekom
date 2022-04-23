@@ -1831,7 +1831,7 @@
           "Umbraco.Cms.PublishedCache.NuCache": "9.2.0"
         }
       },
-      "ekom.core": {
+      "Ekom": {
         "type": "Project",
         "dependencies": {
           "CommonServiceLocator": "2.0.6",

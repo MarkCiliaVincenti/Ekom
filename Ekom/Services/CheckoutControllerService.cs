@@ -1,10 +1,8 @@
-using Ekom.API;
-using Ekom.Exceptions;
-using Ekom.Extensions.Controllers;
-using Ekom.Extensions.Models;
-using Ekom.Interfaces;
-using Ekom.Models.Data;
-using Ekom.Utilities;
+using Ekom.Core;
+using Ekom.Core.API;
+using Ekom.Core.Models;
+using Ekom.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -15,7 +13,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security.AntiXss;
 
-namespace Ekom.Extensions.Services
+namespace Ekom.Core.Services
 {
     /// <summary>
     /// Consolidates behaviors for the standard Ekom Checkout Surface and Web Api Controllers
@@ -29,34 +27,34 @@ namespace Ekom.Extensions.Services
         /// </summary>
         protected virtual string ErrorQueryString { get; set; } = "serverError";
 
+        readonly DatabaseFactory _databaseFactory;
+        readonly INodeService _nodeService;
+        readonly IMemberService _memberService;
         protected readonly ILogger Logger;
         protected readonly Configuration Config;
-        protected readonly IScopeProvider ScopeProvider;
-        protected readonly HttpContextBase HttpContext;
-        protected readonly UmbracoHelper UmbracoHelper;
-        protected readonly MembershipHelper MembershipHelper;
+        //protected readonly HttpContextBase HttpContext;
 
         protected string Culture;
 
         public CheckoutControllerService(
             ILogger logger,
             Configuration config,
-            IScopeProvider scopeProvider,
-            UmbracoHelper umbracoHelper,
-            MembershipHelper membershipHelper,
+            DatabaseFactory databaseFactory,
+            INodeService nodeService,
+            IMemberService memberService,
             HttpContextBase httpContext)
         {
             Logger = logger;
             Config = config;
-            ScopeProvider = scopeProvider;
-            UmbracoHelper = umbracoHelper;
-            MembershipHelper = membershipHelper;
-            HttpContext = httpContext;
+            _databaseFactory = databaseFactory;
+            _nodeService = nodeService;
+            _memberService = memberService;
+            //HttpContext = httpContext;
         }
 
         internal async Task<T> PayAsync<T>(Func<CheckoutResponse, T> responseHandler, PaymentRequest paymentRequest, string culture)
         {
-            Logger.Info<CheckoutControllerService>("Checkout Pay - Payment request start ");
+            Logger.LogInformation("Checkout Pay - Payment request start ");
 
             Culture = culture;
 
@@ -69,10 +67,10 @@ namespace Ekom.Extensions.Services
             // ToDo: Lock order throughout request
             var order = await Order.Instance.GetOrderAsync().ConfigureAwait(false);
 
-            Logger.Info<CheckoutControllerService>("Checkout Pay - Order:  " + order.UniqueId + " Customer: " + +order.CustomerInformation.Customer.UserId);
+            Logger.LogInformation("Checkout Pay - Order:  " + order.UniqueId + " Customer: " + +order.CustomerInformation.Customer.UserId);
 
             var storeAlias = order.StoreInfo.Alias;
-            IStore store = Store.Instance.GetStore(storeAlias);
+            IStore store = API.Store.Instance.GetStore(storeAlias);
 
             res = await ValidationAndOrderUpdatesAsync(paymentRequest, order, HttpContext.Request.Form)
                 .ConfigureAwait(false);
@@ -81,7 +79,7 @@ namespace Ekom.Extensions.Services
                 return responseHandler(res);
             }
 
-            // Reset hangfire jobs in cases were user cancels on payment page and changes cart f.x.
+            // Reset hangfire jobs in cases where user cancels on payment page and changes cart f.x.
             if (order.HangfireJobs.Any())
             {
                 foreach (var job in order.HangfireJobs)
