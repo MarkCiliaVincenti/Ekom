@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Ekom.Manager.Frontend", "Ekom.Manager.Frontend\", "{A8E76D41-1323-4B00-A441-8422D89AEF21}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_27847"
 		Debug.AspNetCompiler.PhysicalPath = "Ekom.Manager.Frontend\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_27847\"

@@ -1,4 +1,9 @@
+using Ekom.Core;
 using Ekom.Core.Models;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Hosting;
+#endif
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,7 +18,8 @@ namespace Ekom.Domain.Repositories
 {
     public class CountriesRepository
     {
-        private readonly ConcurrentDictionary<string, List<Country>> _cache = new ConcurrentDictionary<string, List<Country>>();
+        private static readonly ConcurrentDictionary<string, List<Country>> _cache = new ConcurrentDictionary<string, List<Country>>();
+
         private readonly ILogger _logger;
 
         /// <summary>
@@ -40,7 +46,16 @@ namespace Ekom.Domain.Repositories
             return _cache.GetOrAdd(BaseXMLFileName, s =>
             {
                 // future todo: make file location configurable (web.config or through code)
-                var path = HttpContext.Current.Server.MapPath($"/scripts/Ekom/{BaseXMLFileName}.xml");
+#if NETCOREAPP
+                var env = Configuration.Resolver.GetService<IWebHostEnvironment>();
+                //string webRootPath = env.WebRootPath;
+                string contentRootPath = env.ContentRootPath;
+
+                var path = Path.Combine(contentRootPath, $"scripts/Ekom/{BaseXMLFileName}.xml");
+#else
+                var serverUtility = Configuration.Resolver.GetService<HttpContextBase>()?.Server;
+                var path = serverUtility.MapPath($"/scripts/Ekom/{BaseXMLFileName}.xml");
+#endif
 
                 if (!File.Exists(path))
                 {

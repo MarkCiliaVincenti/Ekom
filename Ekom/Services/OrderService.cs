@@ -5,6 +5,8 @@ using Ekom.Core.JsonDotNet;
 using Ekom.Core.Models;
 using Ekom.Core.Repositories;
 using Ekom.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -61,8 +63,12 @@ namespace Ekom.Core.Services
     {
         readonly Configuration _config;
         readonly ILogger<OrderService> _logger;
+#if NETCOREAPP
+        readonly HttpContext _httpCtx;
+#else
         readonly HttpContextBase _httpCtx;
-        readonly IAppPolicyCache _runtimeCache;
+#endif
+        readonly IMemoryCache _memoryCache;
         readonly IMemberService _memberService;
         readonly DiscountCache _discountCache;
         readonly ActivityLogRepository _activityLogRepository;
@@ -86,7 +92,7 @@ namespace Ekom.Core.Services
             ActivityLogRepository activityLogRepository,
             ILogger<OrderService> logger,
             IStoreService storeService,
-            AppCaches appCaches,
+            IMemoryCache memoryCache,
             IMemberService memberService,
             DiscountCache discountCache,
             INodeService nodeService)
@@ -99,7 +105,7 @@ namespace Ekom.Core.Services
             _activityLogRepository = activityLogRepository;
             _storeSvc = storeService;
             _discountCache = discountCache;
-            _runtimeCache = appCaches.RuntimeCache;
+            _memoryCache = memoryCache;
             _memberService = memberService;
             _nodeService = nodeService;
 
@@ -116,15 +122,19 @@ namespace Ekom.Core.Services
             ActivityLogRepository activityLogRepository,
             ILogger<OrderService> logger,
             IStoreService storeService,
-            AppCaches appCaches,
+            IMemoryCache memoryCache,
             IMemberService memberService,
             DiscountCache discountCache,
+#if NETCOREAPP
+            IHttpContextAccessor httpContextAccessor,
+#else
             HttpContextBase httpCtx,
+#endif
             INodeService nodeService)
-            : this(config, orderRepo, couponRepository, activityLogRepository, logger, storeService, appCaches, memberService, discountCache,nodeService)
+            : this(config, orderRepo, couponRepository, activityLogRepository, logger, storeService, memoryCache, memberService, discountCache,nodeService)
         {
-            _httpCtx = httpCtx;
-            _ekmRequest = appCaches.RequestCache.GetCacheItem<ContentRequest>("ekmRequest");
+            _httpCtx = httpContextAccessor.HttpContext;
+            _ekmRequest = memoryCache.Get<ContentRequest>("ekmRequest");
         }
 
         public Task<OrderInfo> GetOrderAsync(string storeAlias)
@@ -140,7 +150,7 @@ namespace Ekom.Core.Services
             {
                 if (_ekmRequest.User != null && !string.IsNullOrEmpty(_ekmRequest.User.Username))
                 {
-                    var orderInfo = GetOrder(_ekmRequest.User.OrderId);
+                    var orderInfo = await GetOrderAsync(_ekmRequest.User.OrderId).ConfigureAwait(false);
 
                     return await ReturnNonFinalOrderAsync(orderInfo).ConfigureAwait(false);
                 }
@@ -154,7 +164,7 @@ namespace Ekom.Core.Services
                 // If Cookie Exist then return Cart
                 if (orderUniqueId != Guid.Empty)
                 {
-                    var orderInfo = GetOrder(orderUniqueId);
+                    var orderInfo = await GetOrderAsync(orderUniqueId).ConfigureAwait(false);
 
                     _logger.LogDebug("GetOrderAsync - Found order with {UniqueId}", orderInfo?.UniqueId);
 
@@ -240,7 +250,7 @@ namespace Ekom.Core.Services
             return null;
         }
 
-        public Task<OrderInfo> GetCompletedOrderAsync(string storeAlias)
+        public async Task<OrderInfo> GetCompletedOrderAsync(string storeAlias)
         {
             // Add timelimit to get the order ? Maybe 1-2 hours ?
 
@@ -248,11 +258,11 @@ namespace Ekom.Core.Services
             {
                 if (_ekmRequest.User != null && !string.IsNullOrEmpty(_ekmRequest.User.Username))
                 {
-                    var orderInfo = GetOrder(_ekmRequest.User.OrderId);
+                    var orderInfo = await GetOrderAsync(_ekmRequest.User.OrderId).ConfigureAwait(false);
 
                     if (Order.IsOrderFinal(orderInfo?.OrderStatus))
                     {
-                        return Task.FromResult(orderInfo);
+                        return orderInfo;
                     }
                 }
             }
@@ -265,25 +275,28 @@ namespace Ekom.Core.Services
                 // If Cookie Exist then return Cart
                 if (orderUniqueId != Guid.Empty)
                 {
-                    var orderInfo = GetOrder(orderUniqueId);
+                    var orderInfo = await GetOrderAsync(orderUniqueId).ConfigureAwait(false);
 
                     if (Order.IsOrderFinal(orderInfo?.OrderStatus))
                     {
-                        return Task.FromResult(orderInfo);
+                        return orderInfo;
                     }
                 }
             }
 
-            return Task.FromResult<OrderInfo>(null);
+            return null;
         }
 
-        public OrderInfo GetOrder(Guid uniqueId)
+        public Task<OrderInfo> GetOrderAsync(Guid uniqueId)
         {
             // Check for cache ?
-            return _runtimeCache.GetCacheItem(
+            return _memoryCache.GetOrCreateAsync(
                 uniqueId.ToString(),
-                () => GetOrderInfoAsync(uniqueId).Result,
-                Configuration.orderInfoCacheTime);
+                cacheEntry => 
+                {
+                    cacheEntry.SetAbsoluteExpiration(Configuration.orderInfoCacheTime);
+                    return GetOrderInfoAsync(uniqueId);
+                });
         }
 
         private async Task<OrderInfo> GetOrderInfoAsync(Guid uniqueId)
@@ -351,16 +364,16 @@ namespace Ekom.Core.Services
                 }
                 else
                 {
-                    _runtimeCache.ClearByKey(uniqueId.ToString());
+                    _memoryCache.Remove(uniqueId.ToString());
                 }
             }
 
             await _orderRepository.UpdateOrderAsync(order)
                 .ConfigureAwait(false);
 
-            _runtimeCache.InsertCacheItem<OrderInfo>(
+            _memoryCache.Set<OrderInfo>(
                 uniqueId.ToString(),
-                () => new OrderInfo(order),
+                new OrderInfo(order),
                 Configuration.orderInfoCacheTime);
 
             if (settings.FireOnOrderStatusChangingEvent)
@@ -480,7 +493,7 @@ namespace Ekom.Core.Services
 
                 order.Currency = storeCurrency.ISOCurrencySymbol;
 
-                var orderInfo = GetOrder(uniqueId);
+                var orderInfo = await GetOrderAsync(uniqueId).ConfigureAwait(false);
 
                 if (orderInfo != null)
                 {
@@ -492,9 +505,9 @@ namespace Ekom.Core.Services
 
                     await _orderRepository.UpdateOrderAsync(order).ConfigureAwait(false);
 
-                    _runtimeCache.InsertCacheItem<OrderInfo>(
+                    _memoryCache.Set<OrderInfo>(
                         uniqueId.ToString(),
-                        () => new OrderInfo(order),
+                        new OrderInfo(order),
                         Configuration.orderInfoCacheTime);
 
                     _logger.LogDebug(
@@ -516,7 +529,7 @@ namespace Ekom.Core.Services
             await _orderRepository.UpdateOrderAsync(order)
                 .ConfigureAwait(false);
 
-            _runtimeCache.Clear(uniqueId.ToString());
+            _memoryCache.Remove(uniqueId.ToString());
 
             _logger.LogDebug(
                 "Update Paid Date {OrderNumber}",
@@ -997,9 +1010,9 @@ namespace Ekom.Core.Services
         {
             var key = CreateKey(orderInfo.StoreInfo.Alias);
 
-            _runtimeCache.InsertCacheItem<OrderInfo>(
+            _memoryCache.Set<OrderInfo>(
                 orderInfo.UniqueId.ToString(),
-                () => orderInfo,
+                orderInfo,
                 Configuration.orderInfoCacheTime);
         }
 
@@ -1451,8 +1464,13 @@ namespace Ekom.Core.Services
 
         private Guid GetOrderIdFromCookie(string key)
         {
-            HttpCookie cookie = null;
+            string cookie = null;
 
+#if NETCOREAPP
+            cookie = _httpCtx.Response
+                .GetTypedHeaders()
+                .SetCookie.FirstOrDefault(x => x.Name == key)?.Value.ToString();
+#else
             // Applicable when the order was created in this request
             // This enables support for event handlers accessing the api and modifying order info
             // during the request that created the OrderInfo
@@ -1462,17 +1480,22 @@ namespace Ekom.Core.Services
             // regardless of it existing or not beforehand. (previous cookies are overwritten this way)
             // Therefore we check AllKeys before accessing the collection directly
             {
-                cookie = _httpCtx.Response.Cookies[key];
+                cookie = _httpCtx.Response.Cookies[key]?.Value;
             }
+#endif
 
-            if (cookie == null)
+            if (string.IsNullOrEmpty(cookie))
             {
+#if NETCOREAPP
                 cookie = _httpCtx.Request.Cookies[key];
+#else
+                cookie = _httpCtx.Request.Cookies[key]?.Value;
+#endif
             }
 
-            if (cookie != null)
+            if (!string.IsNullOrEmpty(cookie))
             {
-                return new Guid(cookie.Value);
+                return new Guid(cookie);
             }
 
             return Guid.Empty;
@@ -1481,6 +1504,8 @@ namespace Ekom.Core.Services
         private Guid CreateOrderIdCookie(string key)
         {
             var guid = Guid.NewGuid();
+
+#if NETFRAMEWORK
             var guidCookie = new HttpCookie(key)
             {
                 Value = guid.ToString(),
@@ -1488,11 +1513,21 @@ namespace Ekom.Core.Services
             };
 
             _httpCtx.Response.Cookies.Add(guidCookie);
+#else
+            _httpCtx.Response.Cookies.Append(key, guid.ToString(), new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(_config.BasketCookieLifetime)
+            });
+#endif
+
             return guid;
         }
 
         private void DeleteOrderCookie(string key)
         {
+#if NETCOREAPP
+            _httpCtx.Response.Cookies.Delete(key);
+#else
             var cookie = _httpCtx.Request.Cookies[key];
 
             if (cookie != null)
@@ -1506,6 +1541,7 @@ namespace Ekom.Core.Services
             {
                 _logger.LogWarning("Could not delete order cookie. Cookie not found. Key: {Key}", key);
             }
+#endif
         }
 
         private string GenerateOrderNumberTemplate(int referenceId, IStore store)

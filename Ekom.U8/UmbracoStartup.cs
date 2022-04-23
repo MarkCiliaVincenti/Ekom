@@ -1,5 +1,6 @@
 using Ekom.Core;
 using LightInject.Microsoft.DependencyInjection;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Ekom.U8
             //container.Register<UserManagementService>();
             //container.Register<UserManagementAuthorizationService>();
             //container.Register<IDatabaseFactory, DatabaseFactory>();
-
+            container.Register<IMemoryCache, MemoryCache>();
             Configuration.Resolver = container.CreateServiceProvider();
         }
     }

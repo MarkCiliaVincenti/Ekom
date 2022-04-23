@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,42 @@ namespace Ekom.Core.Utilities
 {
     public static class ApplicationBuilderExtensions
     {
+        public static IServiceCollection AddEkom(this IServiceCollection services)
+        {
+            //composition.Components()
+                //.Append<UmbracoStartup>()
+                //;
+            //composition.Sections().Append<UserManagementSection>();
+
+            //var smtpSection = (SmtpSection)System.Configuration.ConfigurationManager.GetSection("system.net/mailSettings/smtp");
+
+            //container.Register<IMailService>(
+            //    fac => new MailService(
+            //        fac.GetInstance<ILogFactory>(),
+            //        smtpSection.From,
+            //        fac.GetInstance<IContentSection>().NotificationEmailAddress)
+            //);
+            //container.Register<ILogFactory, LogFactory>();
+            //container.Register<IUmbracoService, UmbracoService>();
+            //container.Register<ISessionHelper, UmbracoSessionHelper>();
+            //container.Register<IAuditService, AuditService>();
+            //container.Register<IMemberService, MemberService>();
+            //container.Register<IConfiguration>(fac => LegacyConfigurationProvider.Create());
+            //container.Register<UserManagementConfig>();
+            //container.Register<InitialSeeding>();
+            //container.Register<IUserManagementRepository, UserManagementRepository>();
+            //container.Register<UserManagementService>();
+            //container.Register<UserManagementAuthorizationService>();
+            //container.Register<IDatabaseFactory, DatabaseFactory>();
+            services.AddMemoryCache();
+
+            return services;
+        }
+
         public static IApplicationBuilder UseEkom(this IApplicationBuilder app)
         {
             Configuration.Resolver = app.ApplicationServices;
+
             return app;
         }
     }

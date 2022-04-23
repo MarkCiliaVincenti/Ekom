@@ -1,6 +1,7 @@
 using Ekom.Core.Cache;
 using Ekom.Core.Models;
 using Ekom.Core.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +23,7 @@ namespace Ekom.Core.API
 
         readonly Configuration _config;
         readonly ILogger<Catalog> _logger;
-        readonly AppCaches _appCaches;
+        readonly IMemoryCache _memoryCache;
         readonly IStoreService _storeSvc;
         readonly IPerStoreCache<IProductDiscount> _productDiscountCache; // must be before product cache
         readonly IPerStoreCache<IProduct> _productCache;
@@ -34,7 +35,7 @@ namespace Ekom.Core.API
         /// </summary>
         internal Catalog(
             ILogger<Catalog> logger,
-            AppCaches appCaches,
+            IMemoryCache memoryCache,
             Configuration config,
             IPerStoreCache<IProduct> productCache,
             IPerStoreCache<ICategory> categoryCache,
@@ -46,7 +47,7 @@ namespace Ekom.Core.API
         {
             _config = config;
             _logger = logger;
-            _appCaches = appCaches;
+            _memoryCache = memoryCache;
             _productCache = productCache;
             _categoryCache = categoryCache;
             _variantCache = variantCache;
@@ -61,7 +62,7 @@ namespace Ekom.Core.API
         /// <returns></returns>
         public IProduct GetProduct()
         {
-            var r = _appCaches.RequestCache.GetCacheItem<ContentRequest>("ekmRequest");
+            var r = _memoryCache.Get<ContentRequest>("ekmRequest");
 
             return r?.Product;
         }
@@ -268,12 +269,8 @@ namespace Ekom.Core.API
         /// <returns></returns>
         public ICategory GetCategory()
         {
-            if (_appCaches.RequestCache.GetCacheItem<ContentRequest>("ekmRequest") is ContentRequest r)
-            {
-                return r?.Category;
-            }
-
-            return null;
+            var r = _memoryCache.Get<ContentRequest>("ekmRequest");
+            return r?.Category;
         }
 
         /// <summary>
