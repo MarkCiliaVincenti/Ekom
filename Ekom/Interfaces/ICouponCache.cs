@@ -1,7 +1,7 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System.Collections.Concurrent;
 
-namespace Ekom.Core.Interfaces
+namespace Ekom.Interfaces
 {
     /// <summary>
     /// The coupon cache

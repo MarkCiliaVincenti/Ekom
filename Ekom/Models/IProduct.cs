@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// 

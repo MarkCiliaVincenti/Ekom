@@ -1,13 +1,13 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Utilities;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Utilities;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class ProductDiscountCache : PerStoreCache<IProductDiscount>
     {
@@ -69,7 +69,7 @@ namespace Ekom.Core.Cache
         public override void Remove(Guid key)
         {
             _logger.LogDebug("Attempting to remove product discount with key {Key}", key);
- 
+
             foreach (var store in _storeCache.Cache)
             {
                 Cache[store.Value.Alias].TryRemove(key, out IProductDiscount i);

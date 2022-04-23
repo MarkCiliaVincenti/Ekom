@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Ekom.Core.Utilities
+namespace Ekom.Utilities
 {
     class SearchHelper
     {

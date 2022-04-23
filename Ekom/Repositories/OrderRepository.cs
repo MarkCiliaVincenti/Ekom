@@ -1,6 +1,6 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Services;
 using LinqToDB;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     class OrderRepository
     {
@@ -25,7 +25,7 @@ namespace Ekom.Core.Repositories
         public OrderRepository(
             ILogger<OrderRepository> logger,
             Configuration config,
-            DatabaseFactory databaseFactory, 
+            DatabaseFactory databaseFactory,
             IMemoryCache memoryCache)
         {
             _logger = logger;

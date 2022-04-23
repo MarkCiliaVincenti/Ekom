@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     internal class UtilityService
     {

@@ -1,15 +1,15 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Services;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using GlobalCouponCache
-    = System.Collections.Concurrent.ConcurrentDictionary<string, Ekom.Core.Models.CouponData>;
+    = System.Collections.Concurrent.ConcurrentDictionary<string, Ekom.Models.CouponData>;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     /// <inheritdoc />
     class CouponCache : ICouponCache

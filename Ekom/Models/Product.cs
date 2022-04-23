@@ -1,5 +1,5 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Services;
+using Ekom.Cache;
+using Ekom.Services;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,7 +11,7 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// An Ekom store product

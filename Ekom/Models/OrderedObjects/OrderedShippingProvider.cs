@@ -1,10 +1,10 @@
-using Ekom.Core.JsonDotNet;
+using Ekom.JsonDotNet;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class OrderedShippingProvider
     {

@@ -1,6 +1,6 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Utilities;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Utilities;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     /// <summary>
     /// Per store caching for entities of generic type TItem
@@ -31,7 +31,7 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<TItem>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<TItem> objFac, 
+            IPerStoreFactory<TItem> objFac,
             IServiceProvider serviceProvider)
         {
             _config = config;
@@ -87,16 +87,16 @@ namespace Ekom.Core.Cache
                     var results = nodeService.NodesByTypes(NodeAlias).ToList();
 
                     if (storeParam == null) // Startup initialization
+                    {
+                        foreach (var store in _storeCache.Cache.Select(x => x.Value))
                         {
-                            foreach (var store in _storeCache.Cache.Select(x => x.Value))
-                            {
-                                count += FillStoreCache(store, results);
-                            }
+                            count += FillStoreCache(store, results);
                         }
-                        else // Triggered with dynamic addition/removal of store
-                        {
-                            count += FillStoreCache(storeParam, results);
-                        }                
+                    }
+                    else // Triggered with dynamic addition/removal of store
+                    {
+                        count += FillStoreCache(storeParam, results);
+                    }
                 }
                 catch (Exception ex)
                 {

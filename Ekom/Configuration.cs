@@ -1,5 +1,5 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Models;
+using Ekom.Cache;
+using Ekom.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -8,7 +8,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 
-namespace Ekom.Core
+namespace Ekom
 {
     /// <summary>
     /// Controls configuration of Ekom

@@ -1,9 +1,9 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class ZoneCache : BaseCache<IZone>
     {

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Frozen <see cref="Discount"/> with coupons and <see cref="DiscountAmount"/>

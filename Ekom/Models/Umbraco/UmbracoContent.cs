@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class UmbracoContent
     {
         public UmbracoContent(IDictionary<string, string> defaultProperties, Dictionary<string, string> contentProperies)
         {
             _properties = new Dictionary<string, string>(defaultProperties);
-            
+
             foreach (var prop in contentProperies)
             {
                 _properties.Add(prop.Key, prop.Value);

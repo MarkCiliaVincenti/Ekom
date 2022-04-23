@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class OrderUpdatedEventArgs : EventArgs
     {

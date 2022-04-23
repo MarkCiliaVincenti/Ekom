@@ -1,5 +1,5 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class StoreCache : BaseCache<IStore>
     {
@@ -57,7 +57,7 @@ namespace Ekom.Core.Cache
                         _logger.LogWarning(ex, "Failed to map to store. Id: {Id}", r.Id);
                     }
                 }
-                
+
 
                 stopwatch.Stop();
                 _logger.LogInformation(
@@ -65,11 +65,12 @@ namespace Ekom.Core.Cache
                     count,
                     stopwatch.Elapsed);
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to build store Cache");
             }
-            
+
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace Ekom.Core.Cache
                     }
                 }
             }
-            
+
         }
     }
 }

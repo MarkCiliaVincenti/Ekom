@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Base Per Store Umbraco node entity

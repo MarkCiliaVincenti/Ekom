@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Ekom.Core.JsonDotNet
+namespace Ekom.JsonDotNet
 {
     class EkomJsonDotNet
     {

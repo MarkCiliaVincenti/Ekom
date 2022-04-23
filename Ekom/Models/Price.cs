@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Price of item including all data to fully calculate 

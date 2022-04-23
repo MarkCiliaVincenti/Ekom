@@ -1,14 +1,14 @@
-using Ekom.Core.API;
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Repositories;
+using Ekom.API;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     class CheckoutService
     {
@@ -25,7 +25,7 @@ namespace Ekom.Core.Services
             OrderRepository orderRepo,
             CouponRepository couponRepo,
             OrderService orderService,
-            DiscountStockRepository discountStockRepo, 
+            DiscountStockRepository discountStockRepo,
             MailService mailService)
         {
             _logger = logger;

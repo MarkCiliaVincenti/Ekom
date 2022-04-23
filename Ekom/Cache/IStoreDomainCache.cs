@@ -1,6 +1,6 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     interface IStoreDomainCache : IBaseCache<UmbracoDomain>
     {

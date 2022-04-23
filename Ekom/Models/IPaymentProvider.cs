@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public interface IPaymentProvider : IPerStoreNodeEntity, IConstrained
     {

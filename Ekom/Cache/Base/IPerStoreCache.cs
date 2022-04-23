@@ -1,8 +1,8 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Concurrent;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     /// <summary>
     /// Used to differentiate per store caches from base caches at runtime.

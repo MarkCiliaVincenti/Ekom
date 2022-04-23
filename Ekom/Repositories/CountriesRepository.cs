@@ -1,5 +1,5 @@
-using Ekom.Core;
-using Ekom.Core.Models;
+using Ekom;
+using Ekom.Models;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Hosting;
 #endif

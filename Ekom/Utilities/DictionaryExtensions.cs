@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Core
+namespace Ekom
 {
     public static class DictionaryExtensions
     {

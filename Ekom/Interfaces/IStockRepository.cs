@@ -1,8 +1,8 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Interfaces
+namespace Ekom.Interfaces
 {
     /// <summary>
     /// Handles database transactions for <see cref="StockData"/>

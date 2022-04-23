@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// 

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class ProductDiscount : Discount, IProductDiscount
     {

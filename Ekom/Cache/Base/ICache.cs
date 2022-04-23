@@ -1,7 +1,7 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     /// <summary>
     /// Caches implementing this interface offer addition and removal methods

@@ -1,11 +1,11 @@
-using Ekom.Core;
-using Ekom.Core.Cache;
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom;
+using Ekom.Cache;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class ProductCache : PerStoreCache<IProduct>
     {

@@ -1,6 +1,6 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Cache;
+using Ekom.Models;
+using Ekom.Services;
 using Ekom.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Core.API
+namespace Ekom.API
 {
     /// <summary>
     /// Providers API, returns shipping providers and payment providers. 

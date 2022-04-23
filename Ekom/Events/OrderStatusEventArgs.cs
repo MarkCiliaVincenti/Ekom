@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// For changing and changed <see cref="OrderStatus"/> events

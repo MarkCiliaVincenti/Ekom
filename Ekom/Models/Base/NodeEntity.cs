@@ -1,5 +1,5 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Base Umbraco node entity

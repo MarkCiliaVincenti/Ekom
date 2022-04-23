@@ -1,6 +1,6 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Services;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     /// <summary>
     /// Handles database transactions for <see cref="StockData"/>
@@ -123,8 +123,8 @@ namespace Ekom.Core.Repositories
             using (var db = _databaseFactory.GetDatabase())
             {
                 string hangfireArgument = await db.FromSql<string>(
-                    "SELECT Arguments FROM [HangFire].[Job] WHERE Id = @0 AND StateName = @1", 
-                    jobId, 
+                    "SELECT Arguments FROM [HangFire].[Job] WHERE Id = @0 AND StateName = @1",
+                    jobId,
                     "Scheduled"
                     )
                     .FirstOrDefaultAsync()

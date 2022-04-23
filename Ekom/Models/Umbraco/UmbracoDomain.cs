@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class UmbracoDomain
     {
@@ -19,17 +19,19 @@ namespace Ekom.Core.Models
         /// All node properties
         /// </summary>
         public IReadOnlyDictionary<string, string> Properties => _properties;
-        public string DomainName { 
+        public string DomainName
+        {
             get
             {
 
-                if (Properties.TryGetValue("DomainName", out string _domainName)) {
+                if (Properties.TryGetValue("DomainName", out string _domainName))
+                {
                     return _domainName;
                 }
 
                 return string.Empty;
             }
-                 
+
         }
         public Guid Key
         {
@@ -79,7 +81,8 @@ namespace Ekom.Core.Models
 
                 if (Properties.TryGetValue("RootContentId", out string _rootContentId))
                 {
-                    if (int.TryParse(_rootContentId, out int _intRootContentId)){
+                    if (int.TryParse(_rootContentId, out int _intRootContentId))
+                    {
                         return _intRootContentId;
                     }
 
@@ -88,7 +91,7 @@ namespace Ekom.Core.Models
                 return null;
             }
         }
-        
+
 
     }
 }

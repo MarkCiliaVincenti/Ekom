@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core
+namespace Ekom
 {
     static class Calculator
     {

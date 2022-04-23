@@ -1,5 +1,5 @@
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Models;
+using Ekom.Services;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Ekom.Core.API
+namespace Ekom.API
 {
     /// <summary>
     /// The Ekom API, get current or all stores.

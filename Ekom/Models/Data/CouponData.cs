@@ -1,7 +1,7 @@
 using LinqToDB.Mapping;
 using System;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Current stock of a given item

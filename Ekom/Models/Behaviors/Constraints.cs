@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Constraints behavior for Shipping/Payment providers, and Discounts.
@@ -41,8 +41,8 @@ namespace Ekom.Core.Models
 
                 if (httpContext?.Request != null)
                 {
-                    var store = _node is PerStoreNodeEntity perStoreNode 
-                        ? perStoreNode.Store 
+                    var store = _node is PerStoreNodeEntity perStoreNode
+                        ? perStoreNode.Store
                         : API.Store.Instance.GetStore();
 
                     var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];

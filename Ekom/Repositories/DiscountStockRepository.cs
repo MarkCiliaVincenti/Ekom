@@ -1,6 +1,6 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Services;
 using LinqToDB;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     class DiscountStockRepository
     {

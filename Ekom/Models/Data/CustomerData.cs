@@ -1,6 +1,6 @@
 using LinqToDB.Mapping;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Unfinished

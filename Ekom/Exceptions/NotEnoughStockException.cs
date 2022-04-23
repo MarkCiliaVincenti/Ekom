@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core.Exceptions
+namespace Ekom.Exceptions
 {
     /// <summary>
     /// </summary>

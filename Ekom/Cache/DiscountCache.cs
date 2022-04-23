@@ -1,6 +1,6 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Utilities;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Utilities;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class DiscountCache : PerStoreCache<IDiscount>
     {
@@ -21,7 +21,7 @@ namespace Ekom.Core.Cache
             Configuration config,
             ILogger<IPerStoreCache<IDiscount>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<IDiscount> perStoreFactory, 
+            IPerStoreFactory<IDiscount> perStoreFactory,
             IServiceProvider serviceProvider)
             : base(config, logger, storeCache, perStoreFactory, serviceProvider)
         {

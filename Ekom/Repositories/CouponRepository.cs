@@ -1,7 +1,7 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Services;
 using Ekom.Services;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     class CouponRepository
     {

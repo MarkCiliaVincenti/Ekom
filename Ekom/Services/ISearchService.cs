@@ -1,7 +1,7 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     interface ISearchService
     {

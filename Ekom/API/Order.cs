@@ -1,15 +1,15 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Exceptions;
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Cache;
+using Ekom.Exceptions;
+using Ekom.Interfaces;
+using Ekom.Models;
+using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-namespace Ekom.Core.API
+namespace Ekom.API
 {
     /// <summary>
     /// The Ekom API, get/update/remove operations on orders 

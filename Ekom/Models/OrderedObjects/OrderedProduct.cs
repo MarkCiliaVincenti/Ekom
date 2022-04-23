@@ -1,5 +1,5 @@
-using Ekom.Core.JsonDotNet;
-using Ekom.Core.Services;
+using Ekom.JsonDotNet;
+using Ekom.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class OrderedProduct
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// A grouping of countries, used to map payment providers and shipping providers to regions

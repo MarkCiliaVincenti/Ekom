@@ -1,4 +1,4 @@
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Base Per Store Umbraco node entity
