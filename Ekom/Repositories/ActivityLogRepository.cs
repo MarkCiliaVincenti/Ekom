@@ -1,6 +1,6 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Services;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     class ActivityLogRepository
     {
@@ -17,7 +17,7 @@ namespace Ekom.Core.Repositories
         readonly DatabaseFactory _databaseFactory;
 
         public ActivityLogRepository(
-            ILogger<ActivityLogRepository> logger, 
+            ILogger<ActivityLogRepository> logger,
             DatabaseFactory databaseFactory)
         {
             _logger = logger;
@@ -118,7 +118,7 @@ namespace Ekom.Core.Repositories
                     FROM [EkomOrdersActivityLog] a
                     left join EkomOrders b on b.UniqueId = a.[Key]
                     WHERE a.[Key] = @0
-                    order by Date desc", 
+                    order by Date desc",
                     uniqueId)
                     .ToListAsync()
                     .ConfigureAwait(false);

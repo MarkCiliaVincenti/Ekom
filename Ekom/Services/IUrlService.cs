@@ -1,11 +1,11 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     interface IUrlService
     {

@@ -1,4 +1,4 @@
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Fixed or percentage?

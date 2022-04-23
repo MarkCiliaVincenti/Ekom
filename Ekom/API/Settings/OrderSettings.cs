@@ -1,7 +1,7 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 
-namespace Ekom.Core.API
+namespace Ekom.API
 {
     /// <summary>
     /// Ekom Order Api optional configuration

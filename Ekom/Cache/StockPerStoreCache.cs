@@ -1,6 +1,6 @@
-using Ekom.Core.Exceptions;
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom.Exceptions;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class StockPerStoreCache : PerStoreCache<StockData>
     {

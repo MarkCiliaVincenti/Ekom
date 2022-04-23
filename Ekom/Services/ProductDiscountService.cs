@@ -1,11 +1,11 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Models;
+using Ekom.Cache;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     class ProductDiscountService
     {
@@ -18,8 +18,8 @@ namespace Ekom.Core.Services
         public IProductDiscount GetProductDiscount(string path, string storeAlias, string inputPrice, string[] categories = null)
         {
 
-            var price = decimal.Parse(string.IsNullOrEmpty(inputPrice) 
-                ? "0" 
+            var price = decimal.Parse(string.IsNullOrEmpty(inputPrice)
+                ? "0"
                 : inputPrice.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture);
 
             var applicableDiscounts = new List<IProductDiscount>();
@@ -39,8 +39,8 @@ namespace Ekom.Core.Services
 
                 var disc = discount.Value as Discount;
 
-                if (!string.IsNullOrEmpty(path) 
-                && path.Split(',').Intersect(disc.DiscountItems).Any() 
+                if (!string.IsNullOrEmpty(path)
+                && path.Split(',').Intersect(disc.DiscountItems).Any()
                 || (categories != null && categories.Intersect(disc.DiscountItems).Any()))
                 {
                     applicableDiscounts.Add(discount.Value);
@@ -64,7 +64,7 @@ namespace Ekom.Core.Services
             {
                 if (usableDiscount.Type == DiscountType.Fixed)
                 {
-                    if (usableDiscount.StartOfRange < price 
+                    if (usableDiscount.StartOfRange < price
                     && (usableDiscount.EndOfRange == 0 || price < usableDiscount.EndOfRange))
                     {
                         if (usableDiscount.Amount > bestFixedDiscountValue)

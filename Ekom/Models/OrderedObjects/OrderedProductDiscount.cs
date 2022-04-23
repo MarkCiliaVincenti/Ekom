@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System;
 
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Currently unused, <see cref="OrderedDiscount"/> takes care of all persisted discounts

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// An object that contains the calculated price given the provided parameters

@@ -1,9 +1,9 @@
-using Ekom.Core.API;
-using Ekom.Core.Cache;
-using Ekom.Core.Exceptions;
-using Ekom.Core.JsonDotNet;
-using Ekom.Core.Models;
-using Ekom.Core.Repositories;
+using Ekom.API;
+using Ekom.Cache;
+using Ekom.Exceptions;
+using Ekom.JsonDotNet;
+using Ekom.Models;
+using Ekom.Repositories;
 using Ekom.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -18,7 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     /// <summary>
     /// GetOrder and Caching <br />
@@ -131,7 +131,7 @@ namespace Ekom.Core.Services
             HttpContextBase httpCtx,
 #endif
             INodeService nodeService)
-            : this(config, orderRepo, couponRepository, activityLogRepository, logger, storeService, memoryCache, memberService, discountCache,nodeService)
+            : this(config, orderRepo, couponRepository, activityLogRepository, logger, storeService, memoryCache, memberService, discountCache, nodeService)
         {
             _httpCtx = httpContextAccessor.HttpContext;
             _ekmRequest = memoryCache.Get<ContentRequest>("ekmRequest");
@@ -292,7 +292,7 @@ namespace Ekom.Core.Services
             // Check for cache ?
             return _memoryCache.GetOrCreateAsync(
                 uniqueId.ToString(),
-                cacheEntry => 
+                cacheEntry =>
                 {
                     cacheEntry.SetAbsoluteExpiration(Configuration.orderInfoCacheTime);
                     return GetOrderInfoAsync(uniqueId);
@@ -451,7 +451,7 @@ namespace Ekom.Core.Services
                 int existingStock;
                 var product = Catalog.Instance.GetProduct(storeAlias, orderline.ProductKey);
                 IVariant variant = null;
-                if (orderline.Product.VariantGroups.Any(g => g.Variants.Any())) 
+                if (orderline.Product.VariantGroups.Any(g => g.Variants.Any()))
                 {
                     var orderedVariant = orderline.Product.VariantGroups.First().Variants.First();
                     variant = Catalog.Instance.GetVariant(orderedVariant.Key);
@@ -1453,8 +1453,8 @@ namespace Ekom.Core.Services
                     || !shippingProvider.Constraints.IsValid(countryCode, total))
                     {
                         _logger.LogDebug(
-                            "Removing invalid shipping provider {ShippingProviderKey} from Order {UniqueId}", 
-                            orderInfo.ShippingProvider.Key, 
+                            "Removing invalid shipping provider {ShippingProviderKey} from Order {UniqueId}",
+                            orderInfo.ShippingProvider.Key,
                             orderInfo.UniqueId);
                         orderInfo.ShippingProvider = null;
                     }

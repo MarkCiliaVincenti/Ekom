@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Umbraco order discount node
@@ -112,7 +112,7 @@ namespace Ekom.Core.Models
         /// </summary>
         /// <param name="store">The store.</param>
         /// <param name="json">The json.</param>
-        internal Discount(IStore store, string json) :base(store) 
+        internal Discount(IStore store, string json) : base(store)
         {
             _properties = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }

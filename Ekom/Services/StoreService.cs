@@ -1,11 +1,11 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
+using Ekom.Cache;
+using Ekom.Exceptions;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     class StoreService : IStoreService
     {

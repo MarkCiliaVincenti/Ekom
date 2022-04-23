@@ -1,12 +1,12 @@
-using Ekom.Core.Cache;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Cache;
+using Ekom.Models;
+using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ekom.Core.API
+namespace Ekom.API
 {
     /// <summary>
     /// The Ekom API, grants access to the current discounts 

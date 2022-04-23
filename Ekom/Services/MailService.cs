@@ -4,7 +4,7 @@ using System.Net.Configuration;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     /// <summary>
     /// Handles creation and sending of emails, uses defaults from configuration when possible.

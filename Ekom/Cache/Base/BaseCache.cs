@@ -1,5 +1,5 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     /// <summary>
     /// For custom caches or global non store dependant caches
@@ -26,7 +26,7 @@ namespace Ekom.Core.Cache
         public BaseCache(
             Configuration config,
             ILogger<BaseCache<TItem>> logger,
-            IObjectFactory<TItem> objectFactory, 
+            IObjectFactory<TItem> objectFactory,
             IServiceProvider serviceProvider)
         {
             _config = config;

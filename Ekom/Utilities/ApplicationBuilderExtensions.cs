@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Utilities
+namespace Ekom.Utilities
 {
     public static class ApplicationBuilderExtensions
     {

@@ -1,7 +1,7 @@
 using Ekom.Models;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Constraints behavior for Shipping/Payment providers, and Discounts.

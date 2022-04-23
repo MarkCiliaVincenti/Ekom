@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// A customization of a parent product, currently must belong to a <see cref="IVariantGroup"/>

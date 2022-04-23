@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Exceptions
+namespace Ekom.Exceptions
 {
     /// <summary>
     /// Common base type for all exceptions thrown by Ekom

@@ -7,7 +7,7 @@ using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Categories are groupings of products, categories can also be nested, f.x.

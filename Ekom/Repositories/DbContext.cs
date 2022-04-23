@@ -1,4 +1,4 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using LinqToDB;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Repositories
+namespace Ekom.Repositories
 {
     public class DbContext : LinqToDB.Data.DataConnection
     {

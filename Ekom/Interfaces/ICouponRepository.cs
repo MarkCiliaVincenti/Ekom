@@ -1,9 +1,9 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ekom.Core.Interfaces
+namespace Ekom.Interfaces
 {
     public interface ICouponRepository
     {

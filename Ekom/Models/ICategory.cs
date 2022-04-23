@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Categories are groupings of products, categories can also be nested, f.x.

@@ -1,14 +1,14 @@
-using Ekom.Core.API;
-using Ekom.Core.Exceptions;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.API;
+using Ekom.Exceptions;
+using Ekom.Models;
+using Ekom.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     partial class OrderService
     {

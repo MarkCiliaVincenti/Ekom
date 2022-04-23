@@ -1,5 +1,5 @@
-using Ekom.Core.JsonDotNet;
-using Ekom.Core.Services;
+using Ekom.JsonDotNet;
+using Ekom.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     public class OrderedVariant
     {
@@ -110,7 +110,7 @@ namespace Ekom.Core.Models
         public List<IPrice> Prices { get; }
 
         public decimal ProductVat { get; set; }
-        public decimal Vat 
+        public decimal Vat
         {
             get
             {
@@ -174,7 +174,7 @@ namespace Ekom.Core.Models
             Properties = new ReadOnlyDictionary<string, string>(
                 variantObject[nameof(Properties)].ToObject<Dictionary<string, string>>());
 
-      
+
             if (pricesObj != null && !string.IsNullOrEmpty(pricesObj.ToString()))
             {
 

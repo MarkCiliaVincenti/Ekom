@@ -1,7 +1,7 @@
 using System.Web;
 
 
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     class ContentRequest
     {

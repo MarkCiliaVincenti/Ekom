@@ -1,4 +1,4 @@
-namespace Ekom.Core.Models
+namespace Ekom.Models
 {
     /// <summary>
     /// Represents an object that has constraints available

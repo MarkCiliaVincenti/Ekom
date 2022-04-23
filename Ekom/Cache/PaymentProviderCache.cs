@@ -1,5 +1,5 @@
-using Ekom.Core.Interfaces;
-using Ekom.Core.Models;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Ekom.Core.Cache
+namespace Ekom.Cache
 {
     class PaymentProviderCache : PerStoreCache<IPaymentProvider>
     {

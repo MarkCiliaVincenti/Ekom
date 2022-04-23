@@ -1,10 +1,10 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Ekom.Core
+namespace Ekom
 {
     static class CookieHelper
     {
