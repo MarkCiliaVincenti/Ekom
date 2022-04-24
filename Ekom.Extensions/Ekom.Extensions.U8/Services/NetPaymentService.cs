@@ -9,7 +9,7 @@ using Umbraco.NetPayment;
 using Umbraco.NetPayment.API;
 using Umbraco.Web.Composing;
 
-namespace Ekom.Extensions.U8.Services
+namespace Ekom.Extensions.Services
 {
     internal class NetPaymentService : INetPaymentService
     {

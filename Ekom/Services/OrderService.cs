@@ -1515,14 +1515,14 @@ namespace Ekom.Services
             var guidCookie = new HttpCookie(key)
             {
                 Value = guid.ToString(),
-                Expires = DateTime.Now.AddDays(_config.BasketCookieLifetime)
+                Expires = DateTime.UtcNow.AddDays(_config.BasketCookieLifetime)
             };
 
             _httpCtx.Response.Cookies.Add(guidCookie);
 #else
             _httpCtx.Response.Cookies.Append(key, guid.ToString(), new CookieOptions
             {
-                Expires = DateTime.Now.AddDays(_config.BasketCookieLifetime)
+                Expires = DateTime.UtcNow.AddDays(_config.BasketCookieLifetime)
             });
 #endif
 

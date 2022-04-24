@@ -168,6 +168,33 @@
           "UmbracoCms.Web": "8.1.0"
         }
       },
+      "Hangfire": {
+        "type": "Transitive",
+        "resolved": "1.6.0",
+        "contentHash": "g6GGpbz/gN4qBYyExbwBt4eO4mm4NI1nkfQ6BAGEgMcOFv7Ud+0FPw8mYNjOt/pWU4Wjo59pkuY1Ao0FSqmoGQ==",
+        "dependencies": {
+          "Hangfire.Core": "[1.6.0]",
+          "Hangfire.SqlServer": "[1.6.0]",
+          "Microsoft.Owin.Host.SystemWeb": "3.0.0"
+        }
+      },
+      "Hangfire.Core": {
+        "type": "Transitive",
+        "resolved": "1.6.0",
+        "contentHash": "z3tCW8dIIbKASprzf8qC/4a+tkJ/Eq78k4jNsTkecYzVt9VAMDc8Yz+gaoiylIcHEqRc9XVq13Z81Gaz29pxKQ==",
+        "dependencies": {
+          "Newtonsoft.Json": "5.0.0",
+          "Owin": "1.0.0"
+        }
+      },
+      "Hangfire.SqlServer": {
+        "type": "Transitive",
+        "resolved": "1.6.0",
+        "contentHash": "pibd6t9/6pQtUMjOQ7L2AvBfBMcQivv2xpI6QSB9EaRrC/zI0CAQceR2MlFpG5zOsQJmR9ByZux+jyNnJ6dM6g==",
+        "dependencies": {
+          "Hangfire.Core": "[1.6.0]"
+        }
+      },
       "HtmlAgilityPack": {
         "type": "Transitive",
         "resolved": "1.8.14",
@@ -810,6 +837,7 @@
         "type": "Project",
         "dependencies": {
           "CommonServiceLocator": "2.0.6",
+          "Hangfire": "1.6.0",
           "Microsoft.AspNet.WebApi.Core": "5.2.7",
           "Microsoft.Data.SqlClient": "4.1.0",
           "Microsoft.Extensions.Caching.Abstractions": "6.0.0",

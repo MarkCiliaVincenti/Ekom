@@ -1,4 +1,6 @@
+using Ekom.Exceptions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -39,12 +41,33 @@ namespace Ekom.Core.Utilities
             //container.Register<IDatabaseFactory, DatabaseFactory>();
             services.AddMemoryCache();
 
+            services.Configure<MvcOptions>(mvcOptions =>
+            {
+                mvcOptions.Filters.Add<HttpResponseExceptionFilter>();
+            });
+
             return services;
         }
 
         public static IApplicationBuilder UseEkom(this IApplicationBuilder app)
         {
             Configuration.Resolver = app.ApplicationServices;
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    "Organisation Management Controller",
+                    "api/{controller}/{action}/{id?}",
+                    new { controller = "EkomApi" });
+                endpoints.MapControllerRoute(
+                    "Organisation Management Controller",
+                    "api/{controller}/{action}/{id?}",
+                    new { controller = "EkomCatalog" });
+                endpoints.MapControllerRoute(
+                    "Organisation Management Controller",
+                    "api/{controller}/{action}/{id?}",
+                    new { controller = "EkomOrder" });
+            });
 
             return app;
         }

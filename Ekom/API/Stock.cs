@@ -4,6 +4,7 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
+using Hangfire.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;

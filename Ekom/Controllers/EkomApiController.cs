@@ -1,3 +1,10 @@
+#if NETFRAMEWORK
+using System.Web.Http;
+#else
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+#endif
+
 using Ekom.Domain.Repositories;
 using Ekom.Interfaces;
 using Ekom.Models;
@@ -7,9 +14,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
+using Microsoft.Extensions.DependencyInjection;
+using Ekom.Exceptions;
 
 namespace Ekom.Controllers
 {
@@ -17,7 +23,6 @@ namespace Ekom.Controllers
     /// <summary>
     /// Public api, used by property editors
     /// </summary>
-    [PluginController("Ekom")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Reliability",
         "CA2007:Consider calling ConfigureAwait on the awaited task",
@@ -26,19 +31,28 @@ namespace Ekom.Controllers
         "Style",
         "VSTHRD200:Use \"Async\" suffix for async methods",
         Justification = "Async controller action")]
-    public class ApiController : UmbracoAuthorizedApiController
+#if NETFRAMEWORK
+    public class EkomApiController : ApiController
     {
-        readonly CountriesRepository _countriesRepo;
-        readonly Configuration _config;
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="countriesRepo"></param>
-        public ApiController(Configuration config, CountriesRepository countriesRepo)
+        public EkomApiController()
+        {
+            _config = Ekom.Configuration.Resolver.GetService<Configuration>();
+            _countriesRepo = Ekom.Configuration.Resolver.GetService<CountriesRepository>();
+        }
+#else
+    public class EkomApiController : ControllerBase
+    {
+        public EkomApiController(Configuration config, CountriesRepository countriesRepo)
         {
             _config = config;
             _countriesRepo = countriesRepo;
         }
+
+#endif        
+            
+        readonly CountriesRepository _countriesRepo;
+        readonly Configuration _config;
+
 
         public List<Country> GetCountries()
         {
@@ -58,7 +72,7 @@ namespace Ekom.Controllers
         /// Repopulates all Ekom cache
         /// </summary>
         /// <returns></returns>
-        public object PopulateCache()
+        public bool PopulateCache()
         {
             foreach (var cacheEntry in _config.CacheList.Value)
             {
@@ -71,9 +85,9 @@ namespace Ekom.Controllers
         /// <summary>
         /// Get Config
         /// </summary>
-        public object GetConfig()
+        public Configuration GetConfig()
         {
-            return Ekom.Configuration.Current;
+            return Ekom.Configuration.Instance;
         }
 
 
@@ -101,7 +115,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> IncrementStock(Guid id, int stock)
+        public async Task<HttpResponseException> IncrementStock(Guid id, int stock)
         {
             try
             {
@@ -110,11 +124,11 @@ namespace Ekom.Controllers
                 // ToDo: Log Umbraco user performing the action
                 //Logger.Info<ApiController>("")
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -123,7 +137,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> IncrementStock(Guid id, string storeAlias, int stock)
+        public async Task IncrementStock(Guid id, string storeAlias, int stock)
         {
             try
             {
@@ -131,11 +145,11 @@ namespace Ekom.Controllers
 
                 // ToDo: Log Umbraco user performing the action
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -145,7 +159,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> SetStock(Guid id, int stock)
+        public async Task SetStock(Guid id, int stock)
         {
             try
             {
@@ -153,11 +167,11 @@ namespace Ekom.Controllers
 
                 // ToDo: Log Umbraco user performing the action
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -166,7 +180,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> SetStock(Guid id, string storeAlias, int stock)
+        public async Task SetStock(Guid id, string storeAlias, int stock)
         {
             try
             {
@@ -174,11 +188,11 @@ namespace Ekom.Controllers
 
                 // ToDo: Log Umbraco user performing the action
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -186,17 +200,17 @@ namespace Ekom.Controllers
         /// Insert Coupon
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> InsertCoupon(string couponCode, int numberAvailable, Guid discountId)
+        public async Task InsertCoupon(string couponCode, int numberAvailable, Guid discountId)
         {
             try
             {
                 await API.Order.Instance.InsertCouponCodeAsync(couponCode, numberAvailable, discountId);
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -204,17 +218,17 @@ namespace Ekom.Controllers
         /// Remove Coupon
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> RemoveCoupon(string couponCode, Guid discountId)
+        public async Task RemoveCoupon(string couponCode, Guid discountId)
         {
             try
             {
                 await API.Order.Instance.RemoveCouponCodeAsync(couponCode, discountId);
 
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                throw new HttpResponseException(HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is HttpResponseException))
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
 
@@ -222,17 +236,17 @@ namespace Ekom.Controllers
         /// Get Coupons for Discount
         /// </summary>
         [HttpPost]
-        public async Task<HttpResponseMessage> GetCouponsForDiscount(Guid discountId)
+        public async Task<object> GetCouponsForDiscount(Guid discountId)
         {
             try
             {
                 var items = await API.Order.Instance.GetCouponsForDiscountAsync(discountId);
 
-                return Request.CreateResponse(HttpStatusCode.OK, items);
+                return items;
             }
             catch (Exception ex)
             {
-                return ExceptionHandler.Handle<HttpResponseMessage>(ex);
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
     }

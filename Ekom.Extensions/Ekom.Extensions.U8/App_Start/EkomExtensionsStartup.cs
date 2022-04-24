@@ -1,3 +1,4 @@
+using Ekom.Extensions.Services;
 using Ekom.Extensions.U8.Services;
 using Ekom.Interfaces;
 using Ekom.Services;
@@ -6,7 +7,7 @@ using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.NetPayment;
 
-namespace Ekom
+namespace Ekom.Extensions
 {
     /// <summary>
     /// Here we hook into the umbraco lifecycle methods to configure Ekom.Extensions
