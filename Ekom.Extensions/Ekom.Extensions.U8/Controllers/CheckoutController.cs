@@ -1,9 +1,8 @@
 using Ekom.API;
 using Ekom.Exceptions;
-using Ekom.Extensions.Models;
-using Ekom.Extensions.Services;
 using Ekom.Interfaces;
-using Ekom.Models.Data;
+using Ekom.Models;
+using Ekom.Services;
 using Ekom.Utilities;
 using System;
 using System.Collections.Generic;

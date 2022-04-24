@@ -5,7 +5,9 @@ using Ekom.JsonDotNet;
 using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
+#if NETCOREAPP
 using Microsoft.AspNetCore.Http;
+#endif
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -133,7 +135,11 @@ namespace Ekom.Services
             INodeService nodeService)
             : this(config, orderRepo, couponRepository, activityLogRepository, logger, storeService, memoryCache, memberService, discountCache, nodeService)
         {
+#if NETCOREAPP
             _httpCtx = httpContextAccessor.HttpContext;
+#else
+            _httpCtx = httpCtx;
+#endif
             _ekmRequest = memoryCache.Get<ContentRequest>("ekmRequest");
         }
 

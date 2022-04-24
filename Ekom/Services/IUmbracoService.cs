@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Ekom.Services
 {
-    interface IUmbracoService
+    public interface IUmbracoService
     {
         IEnumerable<UmbracoDomain> GetDomains(bool includeWildcards = false);
+        string GetDictionaryValue(string key);
     }
 }

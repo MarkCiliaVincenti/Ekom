@@ -65,7 +65,7 @@
         <PackageReference Include="Examine" Version="1.2.2" />
         <PackageReference Include="GMO.Vorto.v8" Version="0.3.0" />
         <PackageReference Include="Hangfire" Version="1.7.14" />
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

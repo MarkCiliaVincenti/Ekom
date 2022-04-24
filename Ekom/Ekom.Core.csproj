@@ -26,7 +26,7 @@
             <_Parameter1>Ekom</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Ekom.Extensions.Core</_Parameter1>
+            <_Parameter1>Ekom.Extensions</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
         <PackageReference Include="linq2db" Version="3.6.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -54,6 +54,7 @@
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0'">
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net461'">

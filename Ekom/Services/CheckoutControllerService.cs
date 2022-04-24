@@ -1,7 +1,15 @@
-using Ekom.Core;
-using Ekom.Core.API;
-using Ekom.Core.Models;
+using Ekom;
+using Ekom.API;
+using Ekom.Exceptions;
+using Ekom.Interfaces;
+using Ekom.Models;
 using Ekom.Services;
+using Ekom.Utilities;
+using LinqToDB;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+#endif
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,9 +19,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Security.AntiXss;
 
-namespace Ekom.Core.Services
+namespace Ekom.Services
 {
     /// <summary>
     /// Consolidates behaviors for the standard Ekom Checkout Surface and Web Api Controllers
@@ -27,28 +34,44 @@ namespace Ekom.Core.Services
         /// </summary>
         protected virtual string ErrorQueryString { get; set; } = "serverError";
 
-        readonly DatabaseFactory _databaseFactory;
-        readonly INodeService _nodeService;
-        readonly IMemberService _memberService;
+        protected readonly DatabaseFactory DatabaseFactory;
+        protected readonly IUmbracoService UmbracoService;
+        protected readonly IMemberService MemberService;
         protected readonly ILogger Logger;
         protected readonly Configuration Config;
-        //protected readonly HttpContextBase HttpContext;
-
+        protected readonly INetPaymentService netPaymentService;
+#if NETCOREAPP
+        readonly HttpContext _httpCtx;
+#else
+        readonly HttpContextBase _httpCtx;
+#endif
         protected string Culture;
 
         public CheckoutControllerService(
             ILogger logger,
             Configuration config,
             DatabaseFactory databaseFactory,
-            INodeService nodeService,
+            IUmbracoService umbracoService,
             IMemberService memberService,
-            HttpContextBase httpContext)
+#if NETCOREAPP
+            IHttpContextAccessor httpContextAccessor,
+#else
+            HttpContextBase httpCtx,
+#endif
+            INetPaymentService netPaymentService)
         {
+#if NETCOREAPP
+            _httpCtx = httpContextAccessor.HttpContext;
+#else
+            _httpCtx = httpCtx;
+#endif
+
             Logger = logger;
             Config = config;
-            _databaseFactory = databaseFactory;
-            _nodeService = nodeService;
-            _memberService = memberService;
+            DatabaseFactory = databaseFactory;
+            UmbracoService = umbracoService;
+            MemberService = memberService;
+            this.netPaymentService = netPaymentService;
             //HttpContext = httpContext;
         }
 
@@ -72,7 +95,10 @@ namespace Ekom.Core.Services
             var storeAlias = order.StoreInfo.Alias;
             IStore store = API.Store.Instance.GetStore(storeAlias);
 
-            res = await ValidationAndOrderUpdatesAsync(paymentRequest, order, HttpContext.Request.Form)
+            res = await ValidationAndOrderUpdatesAsync(
+                paymentRequest,
+                order,
+                _httpCtx.Request.Form)
                 .ConfigureAwait(false);
             if (res != null)
             {
@@ -123,7 +149,11 @@ namespace Ekom.Core.Services
         protected virtual async Task<CheckoutResponse> ValidationAndOrderUpdatesAsync(
             PaymentRequest paymentRequest,
             IOrderInfo order,
+#if NETCOREAPP
+            IFormCollection form)
+#else
             NameValueCollection form)
+#endif
         {
             if (paymentRequest == null)
             {
@@ -133,13 +163,22 @@ namespace Ekom.Core.Services
                 };
             }
 
-            if (form.AllKeys.Contains("ekomUpdateInformation"))
-            {
-                var formCollection = form.AllKeys.ToDictionary(
-                        k => k,
-                        v => AntiXssEncoder.HtmlEncode(form.Get(v), false)
-                    );
+#if NETCOREAPP
+            var keys = form.Keys;
+#else
+            var keys = form.AllKeys;
+#endif
 
+            if (keys.Contains("ekomUpdateInformation"))
+            {
+                var formCollection = keys.ToDictionary(
+                        k => k,
+#if NETCOREAPP
+                        v => System.Text.Encodings.Web.HtmlEncoder.Default.Encode(form[v])
+#else
+                        v => AntiXssEncoder.HtmlEncode(form.Get(v), false)
+#endif
+                    );
                 if (!formCollection.ContainsKey("storeAlias"))
                 {
                     formCollection.Add("storeAlias", order.StoreInfo.Alias);
@@ -164,7 +203,7 @@ namespace Ekom.Core.Services
 
             if (Config.StoreCustomerData)
             {
-                using (var db = ScopeProvider.CreateScope().Database)
+                using (var db = DatabaseFactory.GetDatabase())
                 {
                     await db.InsertAsync(new CustomerData
                     {
@@ -196,7 +235,7 @@ namespace Ekom.Core.Services
             IOrderInfo order,
             ICollection<string> hangfireJobs)
         {
-            #region Stock
+#region Stock
 
             try
             {
@@ -216,7 +255,7 @@ namespace Ekom.Core.Services
             }
             catch (NotEnoughLineStockException ex)
             {
-                Logger.Error<CheckoutControllerService>(ex, "Not Enough Stock Exception");
+                Logger.LogError(ex, "Not Enough Stock Exception");
                 if (ex.Variant.HasValue && ex.OrderLineKey != default)
                 {
                     var type = ex.Variant.Value ? "variant" : "product";
@@ -241,7 +280,7 @@ namespace Ekom.Core.Services
             }
             catch (NotEnoughStockException ex)
             {
-                Logger.Error<CheckoutControllerService>(ex, "Not Enough Stock Exception");
+                Logger.LogError(ex, "Not Enough Stock Exception");
                 return new CheckoutResponse
                 {
                     ResponseBody = new StockError
@@ -251,7 +290,7 @@ namespace Ekom.Core.Services
                 };
             }
 
-            #endregion
+#endregion
 
             return null;
         }
@@ -331,7 +370,7 @@ namespace Ekom.Core.Services
                     if (paymentOrderTitle.Substring(0, 1) == "#")
                     {
                         var dictionaryValue
-                            = UmbracoHelper.GetDictionaryValue(paymentOrderTitle.Substring(1));
+                            = UmbracoService.GetDictionaryValue(paymentOrderTitle.Substring(1));
 
                         if (!string.IsNullOrEmpty(dictionaryValue))
                         {
@@ -363,16 +402,7 @@ namespace Ekom.Core.Services
 
             var isOfflinePayment = ekomPP.GetPropertyValue("offlinePayment", storeAlias).IsBooleanTrue();
 
-            var orderItems = new List<OrderItem>();
-            orderItems.Add(new OrderItem
-            {
-                GrandTotal = order.ChargedAmount.Value,
-                Price = order.ChargedAmount.Value,
-                Title = orderTitle,
-                Quantity = 1,
-            });
-
-            Logger.Info<CheckoutControllerService>(
+            Logger.LogInformation(
                 "Payment Provider: {PaymentProvider} offline: {isOfflinePayment}",
                 paymentRequest.PaymentProvider,
                 isOfflinePayment);
@@ -381,22 +411,20 @@ namespace Ekom.Core.Services
             {
                 try
                 {
-                    var successUrl = URIHelper.EnsureFullUri(
+                    var successUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
                         ekomPP.GetPropertyValue("successUrl", storeAlias),
-                        HttpContext.Request)
+                        new Uri(_httpCtx.Request.GetEncodedUrl()))
                         + "?orderId=" + order.UniqueId;
 
                     await Order.Instance.UpdateStatusAsync(
-                        Ekom.Utilities.OrderStatus.OfflinePayment,
+                        OrderStatus.OfflinePayment,
                         order.UniqueId).ConfigureAwait(false);
 
-                    LocalCallback.OnSuccess(new Umbraco.NetPayment.OrderStatus()
-                    {
-                        Member = MembershipHelper.GetCurrentMemberId(),
-                        PaymentProviderKey = ekomPP.Key,
-                        PaymentProvider = ekomPP.Name,
-                        Custom = order.UniqueId.ToString()
-                    });
+                    netPaymentService.OnSuccess(
+                        ekomPP.Key,
+                        ekomPP.Name,
+                        MemberService.GetCurrentMember().Key.ToString(),
+                        order.UniqueId.ToString());
 
                     return new CheckoutResponse
                     {
@@ -408,14 +436,14 @@ namespace Ekom.Core.Services
                 catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
                 {
-                    Logger.Error<CheckoutControllerService>(
+                    Logger.LogError(
                         ex,
                         "Offline Payment Failed. Order: {UniqueId}",
                         order.UniqueId);
 
-                    var errorUrl = URIHelper.EnsureFullUri(
+                    var errorUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
                         ekomPP.GetPropertyValue("errorUrl", storeAlias),
-                        HttpContext.Request);
+                        new Uri(_httpCtx.Request.GetEncodedUrl()));
 
                     return new CheckoutResponse
                     {
@@ -427,33 +455,14 @@ namespace Ekom.Core.Services
             else
             {
                 await Order.Instance.UpdateStatusAsync(
-                    Ekom.Utilities.OrderStatus.WaitingForPayment,
+                    OrderStatus.WaitingForPayment,
                     order.UniqueId).ConfigureAwait(false);
 
-                var pp = NetPayment.Instance.GetPaymentProvider(ekomPP.Name);
-
-                var language = !string.IsNullOrEmpty(ekomPP.GetPropertyValue("language", order.StoreInfo.Alias)) ? ekomPP.GetPropertyValue("language", order.StoreInfo.Alias) : "IS";
-
-                var content = await pp.RequestAsync(new PaymentSettings
-                {
-                    CustomerInfo = new CustomerInfo()
-                    {
-                        Address = order.CustomerInformation.Customer.Address,
-                        City = order.CustomerInformation.Customer.City,
-                        Email = order.CustomerInformation.Customer.Email,
-                        Name = order.CustomerInformation.Customer.Name,
-                        NationalRegistryId = order.CustomerInformation.Customer.Properties.GetPropertyValue("customerSsn"),
-                        PhoneNumber = order.CustomerInformation.Customer.Phone,
-                        PostalCode = order.CustomerInformation.Customer.ZipCode
-                    },
-                    Orders = orderItems,
-                    SkipReceipt = true,
-                    VortoLanguage = order.StoreInfo.Alias,
-                    Language = language,
-                    Member = MembershipHelper.GetCurrentMemberId(),
-                    OrderCustomString = order.UniqueId.ToString(),
-                    //paymentProviderId: paymentRequest.PaymentProvider.ToString()
-                }).ConfigureAwait(false);
+                var content = await netPaymentService.ProcessPaymentAsync(
+                    ekomPP, 
+                    order, 
+                    orderTitle)
+                    .ConfigureAwait(false);
 
                 return new CheckoutResponse
                 {

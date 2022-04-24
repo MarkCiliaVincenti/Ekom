@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Ekom.Services
 {
-    interface IMemberService
+    public interface IMemberService
     {
+        UmbracoMember GetCurrentMember();
         UmbracoMember GetByUsername(string t);
         void Save(Dictionary<string, object> t, UmbracoMember member);
         void Save(Dictionary<string, object> t, string userSsn);

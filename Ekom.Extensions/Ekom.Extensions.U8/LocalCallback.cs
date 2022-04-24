@@ -9,7 +9,7 @@ namespace Ekom.Extensions
         /// Raises the success event on successful payment verification
         /// </summary>
         /// <param name="o"></param>
-        internal static void OnSuccess(OrderStatus o)
+        internal static void OnSuccess(Umbraco.NetPayment.OrderStatus o)
         {
             Success?.Invoke(o);
             LocalCallbacks.OnSuccess(o);
@@ -20,7 +20,7 @@ namespace Ekom.Extensions
         /// </summary>
         /// <param name="o"></param>
         /// <param name="ex"></param>
-        internal static void OnError(OrderStatus o, Exception ex)
+        internal static void OnError(Umbraco.NetPayment.OrderStatus o, Exception ex)
         {
             Error?.Invoke(o, ex);
             LocalCallbacks.OnError(o, ex);

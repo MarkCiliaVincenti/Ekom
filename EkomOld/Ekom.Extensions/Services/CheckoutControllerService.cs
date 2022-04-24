@@ -14,6 +14,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security.AntiXss;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Scoping;
+using Umbraco.NetPayment;
+using Umbraco.NetPayment.API;
+using Umbraco.NetPayment.Helpers;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace Ekom.Extensions.Services
 {

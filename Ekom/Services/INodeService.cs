@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Ekom.Services
 {
-    interface INodeService
+    public interface INodeService
     {
         IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias);
         IEnumerable<UmbracoContent> NodeAncestors(string t);

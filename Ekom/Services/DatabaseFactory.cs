@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Ekom.Services
 {
-    class DatabaseFactory
+    public class DatabaseFactory
     {
         readonly string _connectionString;
 
