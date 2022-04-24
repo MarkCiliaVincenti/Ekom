@@ -4,10 +4,8 @@ using System.Web.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 #endif
-using Ekom.Interfaces;
 using Ekom.Utilities;
 using System;
-using System.Web.Http;
 using Ekom.Models;
 using Ekom.Exceptions;
 

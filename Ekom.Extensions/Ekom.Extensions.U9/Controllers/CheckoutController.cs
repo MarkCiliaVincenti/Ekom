@@ -1,29 +1,18 @@
-using Ekom.API;
-using Ekom.Exceptions;
-using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
-using Ekom.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Umbraco.Cms.Web.Common.Attributes;
-using Umbraco.Cms.Web.Website.Controllers;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Persistence;
-using Umbraco.Core;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
+using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Cms.Web.Common.Controllers;
+using Umbraco.Cms.Web.Website.Controllers;
 
 namespace Ekom.Extensions.Controllers
 {
