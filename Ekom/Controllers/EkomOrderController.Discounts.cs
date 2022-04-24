@@ -11,6 +11,7 @@ using Ekom.Utilities;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Ekom.Controllers
 {
@@ -39,7 +40,10 @@ namespace Ekom.Controllers
             {
                 if (string.IsNullOrEmpty(coupon))
                 {
-                    throw new HttpResponseException(400, "Coupon code can not be empty");
+                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Coupon code can not be empty"),
+                    });
                 }
 
                 if (await Order.Instance.ApplyCouponToOrderAsync(coupon, storeAlias))
@@ -48,7 +52,10 @@ namespace Ekom.Controllers
                 }
                 else
                 {
-                    throw new HttpResponseException(NoChangeResponse, "Discount not modified, better discount found");
+                    throw new HttpResponseException(new HttpResponseMessage((HttpStatusCode)NoChangeResponse)
+                    {
+                        Content = new StringContent("Discount not modified, better discount found"),
+                    });
                 }
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
@@ -67,7 +74,7 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> RemoveCouponFromOrder(string storeAlias)
+        public async Task RemoveCouponFromOrder(string storeAlias)
         {
             try
             {
@@ -90,7 +97,7 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> ApplyCouponToOrderLine(Guid productKey, string coupon, string storeAlias)
+        public async Task ApplyCouponToOrderLine(Guid productKey, string coupon, string storeAlias)
         {
             try
             {
@@ -100,7 +107,10 @@ namespace Ekom.Controllers
                 }
                 else
                 {
-                    throw new HttpResponseException(NoChangeResponse, "Discount not modified, better discount found");
+                    throw new HttpResponseException(new HttpResponseMessage((HttpStatusCode)NoChangeResponse)
+                    {
+                        Content = new StringContent("Discount not modified, better discount found"),
+                    });
                 }
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
@@ -120,7 +130,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <exception cref="OrderLineNotFoundException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<ActionResult> RemoveCouponFromOrderLine(Guid productKey, string storeAlias)
+        public async Task RemoveCouponFromOrderLine(Guid productKey, string storeAlias)
         {
             try
             {

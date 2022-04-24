@@ -17,6 +17,9 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Ekom.Controllers
 {
@@ -217,8 +220,8 @@ namespace Ekom.Controllers
                 var form = Request.Form;
                 var keys = form.Keys;
 #else
-                var keys = form.AllKeys;
                 var form = await Request.Content.ReadAsFormDataAsync();
+                var keys = form.AllKeys;
 #endif
 
                 var orderInfo = await Order.Instance.UpdateCustomerInformationAsync(
@@ -369,7 +372,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="currency">Currency value</param>
         /// <returns></returns>
-        public async Task<IOrderInfo> ChangeCurrency(string currency)
+        public async Task<object> ChangeCurrency(string currency)
         {
             var store = API.Store.Instance.GetStore();
 
@@ -377,36 +380,35 @@ namespace Ekom.Controllers
 
             if (orderInfo != null)
             {
-                await Order.Instance.UpdateCurrencyAsync(currency, orderInfo.UniqueId, store.Alias).ConfigureAwait(false);
+                orderInfo = await Order.Instance.UpdateCurrencyAsync(currency, orderInfo.UniqueId, store.Alias).ConfigureAwait(false);
             }
-
-            var cookie = Request.Cookies["EkomCurrency-" + store.Alias];
 
 #if NETFRAMEWORK
-            if (cookie == null)
+            var resp = new HttpResponseMessage
             {
-                cookie = new HttpCookie("EkomCurrency-" + store.Alias)
-                {
-                    Value = currency,
+                Content = new StringContent(
+                    JsonConvert.SerializeObject(orderInfo), 
+                    Encoding.UTF8, 
+                    "application/json")
+            };
 
-                    Expires = DateTime.UtcNow.AddDays(360),
-                };
-            }
-            else
-            {
-                Response.Cookies["EkomCurrency-" + store.Alias].Value = currency;
-            }
+            var cookie = new CookieHeaderValue("EkomCurrency-" + store.Alias, currency);
+            cookie.Expires = DateTimeOffset.UtcNow.AddDays(360);
+
+            resp.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+
+            return resp;
 #else
             // ToDo: Verify this works correctly
             Response.Cookies.Append("EkomCurrency-" + store.Alias, currency, new Microsoft.AspNetCore.Http.CookieOptions
             {
                 Expires = DateTime.UtcNow.AddDays(360),
             });
-#endif
-
-            orderInfo = await Order.Instance.GetOrderAsync(store.Alias);
 
             return orderInfo;
+#endif
+
+
         }
     }
 }

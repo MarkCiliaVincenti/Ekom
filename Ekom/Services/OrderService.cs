@@ -484,7 +484,7 @@ namespace Ekom.Services
             }
         }
 
-        public async Task ChangeCurrencyAsync(Guid uniqueId, string currency, string storeAlias)
+        public async Task<IOrderInfo> ChangeCurrencyAsync(Guid uniqueId, string currency, string storeAlias)
         {
             var store = _storeSvc.GetStoreByAlias(storeAlias);
 
@@ -511,9 +511,11 @@ namespace Ekom.Services
 
                     await _orderRepository.UpdateOrderAsync(order).ConfigureAwait(false);
 
+                    orderInfo = new OrderInfo(order);
+
                     _memoryCache.Set<OrderInfo>(
                         uniqueId.ToString(),
-                        new OrderInfo(order),
+                        orderInfo,
                         Configuration.orderInfoCacheTime);
 
                     _logger.LogDebug(
@@ -521,7 +523,11 @@ namespace Ekom.Services
                         oldCurrency,
                         currency);
                 }
+
+                return orderInfo;
             }
+
+            return null;
         }
 
         public async Task UpdatePaidDateAsync(Guid uniqueId)
