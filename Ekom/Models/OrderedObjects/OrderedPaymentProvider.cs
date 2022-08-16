@@ -69,16 +69,16 @@ namespace Ekom.Models
         }
 
         private StoreInfo StoreInfo { get; set; }
-        public int Id { get; set; }
-        public Guid Key { get; set; }
-        public string Title { get; set; }
-        public IPrice Price
+        public virtual int Id { get; set; }
+        public virtual Guid Key { get; set; }
+        public virtual string Title { get; set; }
+        public virtual IPrice Price
         {
             get
             {
                 return Prices.FirstOrDefault(x => x.Currency.CurrencyValue == StoreInfo.Currency.CurrencyValue);
             }
         }
-        public List<IPrice> Prices { get; set; }
+        public virtual List<IPrice> Prices { get; set; }
     }
 }

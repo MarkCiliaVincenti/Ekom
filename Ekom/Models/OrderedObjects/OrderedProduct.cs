@@ -7,14 +7,12 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Text.Json.Serialization;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
 {
     public class OrderedProduct
     {
-        private readonly string _productJson;
 
         public int Id
         {
@@ -55,7 +53,6 @@ namespace Ekom.Models
                 return Properties.GetPropertyValue("title", StoreInfo.Alias);
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public string Path
@@ -65,13 +62,11 @@ namespace Ekom.Models
                 return Properties.GetPropertyValue("__Path");
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         //TODO Store default setup!
         public bool Backorder => Properties.GetPropertyValue("enableBackorder", StoreInfo.Alias).IsBooleanTrue();
 
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public DateTime CreateDate
@@ -81,7 +76,6 @@ namespace Ekom.Models
                 return UtilityService.ConvertToDatetime(Properties.GetPropertyValue("createDate"));
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public DateTime UpdateDate
@@ -115,7 +109,6 @@ namespace Ekom.Models
             }
         }
 
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         private StoreInfo StoreInfo { get; }
@@ -141,16 +134,38 @@ namespace Ekom.Models
         /// <summary>
         /// ctor
         /// </summary>
-        public OrderedProduct(IProduct product, IVariant variant, StoreInfo storeInfo)
+        public OrderedProduct(IProduct product, IVariant variant, StoreInfo storeInfo, OrderDynamicRequest orderDynamic = null)
         {
             product = product ?? throw new ArgumentNullException(nameof(product));
             StoreInfo = storeInfo ?? throw new ArgumentNullException(nameof(storeInfo));
 
-            Properties = new ReadOnlyDictionary<string, string>(
-               product.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+            var productDictionary = product.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            //Price = product.Price.Clone() as IPrice;
-            Prices = product.Prices.ToList();
+            if (orderDynamic != null && !string.IsNullOrEmpty(orderDynamic.Title))
+            {
+                productDictionary["title"] = orderDynamic.Title;
+            }
+            if (orderDynamic != null && !string.IsNullOrEmpty(orderDynamic.SKU))
+            {
+                productDictionary["sku"] = orderDynamic.SKU;
+            }
+            if (orderDynamic != null && !string.IsNullOrEmpty(orderDynamic.Type))
+            {
+                productDictionary["dynamicType"] = orderDynamic.Type;
+            }
+
+            Properties = new ReadOnlyDictionary<string, string>(
+               productDictionary.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+
+            if (orderDynamic != null && orderDynamic.Prices != null && orderDynamic.Prices.Any())
+            {
+                Prices = orderDynamic.Prices;
+
+            }
+            else
+            {
+                Prices = product.Prices.ToList();
+            }
 
             var productDiscount = product.ProductDiscount(Price.Value.ToString());
 
@@ -221,8 +236,6 @@ namespace Ekom.Models
             {
                 //logger.Error<OrderedProduct>(ex,"Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"));
             }
-
-            //Price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == StoreInfo.Currency.CurrencyValue);
 
             // Add Variant Group
 

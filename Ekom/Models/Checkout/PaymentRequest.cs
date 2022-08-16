@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ekom.Models
 {
@@ -15,5 +11,8 @@ namespace Ekom.Models
 
         public Guid ShippingProvider { get; set; }
         public string CustomerEmail { get; set; }
+        public string CardNumber { get; set; } = "";
+        public string CVV { get; set; } = "";
+        public string Expiry { get; set; } = "";
     }
 }

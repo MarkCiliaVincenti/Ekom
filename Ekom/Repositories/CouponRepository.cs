@@ -138,6 +138,20 @@ namespace Ekom.Repositories
             }
         }
 
+        public async Task DeleteCouponsByDiscountAsync(Guid discountId)
+        {
+            using (var db = _databaseFactory.GetDatabase())
+            {
+                var coupons = await GetCouponsForDiscountAsync(discountId).ConfigureAwait(false);
+
+                foreach (var coupon in coupons)
+                {
+                    await db.DeleteAsync(coupon).ConfigureAwait(false);
+
+                    RemoveCache(coupon);
+                }
+            }
+        }
         public async Task<bool> DiscountHasCouponAsync(Guid discountId, string couponCode)
         {
             using (var db = _databaseFactory.GetDatabase())

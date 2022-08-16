@@ -1,3 +1,4 @@
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 
@@ -25,6 +26,14 @@ namespace Ekom.Models
         /// The uniqueId.
         /// </value>
         Guid UniqueId { get; }
+
+        /// <summary>
+        /// Gets the Culture.
+        /// </summary>
+        /// <value>
+        /// The culture
+        /// </value>
+        string Culture { get; set; }
 
         /// <summary>
         /// Gets the quantity.
@@ -95,7 +104,7 @@ namespace Ekom.Models
 
         int ReferenceId { get; }
 
-        CustomerInfo CustomerInformation { get; }
+        CustomerInfo CustomerInformation { get; set; }
 
         /// <summary>
         /// 

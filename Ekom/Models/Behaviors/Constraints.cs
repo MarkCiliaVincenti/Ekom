@@ -34,28 +34,34 @@ namespace Ekom.Models
         /// </summary>
         public decimal StartRange
         {
-
             get
             {
-                var httpContext = Current.Factory.GetInstance<HttpContextBase>();
-
-                if (httpContext?.Request != null)
+                try
                 {
-                    var store = _node is PerStoreNodeEntity perStoreNode
-                        ? perStoreNode.Store
-                        : API.Store.Instance.GetStore();
+                    var httpContext = Current.Factory.GetInstance<HttpContextBase>();
 
-                    var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
-
-                    if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+                    if (httpContext?.Request != null)
                     {
-                        var price = StartRanges.FirstOrDefault(x => x.Currency == cookie.Value);
+                        var store = _node is PerStoreNodeEntity perStoreNode
+                            ? perStoreNode.Store
+                            : API.Store.Instance.GetStore();
 
-                        if (price != null)
+                        var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
+
+                        if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                         {
-                            return price.Value;
+                            var price = StartRanges.FirstOrDefault(x => x.Currency == cookie.Value);
+
+                            if (price != null)
+                            {
+                                return price.Value;
+                            }
                         }
                     }
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Current.Logger.Error(this.GetType(), ex, "Failed get start range from httpContext. Node: " + _node?.Id);
                 }
 
                 return StartRanges.FirstOrDefault()?.Value ?? 0;
@@ -98,25 +104,31 @@ namespace Ekom.Models
         {
             get
             {
-                var httpContext = Current.Factory.GetInstance<HttpContextBase>();
-
-                if (httpContext?.Request != null)
+                try
                 {
-                    var store = _node is PerStoreNodeEntity perStoreNode ? perStoreNode.Store : API.Store.Instance.GetStore();
+                    var httpContext = Current.Factory.GetInstance<HttpContextBase>();
 
-                    var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
-
-                    if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+                    if (httpContext?.Request != null)
                     {
-                        var price = EndRanges.FirstOrDefault(x => x.Currency == cookie.Value);
+                        var store = _node is PerStoreNodeEntity perStoreNode ? perStoreNode.Store : API.Store.Instance.GetStore();
 
-                        if (price != null)
+                        var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
+
+                        if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                         {
-                            return price.Value;
+                            var price = EndRanges.FirstOrDefault(x => x.Currency == cookie.Value);
+
+                            if (price != null)
+                            {
+                                return price.Value;
+                            }
                         }
                     }
                 }
-
+                catch (ArgumentNullException ex)
+                {
+                    Current.Logger.Error(this.GetType(), ex, "Failed get end range from httpContext. Node: " + _node?.Id);
+                }
                 return EndRanges.FirstOrDefault()?.Value ?? 0;
             }
         }

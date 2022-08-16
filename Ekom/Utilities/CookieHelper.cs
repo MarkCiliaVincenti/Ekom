@@ -1,4 +1,5 @@
 using Ekom.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Ekom
     {
         public static CurrencyModel GetCurrencyCookieValue(List<CurrencyModel> currencies, string storeAlias)
         {
-            var httpContext = Current.Factory.GetInstance<HttpContextBase>();
+            var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
             var cookie = httpContext?.Request?.Cookies["EkomCurrency-" + storeAlias];
 
             if (!string.IsNullOrEmpty(cookie?.Value))

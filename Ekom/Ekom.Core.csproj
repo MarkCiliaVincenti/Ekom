@@ -37,6 +37,7 @@
         <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
         <PackageReference Include="Hangfire" Version="1.6.0" />
         <PackageReference Include="linq2db" Version="3.6.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -67,6 +68,10 @@
         <Reference Include="System.Web.Extensions">
             <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Web.Extensions.dll</HintPath>
         </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.ServiceModel" />
     </ItemGroup>
 
 </Project>

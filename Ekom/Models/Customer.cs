@@ -9,7 +9,7 @@ namespace Ekom.Models
 
             get
             {
-                return string.IsNullOrEmpty(Properties.GetPropertyValue("customerName")) ? (FirstName + " " + LastName) : Properties.GetPropertyValue("customerName");
+                return (string.IsNullOrEmpty(Properties.GetPropertyValue("customerName")) ? (FirstName + " " + LastName) : Properties.GetPropertyValue("customerName"))?.Trim();
             }
         }
         public string FirstName

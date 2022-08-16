@@ -1,6 +1,7 @@
 using Ekom;
 using Ekom.API;
 using Ekom.Exceptions;
+using Ekom.Extensions.Models;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
@@ -15,10 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Security.AntiXss;
 
 namespace Ekom.Services
 {
@@ -74,6 +74,14 @@ namespace Ekom.Services
             this.netPaymentService = netPaymentService;
             //HttpContext = httpContext;
         }
+
+        public static event EventHandler<PayEventArgs> PayEvent;
+        internal static void OnPay(object sender, PayEventArgs args)
+            => PayEvent?.Invoke(sender, args);
+
+        public static event EventHandler<ProcessingEventArgs> ProcessingEvent;
+        internal static void OnProcessing(object sender, ProcessingEventArgs args)
+            => ProcessingEvent?.Invoke(sender, args);
 
         internal async Task<T> PayAsync<T>(Func<CheckoutResponse, T> responseHandler, PaymentRequest paymentRequest, string culture)
         {
@@ -235,7 +243,12 @@ namespace Ekom.Services
             IOrderInfo order,
             ICollection<string> hangfireJobs)
         {
-#region Stock
+            #region Stock
+
+            OnProcessing(this, new ProcessingEventArgs
+            {
+                OrderInfo = order
+            });
 
             try
             {
@@ -255,7 +268,8 @@ namespace Ekom.Services
             }
             catch (NotEnoughLineStockException ex)
             {
-                Logger.LogError(ex, "Not Enough Stock Exception");
+                Logger.LogError(ex, "Not Enough Stock Exception. Orderline: " + ex.OrderLineKey + " Variant: " + ex.Variant);
+
                 if (ex.Variant.HasValue && ex.OrderLineKey != default)
                 {
                     var type = ex.Variant.Value ? "variant" : "product";

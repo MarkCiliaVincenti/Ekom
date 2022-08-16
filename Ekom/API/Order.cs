@@ -30,6 +30,10 @@ namespace Ekom.API
         internal static void OnOrderUpdated(object sender, OrderUpdatedEventArgs args)
             => OrderUpdated?.Invoke(sender, args);
 
+        public static event EventHandler<OrderUpdatingEventArgs> OrderUpdateing;
+        internal static void OnOrderUpdateing(object sender, OrderUpdatingEventArgs args)
+            => OrderUpdateing?.Invoke(sender, args);
+
         public static event EventHandler<OrderStatusEventArgs> OrderStatusChanging;
         internal static void OnOrderStatusChanging(object sender, OrderStatusEventArgs args)
             => OrderStatusChanging?.Invoke(sender, args);
@@ -113,7 +117,7 @@ namespace Ekom.API
         /// <returns></returns>
         public IOrderInfo GetOrder(Guid uniqueId)
         {
-            return _orderService.GetOrder(uniqueId);
+            return _orderService.GetOrderAsync(uniqueId);
         }
 
         /// <summary>

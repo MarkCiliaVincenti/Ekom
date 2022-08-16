@@ -6,4 +6,8 @@ namespace Ekom.Models
     {
         public IOrderInfo OrderInfo { get; set; }
     }
+    public class OrderUpdatingEventArgs : EventArgs
+    {
+        public IOrderInfo OrderInfo { get; set; }
+    }
 }

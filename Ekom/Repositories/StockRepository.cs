@@ -96,10 +96,11 @@ namespace Ekom.Repositories
 
             if (stockDataFromRepo.Stock != oldValue)
             {
-                throw new StockException($"The database and cache are out of sync!")
-                {
-                    RepoValue = stockDataFromRepo.Stock,
-                };
+                _logger.LogError($"The database and cache are out of sync! OrderLine: " + uniqueId + " Stock Sent it: " + oldValue + " Current DB Stock: " + stockDataFromRepo.Stock);
+                //throw new StockException()
+                //{
+                //    RepoValue = stockDataFromRepo.Stock,
+                //};
             }
 
             stockDataFromRepo.Stock = value;

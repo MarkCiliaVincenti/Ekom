@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
@@ -12,7 +11,6 @@ namespace Ekom.Models
         /// <summary>
         /// Store this node entity belongs to
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public IStore Store { get; internal set; }

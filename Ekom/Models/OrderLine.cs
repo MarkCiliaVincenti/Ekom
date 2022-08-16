@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
@@ -13,7 +12,6 @@ namespace Ekom.Models
     {
         public Guid ProductKey => Product.Key;
 
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public IOrderInfo OrderInfo { get; }
@@ -43,7 +41,7 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        public Guid OrderlineLink { get; internal set; }
+        public OrderLineSettings Settings { get; internal set; } = new OrderLineSettings();
 
         /// <summary>
         /// Line price with discount and quantity and variant modifications
@@ -86,7 +84,7 @@ namespace Ekom.Models
             get
             {
                 var variantGroup = Product.VariantGroups.FirstOrDefault(x => x.Properties.ContainsKey("vat"));
-                if (variantGroup != null)
+                if (variantGroup != null && !string.IsNullOrEmpty(variantGroup.Properties.GetPropertyValue("vat", OrderInfo.StoreInfo.Alias)))
                 {
                     var vatVal = variantGroup.Properties.GetPropertyValue("vat", OrderInfo.StoreInfo.Alias);
                     return Convert.ToDecimal(vatVal) / 100;
@@ -108,7 +106,7 @@ namespace Ekom.Models
             OrderInfo orderInfo,
             OrderLineInfo orderLineInfo,
             OrderedDiscount discount,
-            Guid orderLineLink)
+            OrderLineSettings settings)
         {
             Key = lineId;
             Quantity = quantity;
@@ -116,7 +114,7 @@ namespace Ekom.Models
             OrderLineInfo = orderLineInfo;
             Product = new OrderedProduct(productJson, orderInfo.StoreInfo);
             Discount = discount;
-            OrderlineLink = orderLineLink;
+            Settings = settings;
         }
 
         /// <summary>
@@ -127,12 +125,22 @@ namespace Ekom.Models
             int quantity,
             Guid lineId,
             OrderInfo orderInfo,
-            IVariant variant = null)
+            IVariant variant = null,
+            OrderDynamicRequest orderDynamic = null)
         {
             OrderInfo = orderInfo;
             Quantity = quantity;
             Key = lineId;
-            Product = new OrderedProduct(product, variant, orderInfo.StoreInfo);
+            Product = new OrderedProduct(product, variant, orderInfo.StoreInfo, orderDynamic);
+
+            if (orderDynamic != null)
+            {
+                Settings = new OrderLineSettings()
+                {
+                    CountToTotal = orderDynamic.CountToTotal,
+                    Link = orderDynamic.OrderLineLink
+                };
+            }
         }
     }
 }

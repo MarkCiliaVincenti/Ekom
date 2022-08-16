@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ekom.Interfaces;
+using Ekom.JsonDotNet;
 using Ekom.Models;
+using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -278,9 +281,7 @@ namespace Ekom
 
             try
             {
-                {
-                    values = JsonConvert.DeserializeObject<List<CurrencyPrice>>(priceJson);
-                }
+                values = JsonConvert.DeserializeObject<List<CurrencyPrice>>(priceJson);
             }
             catch
             {
@@ -304,18 +305,35 @@ namespace Ekom
 
             if (!string.IsNullOrEmpty(nodeIds))
             {
-                var imageIds = nodeIds.Split(',');
-
-                foreach (var imgId in imageIds)
+                if (nodeIds.StartsWith("[") && nodeIds.IndexOf("mediakey", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    var node = NodeHelper.GetMediaNode(imgId);
+                    var imageList = JsonConvert.DeserializeObject<List<MediaCropImage>>(nodeIds);
 
-                    if (node != null)
+                    foreach (var image in imageList)
                     {
-                        list.Add(new Image(node, storeAlias));
+                        var node = Configuration.Resolver.GetService<INodeService>().MediaById(image.MediaKey);
+
+                        if (node != null)
+                        {
+                            list.Add(new Image(node, storeAlias));
+                        }
                     }
                 }
+                else
+                {
+                    var imageIds = nodeIds.Split(',');
 
+                    foreach (var imgId in imageIds)
+                    {
+
+                        var node = Configuration.Resolver.GetService<INodeService>().MediaById(imgId);
+
+                        if (node != null)
+                        {
+                            list.Add(new Image(node, storeAlias));
+                        }
+                    }
+                }
                 return list;
             }
 

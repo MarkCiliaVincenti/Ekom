@@ -1,3 +1,4 @@
+using Ekom.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -32,6 +33,11 @@ namespace Ekom.Models
             if (!string.IsNullOrEmpty(orderData.OrderInfo))
             {
                 var orderInfoJObject = JObject.Parse(orderData.OrderInfo);
+
+                if (orderInfoJObject[nameof(Culture)] != null)
+                {
+                    Culture = orderInfoJObject[nameof(Culture)].ToString();
+                }
 
                 StoreInfo = CreateStoreInfoFromJson(orderInfoJObject);
                 orderLines = CreateOrderLinesFromJson(orderInfoJObject);
@@ -71,6 +77,23 @@ namespace Ekom.Models
                 return _orderData.OrderNumber;
             }
         }
+        private string _culture;
+        public string Culture
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_culture))
+                {
+                    this._culture = StoreInfo.Culture;
+                }
+
+                return _culture;
+            }
+            set
+            {
+                this._culture = value;
+            }
+        }
 
         /// <summary>
         /// Force changes to come through order api
@@ -89,12 +112,12 @@ namespace Ekom.Models
             get
             {
                 return OrderLines?.Any() == true
-                    ? OrderLines.Sum(x => x.Quantity)
+                    ? OrderLines.Where(x => x.Settings != null ? x.Settings.CountToTotal : true).Sum(x => x.Quantity)
                     : 0;
             }
         }
 
-        public CustomerInfo CustomerInformation { get; } = new CustomerInfo();
+        public CustomerInfo CustomerInformation { get; set; } = new CustomerInfo();
 
         /// <inheritdoc />
         public ICalculatedPrice OrderLineTotal
@@ -103,7 +126,7 @@ namespace Ekom.Models
             {
                 var amount = OrderLines.Sum(line => line.Amount.Value);
 
-                amount = Calculator.EkomRounding(amount, Configuration.Current.OrderVatCalculationRounding);
+                amount = Calculator.EkomRounding(amount, Configuration.Instance.OrderVatCalculationRounding);
 
                 return new CalculatedPrice(amount, StoreInfo.Currency);
             }
@@ -148,7 +171,7 @@ namespace Ekom.Models
                     return line.Amount.AfterDiscount.Value;
                 });
 
-                amount = Calculator.EkomRounding(amount, Configuration.Current.OrderVatCalculationRounding);
+                amount = Calculator.EkomRounding(amount, Configuration.Instance.OrderVatCalculationRounding);
 
                 return new CalculatedPrice(amount, StoreInfo.Currency);
             }
@@ -206,7 +229,7 @@ namespace Ekom.Models
                     return line.Amount.Value;
                 });
 
-                amount = Calculator.EkomRounding(amount, Configuration.Current.OrderVatCalculationRounding);
+                amount = Calculator.EkomRounding(amount, Configuration.Instance.OrderVatCalculationRounding);
 
                 return new CalculatedPrice(amount, StoreInfo.Currency);
             }
@@ -251,7 +274,7 @@ namespace Ekom.Models
                     amount += PaymentProvider.Price.Value;
                 }
 
-                amount = Calculator.EkomRounding(amount, Configuration.Current.OrderVatCalculationRounding);
+                amount = Calculator.EkomRounding(amount, Configuration.Instance.OrderVatCalculationRounding);
 
                 return new CalculatedPrice(amount, StoreInfo.Currency);
             }
@@ -304,9 +327,7 @@ namespace Ekom.Models
             {
                 var lineId = (Guid)line[nameof(OrderLine.Key)];
                 var quantity = (int)line[nameof(OrderLine.Quantity)];
-                var orderLineLink = line[nameof(OrderLine.OrderlineLink)] != null
-                    ? (Guid)line[nameof(OrderLine.OrderlineLink)]
-                    : Guid.Empty;
+                var settings = line[nameof(OrderLine.Settings)]?.ToObject<OrderLineSettings>();
                 var productJson = line[nameof(OrderLine.Product)].ToString();
                 var discount = line[nameof(OrderLine.Discount)]?.ToObject<OrderedDiscount>();
                 var orderLineInfo = line[nameof(OrderLine.OrderLineInfo)]?.ToObject<OrderLineInfo>();
@@ -317,7 +338,7 @@ namespace Ekom.Models
                     this,
                     orderLineInfo,
                     discount,
-                    orderLineLink);
+                    settings);
 
                 orderLines.Add(orderLine);
             }

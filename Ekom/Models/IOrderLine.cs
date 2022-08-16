@@ -1,3 +1,4 @@
+using Ekom.Models;
 using System;
 
 namespace Ekom.Models
@@ -54,5 +55,6 @@ namespace Ekom.Models
         /// </value>
         int Quantity { get; }
         decimal Vat { get; }
+        OrderLineSettings Settings { get; }
     }
 }

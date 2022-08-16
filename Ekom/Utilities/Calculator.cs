@@ -44,9 +44,9 @@ namespace Ekom
 
         private static decimal PerformVatRounding(decimal val, string currency)
         {
-            if (currency.ToLowerInvariant() == "isk")
+            if (currency.ToUpperInvariant() == "ISK")
             {
-                return EkomRounding(val, Configuration.Current.VatCalculationRounding);
+                return EkomRounding(val, Configuration.Instance.VatCalculationRounding);
             }
 
             return val;

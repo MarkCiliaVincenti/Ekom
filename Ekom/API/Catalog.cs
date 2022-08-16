@@ -68,6 +68,24 @@ namespace Ekom.API
         }
 
         /// <summary>
+        /// Get product by SKU using store from ekmRequest
+        /// </summary>
+        /// <returns></returns>
+        public IProduct GetProduct(string sku)
+        {
+            var store = _storeSvc.GetStoreFromCache();
+
+            if (store != null)
+            {
+                var product = GetProduct(store.Alias, sku);
+
+                return product;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Get product by Guid using store from ekmRequest
         /// </summary>
         /// <returns></returns>
@@ -97,6 +115,29 @@ namespace Ekom.API
 
             _productCache.Cache[storeAlias].TryGetValue(Id, out var prod);
             return prod;
+        }
+
+        /// <summary>
+        /// Get product by SKU from specific store
+        /// </summary>
+        public IProduct GetProduct(string storeAlias, string sku)
+        {
+            if (string.IsNullOrEmpty(storeAlias))
+            {
+                throw new ArgumentException(nameof(storeAlias));
+            }
+
+            if (string.IsNullOrEmpty(sku))
+            {
+                throw new ArgumentException(nameof(sku));
+            }
+
+            if (_productCache.Cache[storeAlias].Any(x => x.Value.SKU == sku))
+            {
+                return _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.SKU == sku).Value;
+            }
+
+            return null;
         }
 
         /// <summary>

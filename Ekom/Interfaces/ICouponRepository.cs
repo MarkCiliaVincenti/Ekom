@@ -18,6 +18,7 @@ namespace Ekom.Interfaces
         void RefreshCache(CouponData coupon);
         void RefreshDiscountCache(CouponData coupon);
         void RemoveCache(CouponData coupon);
+        Task DeleteCouponsByDiscountAsync(Guid discountId);
         Task RemoveCouponAsync(Guid discountId, string couponCode);
         Task UpdateCouponAsync(CouponData couponData);
     }

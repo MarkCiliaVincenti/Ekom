@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Text.Json.Serialization;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
@@ -16,7 +15,6 @@ namespace Ekom.Models
     {
         private readonly JToken variantObject;
 
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public int Id
@@ -26,7 +24,6 @@ namespace Ekom.Models
                 return Convert.ToInt32(Properties.GetPropertyValue("__NodeId"));
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public Guid Key
@@ -45,7 +42,6 @@ namespace Ekom.Models
                 return _key;
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public string SKU
@@ -55,7 +51,6 @@ namespace Ekom.Models
                 return Properties.GetPropertyValue("sku");
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public string Title
@@ -65,7 +60,6 @@ namespace Ekom.Models
                 return Properties.GetPropertyValue("title", StoreInfo.Alias);
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public string Path
@@ -75,7 +69,6 @@ namespace Ekom.Models
                 return Properties.GetPropertyValue("__Path");
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public DateTime CreateDate
@@ -85,7 +78,6 @@ namespace Ekom.Models
                 return UtilityService.ConvertToDatetime(Properties.GetPropertyValue("createDate"));
             }
         }
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public DateTime UpdateDate
@@ -123,7 +115,6 @@ namespace Ekom.Models
             }
         }
 
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         private StoreInfo StoreInfo { get; }

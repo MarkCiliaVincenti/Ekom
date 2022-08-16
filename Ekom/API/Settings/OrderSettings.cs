@@ -43,6 +43,8 @@ namespace Ekom.API
         /// circumventing our IsOrderFinal logic
         /// </summary>
         public IOrderInfo OrderInfo { get; set; }
+
+        public OrderDynamicRequest OrderDynamicRequest { get; set; }
     }
 
     /// <summary>

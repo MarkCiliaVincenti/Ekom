@@ -48,7 +48,13 @@ namespace Ekom
         /// If user requests the order while it is in this state he receives a new one with the old data.
         /// </summary>
         WaitingForPayment,
+        /// <summary>
+        /// 
+        /// </summary>
         Returned,
+        /// <summary>
+        /// 
+        /// </summary>
         Wishlist,
     }
 
@@ -66,7 +72,11 @@ namespace Ekom
         /// <summary>
         /// Set quantity to provided amount
         /// </summary>
-        Set
+        Set,
+        /// <summary>
+        /// Always new orderline even with the same SKU
+        /// </summary>
+        New
     }
 
     /// <summary>

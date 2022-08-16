@@ -791,6 +791,15 @@ namespace Ekom.Services
 
         private void RemoveOrderLine(OrderInfo orderInfo, OrderLine orderLine)
         {
+            var linkedLine = orderInfo.OrderLines.Where(x => x.Settings != null && x.Settings.Link == orderLine.Key).ToList();
+            if (linkedLine != null && linkedLine.Count() > 0)
+            {
+                foreach (var ll in linkedLine)
+                {
+                    orderInfo.orderLines.Remove(ll as OrderLine);
+                }
+            }
+            
             orderInfo.orderLines.Remove(orderLine);
         }
 
@@ -856,7 +865,7 @@ namespace Ekom.Services
                         as OrderLine;
                 }
 
-                if (orderLine != null)
+                if (orderLine != null && action != OrderAction.New)
                 {
                     _logger.LogDebug("AddOrderLineToOrderInfo: existingOrderLine Found");
 
@@ -902,7 +911,8 @@ namespace Ekom.Services
                         quantity,
                         lineId,
                         orderInfo,
-                        variant
+                        variant,
+                        settings.OrderDynamicRequest
                     );
 
                     orderInfo.orderLines.Add(orderLine);
@@ -953,6 +963,8 @@ namespace Ekom.Services
             VerifyDiscounts(orderInfo);
             AddGlobalDiscounts(orderInfo);
 
+            orderInfo.Culture = CultureInfo.CurrentCulture.Name;
+
             orderInfo.CustomerInformation.CustomerIpAddress = _ekmRequest.IPAddress;
 
             var serializedOrderInfo = JsonConvert.SerializeObject(orderInfo, EkomJsonDotNet.settings);
@@ -971,7 +983,17 @@ namespace Ekom.Services
             orderData.CustomerEmail = orderInfo.CustomerInformation.Customer.Email;
             orderData.CustomerName = orderInfo.CustomerInformation.Customer.Name;
 
-            orderData.ShippingCountry = orderInfo.CustomerInformation.Shipping.Country;
+            orderData.ShippingCountry = orderInfo.CustomerInformation.Shipping != null
+                && !string.IsNullOrEmpty(orderInfo.CustomerInformation.Shipping.Country)
+                ? orderInfo.CustomerInformation.Shipping.Country : orderInfo.CustomerInformation.Customer.Country;
+
+            if (fireOnOrderUpdatedEvents)
+            {
+                Order.OnOrderUpdateing(this, new OrderUpdatingEventArgs
+                {
+                    OrderInfo = orderInfo,
+                });
+            }
 
             orderData.OrderInfo = serializedOrderInfo;
             orderData.UpdateDate = DateTime.Now;
@@ -987,13 +1009,14 @@ namespace Ekom.Services
                     culture = Configuration.IsCultureInfo;
                 }
 
-                orderData.Currency = culture.NumberFormat.CurrencySymbol;
+                orderData.Currency = orderInfo.StoreInfo.Currency.ISOCurrencySymbol;
             }
             catch (ArgumentException)
             {
-                orderData.Currency = orderInfo.StoreInfo.Culture;
+                orderData.Currency = orderInfo.StoreInfo.Currency.ISOCurrencySymbol;
             }
 
+            
             await _orderRepository.UpdateOrderAsync(orderData)
                 .ConfigureAwait(false);
             UpdateOrderInfoInCache(orderInfo);
@@ -1119,7 +1142,7 @@ namespace Ekom.Services
                 orderData.CustomerEmail = _ekmRequest.User.Email;
                 orderData.CustomerUsername = _ekmRequest.User.Username;
                 orderData.CustomerId = _ekmRequest.User.UserId;
-                orderData.CustomerName = _ekmRequest.User.Name;
+                orderData.CustomerName = _ekmRequest.User.Name?.Trim();
             }
 
             await _orderRepository.InsertOrderAsync(orderData)
@@ -1230,7 +1253,7 @@ namespace Ekom.Services
             {
                 if (shippingProviderId != Guid.Empty)
                 {
-                    var provider = API.Providers.Instance.GetShippingProvider(shippingProviderId, store);
+                    var provider = Providers.Instance.GetShippingProvider(shippingProviderId, store);
 
                     if (provider != null)
                     {
@@ -1423,10 +1446,12 @@ namespace Ekom.Services
                 var total = orderInfo.GrandTotal.Value;
                 var countryCode = orderInfo.CustomerInformation.Customer.Country;
 
+                var store = _storeSvc.GetStoreByAlias(orderInfo.StoreInfo.Alias);
+
                 // Verify paymentProvider constraints
                 if (orderInfo.PaymentProvider != null)
                 {
-                    var paymentProvider = Providers.Instance.GetPaymentProvider(orderInfo.PaymentProvider.Key);
+                    var paymentProvider = Providers.Instance.GetPaymentProvider(orderInfo.PaymentProvider.Key, store);
 
                     if (paymentProvider == null)
                     {
@@ -1452,7 +1477,7 @@ namespace Ekom.Services
                 // Verify shipping provider constraints
                 if (orderInfo.ShippingProvider != null)
                 {
-                    var shippingProvider = Providers.Instance.GetShippingProvider(orderInfo.ShippingProvider.Key);
+                    var shippingProvider = Providers.Instance.GetShippingProvider(orderInfo.ShippingProvider.Key, store);
 
                     if (shippingProvider == null)
                     {

@@ -278,11 +278,11 @@ namespace Ekom.API
         /// Sets stock count of item. 
         /// If PerStoreStock is configured, gets store from cache and updates relevant item.
         /// If no stock entry exists, creates a new one, then attempts to update.
+        /// Prefer Increment stock unless you have your own locks in place or are replacing stock without regard for previous state.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Obsolete("Prefer Increment stock unless you have your own locks in place or are replacing stock without regard for previous state")]
         public async Task<bool> SetStockAsync(Guid key, int value)
         {
             if (_config.PerStoreStock)
@@ -299,12 +299,12 @@ namespace Ekom.API
         /// <summary>
         /// Sets stock count of store item. 
         /// If no stock entry exists, creates a new one, then attempts to update.
+        /// Prefer Increment stock unless you have your own locks in place or are replacing stock without regard for previous state.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="storeAlias"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Obsolete("Prefer Increment stock unless you have your own locks in place or are replacing stock without regard for previous state")]
         public async Task<bool> SetStockAsync(Guid key, string storeAlias, int value)
         {
             StockData stockData;

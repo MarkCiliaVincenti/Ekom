@@ -1,6 +1,5 @@
 using Ekom.Cache;
 using Ekom.Services;
-using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
@@ -47,12 +45,12 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        public string Description => Properties.GetPropertyValue("description", Store.Alias);
+        public virtual string Description => Properties.GetPropertyValue("description", Store.Alias);
 
         /// <summary>
         /// 
         /// </summary>
-        public string Summary => Properties.GetPropertyValue("summary", Store.Alias);
+        public virtual string Summary => Properties.GetPropertyValue("summary", Store.Alias);
 
         /// <summary>
         /// Short spaceless descriptive title used to create URLs
@@ -84,23 +82,25 @@ namespace Ekom.Models
         // </summary>
         public virtual IEnumerable<Image> Images()
         {
-            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
-
-            var imageNodes = _images.GetImages();
-
             var primaryVariantGroup = PrimaryVariantGroup;
 
-            if (!imageNodes.Any() && primaryVariantGroup != null)
+            if (primaryVariantGroup != null)
             {
-                imageNodes = primaryVariantGroup.Images();
+                var imageNodes = primaryVariantGroup.Images();
 
                 if (!imageNodes.Any() && primaryVariantGroup.Variants.Any())
                 {
                     imageNodes = primaryVariantGroup.Variants.FirstOrDefault()?.Images();
                 }
-            }
 
-            return imageNodes;
+                if (imageNodes.Any())
+                {
+                    return imageNodes;
+                }
+            }
+            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
+            
+            return _images.GetImages();
         }
 
         /// <summary>
@@ -138,7 +138,6 @@ namespace Ekom.Models
         /// Found by traversing up the examine tree and then matching examine items to cached <see cref="ICategory"/>'s
         /// </summary>
         /// <returns></returns>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<ICategory> CategoryAncestors => categoryAncestors.AsReadOnly();
@@ -148,7 +147,6 @@ namespace Ekom.Models
         /// All categories product belongs to, includes parent category.
         /// Does not include categories product is an indirect child of.
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<ICategory> Categories => categories.AsReadOnly();
@@ -158,7 +156,6 @@ namespace Ekom.Models
         /// All ID's of categories product belongs to, includes parent category.
         /// Does not include categories product is an indirect child of.
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<Guid> CategoriesIds
@@ -175,7 +172,6 @@ namespace Ekom.Models
         /// <summary>
         /// All product urls, computed from stores and categories.
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<string> Urls { get; internal set; }
@@ -183,26 +179,25 @@ namespace Ekom.Models
         /// <summary>
         /// Get Price by current store currency
         /// </summary>
-        public IPrice Price
+        public IPrice Price => GetPrice();
+
+        private IPrice GetPrice()
         {
-            get
+            var httpCtx = Configuration.Resolver.GetService<HttpContextBase>();
+
+            var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
+
+            if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
             {
-                var httpCtx = Configuration.Resolver.GetService<HttpContextBase>();
+                var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
 
-                var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
-
-                if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+                if (price != null)
                 {
-                    var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
-
-                    if (price != null)
-                    {
-                        return price;
-                    }
+                    return price;
                 }
-
-                return Prices.FirstOrDefault();
             }
+
+            return Prices.FirstOrDefault();
         }
 
         /// <summary>
@@ -243,7 +238,6 @@ namespace Ekom.Models
         /// <summary>
         /// All child variant groups of this product
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<IVariantGroup> VariantGroups
@@ -260,7 +254,6 @@ namespace Ekom.Models
         /// <summary>
         /// All variants belonging to product.
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual IEnumerable<IVariant> AllVariants
@@ -277,7 +270,6 @@ namespace Ekom.Models
         /// <summary>
         /// Get Variant Count
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public int AllVariantsCount

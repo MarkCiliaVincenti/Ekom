@@ -1,9 +1,10 @@
+using Ekom.Cache;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 
@@ -15,8 +16,8 @@ namespace Ekom.Models
     /// </summary>
     public class Category : PerStoreNodeEntity, IPerStoreNodeEntity, ICategory
     {
-        private IPerStoreCache<ICategory> _categoryCache => Current.Factory.GetInstance<IPerStoreCache<ICategory>>();
-        private IPerStoreCache<IProduct> _productCache => Current.Factory.GetInstance<IPerStoreCache<IProduct>>();
+        private IPerStoreCache<ICategory> _categoryCache => Configuration.Resolver.GetService<IPerStoreCache<ICategory>>();
+        private IPerStoreCache<IProduct> _productCache => Configuration.Resolver.GetService<IPerStoreCache<IProduct>>();
 
         /// <summary>
         /// Short spaceless descriptive title used to create URLs
@@ -63,7 +64,6 @@ namespace Ekom.Models
         /// <summary>
         /// All direct child products of category. (No descendants)
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         public IEnumerable<IProduct> Products
         {
@@ -79,7 +79,6 @@ namespace Ekom.Models
         /// <summary>
         /// All descendant categories, includes grandchild categories
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public IEnumerable<ICategory> SubCategoriesRecursive
@@ -97,7 +96,6 @@ namespace Ekom.Models
         /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public IEnumerable<IProduct> ProductsRecursive

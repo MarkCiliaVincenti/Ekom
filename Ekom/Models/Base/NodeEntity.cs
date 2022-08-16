@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
-using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 namespace Ekom.Models
@@ -73,7 +72,6 @@ namespace Ekom.Models
         /// <summary>
         /// CSV of node id's describing hierarchy from left to right leading up to node.
         /// </summary>
-        [ScriptIgnore]
         [JsonIgnore]
         [XmlIgnore]
         public virtual string Path => Properties.GetPropertyValue("__Path");
