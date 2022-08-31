@@ -2,7 +2,6 @@ using Ekom.Exceptions;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
-using Ekom.Services;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

@@ -1,5 +1,6 @@
 using Ekom.JsonDotNet;
 using Ekom.Services;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ namespace Ekom.Models
     public class OrderedVariant
     {
         private readonly JToken variantObject;
+        private readonly IConfiguration config;
+
+        public OrderedVariant(IConfiguration config)
+        {
+            this.config = config;
+        }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -108,7 +115,12 @@ namespace Ekom.Models
             {
                 if (Properties.HasPropertyValue("vat", StoreInfo.Alias))
                 {
-                    return Convert.ToDecimal(Properties.GetPropertyValue("vat", StoreInfo.Alias)) / 100;
+                    var value = Properties.GetPropertyValue("vat", StoreInfo.Alias);
+
+                    if (!string.IsNullOrEmpty(value) && decimal.TryParse(value, out decimal _val))
+                    {
+                        return _val / 100;
+                    }
                 }
 
                 return ProductVat;
@@ -126,7 +138,7 @@ namespace Ekom.Models
         // </summary>
         public virtual IEnumerable<Image> Images()
         {
-            var value = ConfigurationManager.AppSettings["ekmCustomImage"];
+            var value = config["ekmCustomImage"];
 
             var _images = Properties.GetPropertyValue(value ?? "images", StoreInfo.Alias);
 

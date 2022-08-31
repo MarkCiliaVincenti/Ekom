@@ -1,6 +1,12 @@
+
 using System.Collections.Generic;
 using System.Linq;
+
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
 using System.Web;
+#endif
 
 namespace Ekom.Models
 {
@@ -30,9 +36,9 @@ namespace Ekom.Models
                 {
                     var cookie = HttpContext.Current.Request.Cookies["EkomCurrency-" + Store.Alias];
 
-                    if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+                    if (cookie != null && !string.IsNullOrEmpty(cookie))
                     {
-                        var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
+                        var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
 
                         if (price != null)
                         {

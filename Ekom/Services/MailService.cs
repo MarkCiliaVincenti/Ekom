@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using System.Net;
-using System.Net.Configuration;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -19,6 +19,12 @@ namespace Ekom.Services
         private readonly string _user;
         private readonly string _pass;
         private readonly bool _ssl;
+        private readonly IConfiguration config;
+
+        public MailService(IConfiguration config)
+        {
+            this.config = config;
+        }
 
         /// <summary>
         /// Defaults to "no-reply@umbraco.netpayment"
@@ -42,19 +48,18 @@ namespace Ekom.Services
         /// </summary>
         public MailService()
         {
-            var smtpSection = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
             Recipient = Configuration.Instance.EmailNotifications;
 
             //MailServer - Represents the SMTP Server
-            _host = smtpSection.Network.Host;
+            _host = config.GetValue<string>("Smtp:Host");
             //Port- Represents the port number
-            _port = smtpSection.Network.Port;
+            _port = config.GetValue<int>("Smtp:Port");
             //MailAuthUser and MailAuthPass - Used for Authentication for sending email
-            _user = smtpSection.Network.UserName;
-            _pass = smtpSection.Network.Password;
-            _ssl = smtpSection.Network.EnableSsl;
+            _user = config.GetValue<string>("Smtp:UserName");
+            _pass = config.GetValue<string>("Smtp:Password");
+            _ssl = config.GetValue<bool>("Smtp:EnableSsl");
 
-            Sender = smtpSection.From;
+            Sender = config.GetValue<string>("Smtp:FromAddress");
         }
 
         /// <summary>

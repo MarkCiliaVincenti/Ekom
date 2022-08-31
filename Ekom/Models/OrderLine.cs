@@ -50,14 +50,12 @@ namespace Ekom.Models
         {
             get
             {
-                decimal _price = Product.Price.OriginalValue;
+                decimal _price = Product.Price.Discount != null ? Product.Price.Value : Product.Price.OriginalValue;
                 if (Product.VariantGroups.Any() && Product.VariantGroups.Any(x => x.Variants.Any()))
                 {
                     foreach (var v in Product.VariantGroups.SelectMany(x => x.Variants))
                     {
-
-                        _price += (v.Price.OriginalValue - _price);
-
+                        _price += v.Price.Discount != null ? (v.Price.Value - _price) : (v.Price.OriginalValue - _price);
                     }
                 }
 
@@ -84,6 +82,7 @@ namespace Ekom.Models
             get
             {
                 var variantGroup = Product.VariantGroups.FirstOrDefault(x => x.Properties.ContainsKey("vat"));
+
                 if (variantGroup != null && !string.IsNullOrEmpty(variantGroup.Properties.GetPropertyValue("vat", OrderInfo.StoreInfo.Alias)))
                 {
                     var vatVal = variantGroup.Properties.GetPropertyValue("vat", OrderInfo.StoreInfo.Alias);

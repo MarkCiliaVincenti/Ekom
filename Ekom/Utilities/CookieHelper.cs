@@ -1,9 +1,11 @@
 using Ekom.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Net;
+using System.Windows.Input;
 
 namespace Ekom
 {
@@ -11,12 +13,12 @@ namespace Ekom
     {
         public static CurrencyModel GetCurrencyCookieValue(List<CurrencyModel> currencies, string storeAlias)
         {
-            var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
+            var httpContext = Configuration.Resolver.GetService<HttpContext>();
             var cookie = httpContext?.Request?.Cookies["EkomCurrency-" + storeAlias];
-
-            if (!string.IsNullOrEmpty(cookie?.Value))
+            
+            if (!string.IsNullOrEmpty(cookie))
             {
-                var c = currencies.FirstOrDefault(x => x.CurrencyValue == cookie.Value);
+                var c = currencies.FirstOrDefault(x => x.CurrencyValue == cookie);
 
                 if (c != null)
                 {
@@ -27,10 +29,10 @@ namespace Ekom
             return currencies.FirstOrDefault();
         }
 
-        public static void SetUmbracoDomain(HttpCookieCollection cookieCollection, Uri uri)
+        public static void SetUmbracoDomain(System.Web.HttpCookieCollection cookieCollection, Uri uri)
             => cookieCollection[Configuration.Cookie_UmbracoDomain].Value = uri.ToString();
 
-        public static Uri GetUmbracoDomain(HttpCookieCollection cookieCollection)
+        public static Uri GetUmbracoDomain(System.Web.HttpCookieCollection cookieCollection)
         {
             var umbracoDomain = cookieCollection[Configuration.Cookie_UmbracoDomain];
             Uri.TryCreate(umbracoDomain?.Value, UriKind.Absolute, out var uri);

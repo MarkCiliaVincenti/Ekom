@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 
 namespace Ekom.Services
 {
@@ -176,7 +175,7 @@ namespace Ekom.Services
                             }
                             else
                             {
-                                _logger.LogError($"Stock error one line {line.Key} with variant {variant.Key}");
+                                _logger.LogError($"Variant Stock error on line {line.Key} with variant {variant.Key}");
                                 throw new NotEnoughLineStockException("Stock error ")
                                 {
                                     OrderLineKey = line.Key,
@@ -204,7 +203,7 @@ namespace Ekom.Services
                         }
                         else
                         {
-                            _logger.LogError($"Stock error one line {line.Key} with product {line.ProductKey}");
+                            _logger.LogError($"Product Stock error one line {line.Key} with product {line.ProductKey}");
                             throw new NotEnoughLineStockException("Stock error ")
                             {
                                 OrderLineKey = line.Key,

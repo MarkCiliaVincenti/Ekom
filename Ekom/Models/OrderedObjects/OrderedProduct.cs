@@ -1,5 +1,6 @@
 using Ekom.JsonDotNet;
 using Ekom.Services;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ namespace Ekom.Models
 {
     public class OrderedProduct
     {
+        private readonly IConfiguration config;
+
+        public OrderedProduct(IConfiguration config)
+        {
+            this.config = config;
+        }
 
         public int Id
         {
@@ -102,7 +109,12 @@ namespace Ekom.Models
             {
                 if (Properties.HasPropertyValue("vat", StoreInfo.Alias))
                 {
-                    return Convert.ToDecimal(Properties.GetPropertyValue("vat", StoreInfo.Alias)) / 100;
+                    var value = Properties.GetPropertyValue("vat", StoreInfo.Alias);
+
+                    if (!string.IsNullOrEmpty(value) && decimal.TryParse(value, out decimal _val))
+                    {
+                        return _val / 100;
+                    }
                 }
 
                 return StoreInfo.Vat;
@@ -122,7 +134,7 @@ namespace Ekom.Models
         // </summary>
         public virtual IEnumerable<Image> Images()
         {
-            var value = ConfigurationManager.AppSettings["ekmCustomImage"];
+            var value = config["ekmCustomImage"];
 
             var _images = Properties.GetPropertyValue(value ?? "images", StoreInfo.Alias);
 
@@ -160,7 +172,6 @@ namespace Ekom.Models
             if (orderDynamic != null && orderDynamic.Prices != null && orderDynamic.Prices.Any())
             {
                 Prices = orderDynamic.Prices;
-
             }
             else
             {

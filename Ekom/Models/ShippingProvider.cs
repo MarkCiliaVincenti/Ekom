@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,12 @@ namespace Ekom.Models
     /// </summary>
     public class ShippingProvider : PerStoreNodeEntity, IShippingProvider
     {
+        //readonly HttpContext _httpCtx;
+
+        //public ShippingProvider(IHttpContextAccessor httpContextAccessor)
+        //{
+        //    _httpCtx = httpContextAccessor.HttpContext;
+        //}
         /// <summary>
         /// Ranges and zones
         /// </summary>
@@ -23,7 +30,7 @@ namespace Ekom.Models
             {
                 if (HttpContext.Current != null)
                 {
-                    var cookie = HttpContext.Current.Request.Cookies["EkomCurrency-" + Store.Alias];
+                    var cookie = HttpContext.Request.Cookies["EkomCurrency-" + Store.Alias];
 
                     if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                     {

@@ -8,7 +8,6 @@ namespace Ekom.Extensions.Models
     {
         public IOrderInfo OrderInfo { get; set; }
 
-        public PaymentSettings PaymentSettings { get; set; }
     }
 
     public class ProcessingEventArgs : EventArgs

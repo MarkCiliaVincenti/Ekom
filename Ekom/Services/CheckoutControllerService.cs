@@ -10,6 +10,9 @@ using LinqToDB;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+#else
+using System.Web;
+using System.Web.Security.AntiXss;
 #endif
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,8 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Security.AntiXss;
+using System.Net.Http;
 
 namespace Ekom.Services
 {
@@ -98,7 +100,8 @@ namespace Ekom.Services
             // ToDo: Lock order throughout request
             var order = await Order.Instance.GetOrderAsync().ConfigureAwait(false);
 
-            Logger.LogInformation("Checkout Pay - Order:  " + order.UniqueId + " Customer: " + +order.CustomerInformation.Customer.UserId);
+            Logger.LogInformation("Checkout Pay - Order:  " + order.UniqueId + " Customer: " + +order.CustomerInformation.Customer.UserId 
+                + " ," + order.CustomerInformation.Customer.UserName + " Payment Provider: " + paymentRequest.PaymentProvider);
 
             var storeAlias = order.StoreInfo.Alias;
             IStore store = API.Store.Instance.GetStore(storeAlias);
@@ -165,6 +168,9 @@ namespace Ekom.Services
         {
             if (paymentRequest == null)
             {
+
+                Logger.LogError("ValidationAndOrderUpdatesAsync Failed. PaymentRequest is Null. " + (order != null ? order.UniqueId.ToString() : ""));
+
                 return new CheckoutResponse
                 {
                     HttpStatusCode = 400,
@@ -179,6 +185,7 @@ namespace Ekom.Services
 
             if (keys.Contains("ekomUpdateInformation"))
             {
+                var save = false;
                 var formCollection = keys.ToDictionary(
                         k => k,
 #if NETCOREAPP
@@ -190,9 +197,34 @@ namespace Ekom.Services
                 if (!formCollection.ContainsKey("storeAlias"))
                 {
                     formCollection.Add("storeAlias", order.StoreInfo.Alias);
+                    save = true;
+                }
+                if (((!formCollection.ContainsKey("customerName") || !formCollection.ContainsKey("customerEmail"))) && order.CustomerInformation.Customer.UserId != 0)
+                {
+
+                    var member = MembershipHelper.GetById(order.CustomerInformation.Customer.UserId);
+
+                    if (member != null)
+                    {
+                        if (!formCollection.ContainsKey("customerName") && !string.IsNullOrEmpty(member.Name))
+                        {
+                            formCollection.Add("customerName", member.Name);
+                            save = true;
+                        }
+                        if (!formCollection.ContainsKey("customerEmail") && !string.IsNullOrEmpty(member.Value<string>("Email")))
+                        {
+                            formCollection.Add("customerEmail", member.Value<string>("Email"));
+                            save = true;
+                        }
+
+                    }
                 }
 
-                await Order.Instance.UpdateCustomerInformationAsync(formCollection).ConfigureAwait(false);
+                if (save)
+                {
+                    Logger.LogInformation("Saving member data to customer data in orderinfo. " + order.UniqueId);
+                    order = await Order.Instance.UpdateCustomerInformationAsync(formCollection).ConfigureAwait(false);
+                }
             }
 
             if (order.PaymentProvider == null || (order.PaymentProvider != null && order.PaymentProvider.Key == paymentRequest.PaymentProvider))
@@ -223,6 +255,8 @@ namespace Ekom.Services
             if (string.IsNullOrEmpty(order.CustomerInformation.Customer.Name)
             || string.IsNullOrEmpty(order.CustomerInformation.Customer.Email))
             {
+                Logger.LogWarning("ValidationAndOrderUpdatesAsync Failed. Name or Email is empty. " + (order != null ? order.UniqueId.ToString() : ""));
+
                 return new CheckoutResponse
                 {
                     HttpStatusCode = 400,
@@ -254,17 +288,6 @@ namespace Ekom.Services
             {
                 // Only validate, remove stock in CheckoutService
                 Stock.Instance.ValidateOrderStock(order);
-
-                // How does this work ? we dont have a coupon per orderline!
-                //if (line.Discount != null)
-                //{
-                //    hangfireJobs.Add(_stock.ReserveDiscountStock(line.Discount.Key, 1, line.Coupon));
-
-                //    if (line.Discount.HasMasterStock)
-                //    {
-                //        hangfireJobs.Add(_stock.ReserveDiscountStock(line.Discount.Key, 1));
-                //    }
-                //}
             }
             catch (NotEnoughLineStockException ex)
             {
@@ -416,9 +439,19 @@ namespace Ekom.Services
 
             var isOfflinePayment = ekomPP.GetPropertyValue("offlinePayment", storeAlias).IsBooleanTrue();
 
+            var orderItems = new List<OrderInfo>();
+            //orderItems.Add(new OrderInfo
+            //{
+            //    GrandTotal = order.ChargedAmount.Value,
+            //    Price = order.ChargedAmount.Value,
+            //    Title = orderTitle,
+            //    Quantity = 1,
+            //});
+
             Logger.LogInformation(
-                "Payment Provider: {PaymentProvider} offline: {isOfflinePayment}",
-                paymentRequest.PaymentProvider,
+                "Payment Provider: {PaymentProvider}, {Name} offline: {isOfflinePayment}",
+                paymentRequest.PaymentProvider, 
+                ekomPP.Name,
                 isOfflinePayment);
 
             if (isOfflinePayment)
@@ -427,8 +460,12 @@ namespace Ekom.Services
                 {
                     var successUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
                         ekomPP.GetPropertyValue("successUrl", storeAlias),
+#if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()))
-                        + "?orderId=" + order.UniqueId;
+#else
+                        new Uri(System.Web.HttpContext.Current.Request.Url.AbsolutePath))
+#endif
+                    + "?orderId=" + order.UniqueId;
 
                     await Order.Instance.UpdateStatusAsync(
                         OrderStatus.OfflinePayment,
@@ -457,7 +494,11 @@ namespace Ekom.Services
 
                     var errorUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
                         ekomPP.GetPropertyValue("errorUrl", storeAlias),
+#if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()));
+#else
+                        new Uri(System.Web.HttpContext.Current.Request.Url.AbsolutePath));
+#endif
 
                     return new CheckoutResponse
                     {
@@ -472,15 +513,66 @@ namespace Ekom.Services
                     OrderStatus.WaitingForPayment,
                     order.UniqueId).ConfigureAwait(false);
 
-                var content = await netPaymentService.ProcessPaymentAsync(
-                    ekomPP, 
-                    order, 
-                    orderTitle)
-                    .ConfigureAwait(false);
+                //var successUrl = Utilities.UriHelper.EnsureFullUri(
+                //    ekomPP.GetPropertyValue("successUrl", storeAlias),
+                //    HttpContext.Request)
+                //    + "?orderId=" + order.UniqueId;
+
+                //var pp = NetPayment.Instance.GetPaymentProvider(PublishedPaymentProviderHelper.GetName(UmbracoHelper.Content(ekomPP.Id)));
+
+                //var language = !string.IsNullOrEmpty(ekomPP.GetPropertyValue("language", order.StoreInfo.Alias)) ? ekomPP.GetPropertyValue("language", order.StoreInfo.Alias) : "IS";
+
+                //if (!Enum.TryParse(order.StoreInfo.Currency.ISOCurrencySymbol, out Currency currency))
+                //{
+                //    Logger.LogError("Could not parse currency to Enum. Currency not found in Umbraco.NetPayment.Currency. " + order.StoreInfo.Currency.ISOCurrencySymbol);
+                //}
+                //int loanTypeValue = 0;
+                //var loanType = ekomPP.GetPropertyValue("loanType");
+                //if (loanType != null)
+                //{
+                //    int.TryParse(loanType, out loanTypeValue);
+                //}
+                //string merchantName = ekomPP.GetPropertyValue("merchantName");
+                //var paymentSettings = new PaymentSettings
+                //{
+                //    CustomerInfo = new CustomerInfo()
+                //    {
+                //        Address = order.CustomerInformation.Customer.Address,
+                //        City = order.CustomerInformation.Customer.City,
+                //        Email = order.CustomerInformation.Customer.Email,
+                //        Name = order.CustomerInformation.Customer.Name,
+                //        NationalRegistryId = order.CustomerInformation.Customer.Properties.GetPropertyValue("customerSsn"),
+                //        PhoneNumber = order.CustomerInformation.Customer.Phone,
+                //        PostalCode = order.CustomerInformation.Customer.ZipCode
+                //    },
+                //    CardNumber = paymentRequest.CardNumber,
+                //    Expiry = paymentRequest.Expiry,
+                //    CVV = paymentRequest.CVV,
+                //    SuccessUrl = successUrl,
+                //    Currency = currency,
+                //    Orders = orderItems,
+                //    SkipReceipt = true,
+                //    VortoLanguage = order.StoreInfo.Alias,
+                //    Language = language,
+                //    Member = MembershipHelper.GetCurrentMemberId(),
+                //    OrderCustomString = order.UniqueId.ToString(),
+                //    LoanType = loanTypeValue,
+                //    MerchantName = merchantName ?? "",
+                //    ReferenceId = order.ReferenceId.ToString()
+                //    //paymentProviderId: paymentRequest.PaymentProvider.ToString()
+                //};
+
+                //OnPay(this, new PayEventArgs
+                //{
+                //    OrderInfo = order,
+                //    PaymentSettings = paymentSettings
+                //});
+
+                //var content = await pp.RequestAsync(paymentSettings).ConfigureAwait(false);
 
                 return new CheckoutResponse
                 {
-                    ResponseBody = content,
+                    //ResponseBody = content,
                     HttpStatusCode = 230,
                 };
             }

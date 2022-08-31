@@ -61,7 +61,7 @@ namespace Ekom.Models
                 }
                 catch (ArgumentNullException ex)
                 {
-                    Current.Logger.Error(this.GetType(), ex, "Failed get start range from httpContext. Node: " + _node?.Id);
+                    _logger.LogError(this.GetType(), ex, "Failed get start range from httpContext. Node: " + _node?.Id);
                 }
 
                 return StartRanges.FirstOrDefault()?.Value ?? 0;
@@ -127,7 +127,7 @@ namespace Ekom.Models
                 }
                 catch (ArgumentNullException ex)
                 {
-                    Current.Logger.Error(this.GetType(), ex, "Failed get end range from httpContext. Node: " + _node?.Id);
+                    _logger.LogError(this.GetType(), ex, "Failed get end range from httpContext. Node: " + _node?.Id);
                 }
                 return EndRanges.FirstOrDefault()?.Value ?? 0;
             }

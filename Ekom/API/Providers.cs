@@ -169,7 +169,7 @@ namespace Ekom.API
                 store = _storeSvc.GetStoreFromCache();
             }
 
-            return _shippingProviderCache[store.Alias][key];
+            return _shippingProviderCache[store.Alias].ContainsKey(key) ? _shippingProviderCache[store.Alias][key] : null;
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Ekom.API
                 store = _storeSvc.GetStoreFromCache();
             }
 
-            return _paymentProviderCache[store.Alias][key];
+            return _paymentProviderCache[store.Alias].ContainsKey(key) ? _paymentProviderCache[store.Alias][key] : null;
         }
 
         public IEnumerable<IZone> GetAllZones()

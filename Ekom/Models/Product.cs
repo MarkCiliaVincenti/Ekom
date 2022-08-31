@@ -6,8 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Web;
 using System.Xml.Serialization;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
+using System.Web;
+#endif
 
 namespace Ekom.Models
 {
@@ -183,13 +187,18 @@ namespace Ekom.Models
 
         private IPrice GetPrice()
         {
-            var httpCtx = Configuration.Resolver.GetService<HttpContextBase>();
+            var httpCtx = Configuration.Resolver.GetService<HttpContext>();
 
             var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
-
+#if NETCOREAPP
+            if (cookie != null && !string.IsNullOrEmpty(cookie))
+            {
+                var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
+#else
             if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
             {
                 var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
+#endif
 
                 if (price != null)
                 {
@@ -228,7 +237,12 @@ namespace Ekom.Models
             {
                 if (Properties.HasPropertyValue("vat", Store.Alias))
                 {
-                    return Convert.ToDecimal(Properties.GetPropertyValue("vat", Store.Alias)) / 100;
+                    var value = Properties.GetPropertyValue("vat", Store.Alias);
+
+                    if (!string.IsNullOrEmpty(value) && decimal.TryParse(value, out decimal _val))
+                    {
+                        return _val / 100;
+                    }
                 }
 
                 return Store.Vat;

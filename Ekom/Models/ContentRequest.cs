@@ -1,14 +1,17 @@
-using System.Web;
-
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
+using System.Text.RegularExpressions;
 
 namespace Ekom.Models
 {
     class ContentRequest
     {
-        private readonly HttpContextBase _httpCtx;
-        public ContentRequest(HttpContextBase httpContext)
+        private readonly HttpRequest _httpCtxRequest;
+        private readonly HttpContext _httpResponse;
+        public ContentRequest(HttpRequest httpContextRequest, HttpContext httpResponse)
         {
-            _httpCtx = httpContext;
+            _httpCtxRequest = httpContextRequest;
+            _httpResponse = httpResponse;
         }
 
         private IStore _store;
@@ -19,14 +22,16 @@ namespace Ekom.Models
             set
             {
                 // Make sure to update users cookies on store change
-                _httpCtx.Response.Cookies["StoreInfo"].Values["StoreAlias"] = value.Alias;
+                var legacyCookie = _httpResponse.Request.Cookies["StoreInfo"];
+                legacyCookie = Regex.Replace(legacyCookie, "(StoreAlias =)[^&]", value.Alias);
+                _httpResponse.Response.Cookies.Append("StoreInfo", legacyCookie);
 
                 _store = value;
             }
         }
 
         public object Currency { get; set; }
-        public string IPAddress => _httpCtx.Request.UserHostAddress;
+        public string IPAddress => _httpCtxRequest.Host.ToString();
         public IProduct Product { get; set; }
         public ICategory Category { get; set; }
         public User User { get; set; }
