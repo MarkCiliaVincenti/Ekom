@@ -201,8 +201,7 @@ namespace Ekom.Services
                 }
                 if (((!formCollection.ContainsKey("customerName") || !formCollection.ContainsKey("customerEmail"))) && order.CustomerInformation.Customer.UserId != 0)
                 {
-
-                    var member = MembershipHelper.GetById(order.CustomerInformation.Customer.UserId);
+                    var member = MemberService.GetByUsername(order.CustomerInformation.Customer.UserName);
 
                     if (member != null)
                     {
@@ -211,9 +210,9 @@ namespace Ekom.Services
                             formCollection.Add("customerName", member.Name);
                             save = true;
                         }
-                        if (!formCollection.ContainsKey("customerEmail") && !string.IsNullOrEmpty(member.Value<string>("Email")))
+                        if (!formCollection.ContainsKey("customerEmail") && !string.IsNullOrEmpty(member.Email))
                         {
-                            formCollection.Add("customerEmail", member.Value<string>("Email"));
+                            formCollection.Add("customerEmail", member.Email);
                             save = true;
                         }
 

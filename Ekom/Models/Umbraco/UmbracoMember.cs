@@ -18,6 +18,7 @@ namespace Ekom.Models
             Key = new Guid(Properties.GetPropertyValue("__Key"));
             Name = Properties.GetPropertyValue("nodeName");
             UserName = Properties.GetPropertyValue("userName");
+            Email = Properties.GetPropertyValue("email");
         }
 
         readonly Dictionary<string, string> _properties;
@@ -30,5 +31,6 @@ namespace Ekom.Models
         public Guid Key { get; set; }
         public string Name { get; set; }
         public string UserName { get; set; }
+        public string Email { get; set; }
     }
 }

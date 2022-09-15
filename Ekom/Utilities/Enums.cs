@@ -56,6 +56,10 @@ namespace Ekom
         /// 
         /// </summary>
         Wishlist,
+        /// <summary>
+        /// 
+        /// </summary>
+        ReadyForPickup
     }
 
     /// <summary>

@@ -117,7 +117,7 @@ namespace Ekom.API
         /// <returns></returns>
         public IOrderInfo GetOrder(Guid uniqueId)
         {
-            return _orderService.GetOrderAsync(uniqueId);
+            return (IOrderInfo)_orderService.GetOrderAsync(uniqueId);
         }
 
         /// <summary>

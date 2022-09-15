@@ -1,7 +1,11 @@
+#if NETCOREAPP
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+#else
+using System.Web;
+#endif
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Ekom.Models
 {
@@ -28,13 +32,25 @@ namespace Ekom.Models
         {
             get
             {
+#if NETCOREAPP
+                var httpContext = Configuration.Resolver.GetService<HttpContext>();
+
+                if (httpContext?.Request != null)
+                {
+                    var cookie = httpContext.Request.Cookies["EkomCurrency-" + Store.Alias];
+
+                    if (cookie != null && !string.IsNullOrEmpty(cookie))
+                    {
+                        var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
+#else
                 if (HttpContext.Current != null)
                 {
-                    var cookie = HttpContext.Request.Cookies["EkomCurrency-" + Store.Alias];
+                    var cookie = HttpContext.Current.Request.Cookies["EkomCurrency-" + Store.Alias];
 
                     if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                     {
                         var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
+#endif
 
                         if (price != null)
                         {

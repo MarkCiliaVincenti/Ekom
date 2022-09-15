@@ -1,8 +1,16 @@
+using Ekom.Cache;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
+using Microsoft.Identity.Client;
 using System.Web;
+#endif
 
 namespace Ekom.Models
 {
@@ -11,6 +19,7 @@ namespace Ekom.Models
     /// </summary>
     public class Constraints : IConstraints
     {
+        private readonly ILogger Logger;
         /// <summary>
         /// Determine if the given provider is valid given the provided properties.
         /// </summary>
@@ -38,7 +47,11 @@ namespace Ekom.Models
             {
                 try
                 {
-                    var httpContext = Current.Factory.GetInstance<HttpContextBase>();
+#if NETCOREAPP
+                    var httpContext = Configuration.Resolver.GetService<HttpContext>();
+#else
+                    var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
+#endif
 
                     if (httpContext?.Request != null)
                     {
@@ -48,10 +61,15 @@ namespace Ekom.Models
 
                         var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
 
+#if NETCOREAPP
+                        if (cookie != null && !string.IsNullOrEmpty(cookie))
+                        {
+                            var price = StartRanges.FirstOrDefault(x => x.Currency == cookie);
+#else
                         if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                         {
                             var price = StartRanges.FirstOrDefault(x => x.Currency == cookie.Value);
-
+#endif
                             if (price != null)
                             {
                                 return price.Value;
@@ -61,7 +79,7 @@ namespace Ekom.Models
                 }
                 catch (ArgumentNullException ex)
                 {
-                    _logger.LogError(this.GetType(), ex, "Failed get start range from httpContext. Node: " + _node?.Id);
+                    Logger.LogError(ex, "Failed get start range from httpContext. Node: " + _node?.Id);
                 }
 
                 return StartRanges.FirstOrDefault()?.Value ?? 0;
@@ -106,7 +124,11 @@ namespace Ekom.Models
             {
                 try
                 {
-                    var httpContext = Current.Factory.GetInstance<HttpContextBase>();
+#if NETCOREAPP
+                    var httpContext = Configuration.Resolver.GetService<HttpContext>();
+#else
+                    var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
+#endif
 
                     if (httpContext?.Request != null)
                     {
@@ -114,10 +136,15 @@ namespace Ekom.Models
 
                         var cookie = httpContext.Request.Cookies["EkomCurrency-" + store.Alias];
 
+#if NETCOREAPP
+                        if (cookie != null && !string.IsNullOrEmpty(cookie))
+                        {
+                            var price = EndRanges.FirstOrDefault(x => x.Currency == cookie);
+#else
                         if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                         {
                             var price = EndRanges.FirstOrDefault(x => x.Currency == cookie.Value);
-
+#endif
                             if (price != null)
                             {
                                 return price.Value;
@@ -127,7 +154,7 @@ namespace Ekom.Models
                 }
                 catch (ArgumentNullException ex)
                 {
-                    _logger.LogError(this.GetType(), ex, "Failed get end range from httpContext. Node: " + _node?.Id);
+                    Logger.LogError(ex, "Failed get end range from httpContext. Node: " + _node?.Id);
                 }
                 return EndRanges.FirstOrDefault()?.Value ?? 0;
             }
@@ -177,12 +204,12 @@ namespace Ekom.Models
             Guid zoneKey = Guid.Empty;
 
             if (node.Properties.ContainsKey("zone")
-            && GuidUdi.TryParse(node.Properties["zone"], out var guidUdi))
+            && Guid.TryParse(node.Properties["zone"], out var guidUdi))
             {
-                zoneKey = guidUdi.Guid;
+                zoneKey = guidUdi;
             }
 
-            var zoneCache = Current.Factory.GetInstance<IBaseCache<IZone>>();
+            var zoneCache = Configuration.Resolver.GetService<IBaseCache<IZone>>();
             if (zoneKey != Guid.Empty
             && zoneCache.Cache.ContainsKey(zoneKey))
             {
