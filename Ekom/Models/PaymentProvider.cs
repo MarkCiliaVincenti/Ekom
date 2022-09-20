@@ -82,14 +82,14 @@ namespace Ekom.Models
         /// Used by Ekom extensions
         /// </summary>
         /// <param name="store"></param>
-        public PaymentProvider(IStore store) : base(store) { }
+        internal protected PaymentProvider(IStore store) : base(store) { }
 
         /// <summary>
         /// Construct PaymentProvider
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public PaymentProvider(UmbracoContent item, IStore store) : base(item, store)
+        internal protected PaymentProvider(UmbracoContent item, IStore store) : base(item, store)
         {
             Constraints = new Constraints(this);
         }

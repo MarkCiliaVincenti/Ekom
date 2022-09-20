@@ -1,4 +1,5 @@
 using Ekom.Exceptions;
+using Ekom.U9;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,6 +69,8 @@ namespace Ekom.Core.Utilities
                     "api/{controller}/{action}/{id?}",
                     new { controller = "EkomOrder" });
             });
+
+            app.UseMiddleware<EkomMiddleware>();
 
             return app;
         }

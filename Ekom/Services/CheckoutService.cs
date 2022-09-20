@@ -133,8 +133,7 @@ namespace Ekom.Services
                 body += ex.ToString();
                 _mailService.Body = body;
 
-                HostingEnvironment.QueueBackgroundWorkItem(
-                    async ct => await _mailService.SendAsync().ConfigureAwait(false));
+                await _mailService.SendAsync().ConfigureAwait(false);
                 throw;
             }
             catch (Exception ex)
@@ -146,8 +145,7 @@ namespace Ekom.Services
                 _mailService.Body = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}."
                     + $"Order id: {oi?.UniqueId}\r\n\r\n" + ex.ToString();
 
-                HostingEnvironment.QueueBackgroundWorkItem(
-                    async ct => await _mailService.SendAsync().ConfigureAwait(false));
+                await _mailService.SendAsync().ConfigureAwait(false);
                 throw;
             }
         }

@@ -40,10 +40,11 @@ namespace Ekom.Controllers
             {
                 if (string.IsNullOrEmpty(coupon))
                 {
-                    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
                     {
                         Content = new StringContent("Coupon code can not be empty"),
-                    });
+                    };
+                    throw new HttpResponseException(resp);
                 }
 
                 if (await Order.Instance.ApplyCouponToOrderAsync(coupon, storeAlias))

@@ -5,7 +5,13 @@ namespace Ekom.Models
 {
     public class UmbracoContent
     {
-        public UmbracoContent(IDictionary<string, string> defaultProperties, Dictionary<string, string> contentProperies)
+        public UmbracoContent()
+        {
+
+        }
+        public UmbracoContent(
+            IDictionary<string, string> defaultProperties,
+            Dictionary<string, string> contentProperies)
         {
             _properties = new Dictionary<string, string>(defaultProperties);
 

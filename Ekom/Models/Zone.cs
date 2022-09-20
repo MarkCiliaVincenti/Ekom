@@ -32,13 +32,12 @@ namespace Ekom.Models
         /// <summary>
         /// ctor
         /// </summary>
-        public Zone() : base() { }
+        internal protected Zone() : base() { }
 
         /// <summary>
         /// Construct Zone
         /// </summary>
         /// <param name="item"></param>
-        public Zone(UmbracoContent item) : base(item) { }
-
+        internal protected Zone(UmbracoContent item) : base(item) { }
     }
 }

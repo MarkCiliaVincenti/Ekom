@@ -301,14 +301,14 @@ namespace Ekom.Models
         /// Used by Ekom extensions, keep logic empty to allow full customisation of object construction.
         /// </summary>
         /// <param name="store"></param>
-        public Product(IStore store) : base(store) { }
+        internal protected Product(IStore store) : base(store) { }
 
         /// <summary>
         /// Construct Product
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public Product(UmbracoContent item, IStore store) : base(item, store)
+        internal protected Product(UmbracoContent item, IStore store) : base(item, store)
         {
             PopulateCategoryAncestors(item);
             PopulateCategories();

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Configuration;
 using System.Net;
 using System.Net.Mail;
@@ -51,15 +52,15 @@ namespace Ekom.Services
             Recipient = Configuration.Instance.EmailNotifications;
 
             //MailServer - Represents the SMTP Server
-            _host = config.GetValue<string>("Smtp:Host");
+            _host = config["Smtp:Host"];
             //Port- Represents the port number
-            _port = config.GetValue<int>("Smtp:Port");
+            _port = int.Parse(config["Smtp:Port"]);
             //MailAuthUser and MailAuthPass - Used for Authentication for sending email
-            _user = config.GetValue<string>("Smtp:UserName");
-            _pass = config.GetValue<string>("Smtp:Password");
-            _ssl = config.GetValue<bool>("Smtp:EnableSsl");
+            _user = config["Smtp:UserName"];
+            _pass = config["Smtp:Password"];
+            _ssl = bool.Parse(config["Smtp:EnableSsl"]);
 
-            Sender = config.GetValue<string>("Smtp:FromAddress");
+            Sender = config["Smtp:FromAddress"];
         }
 
         /// <summary>

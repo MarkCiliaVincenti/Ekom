@@ -3,6 +3,7 @@ using Ekom.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
@@ -113,15 +114,15 @@ namespace Ekom.Models
         /// <summary>
         /// ctor
         /// </summary>
-        public NodeEntity() { }
+        protected NodeEntity() { }
 
         /// <summary>
         /// Construct Node from Examine item
         /// </summary>
         /// <param name="item"></param>
-        public NodeEntity(UmbracoContent content)
+        protected NodeEntity(UmbracoContent content)
         {
-            _properties = content.Properties;
+            _properties = content.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         /// <summary>

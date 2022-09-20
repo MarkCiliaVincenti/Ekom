@@ -24,6 +24,5 @@ namespace Ekom.Utilities
 
             throw new ArgumentException($"Uri \"{uri}\" is not a well formed Uri, please ensure correct configuration of urls used for success/error/cancel...", nameof(uri));
         }
-
     }
 }

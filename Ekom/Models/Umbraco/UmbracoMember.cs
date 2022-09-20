@@ -3,8 +3,12 @@ using System.Collections.Generic;
 
 namespace Ekom.Models
 {
-    public class UmbracoMember
+    class UmbracoMember
     {
+        public UmbracoMember()
+        {
+
+        }
         public UmbracoMember(IDictionary<string, string> defaultProperties, Dictionary<string, string> contentProperies)
         {
             _properties = new Dictionary<string, string>(defaultProperties);

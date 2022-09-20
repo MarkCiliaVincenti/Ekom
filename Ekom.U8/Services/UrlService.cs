@@ -1,7 +1,6 @@
-using Ekom.Core;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
-using Ekom.Core.Utilities;
+using Ekom.Models;
+using Ekom.Services;
+using Ekom.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +9,23 @@ using System.Threading.Tasks;
 using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
+using Umbraco.Core.Logging;
 using Umbraco.Web;
 
 namespace Ekom.U8.Services
 {
     class UrlService : IUrlService
     {
+        readonly ILogger _logger;
+        readonly IUmbracoContextFactory _context;
+        readonly HttpContextBase _httpContext;
         /// <summary>
         /// Build URLs for category
         /// </summary>
         /// <param name="examineItems">All categories in hierarchy inclusive</param>
         /// <param name="store"></param>
         /// <returns>Collection of urls for all domains</returns>
-        public IEnumerable<string> BuildCategoryUrls(List<UmbracoContent> items, IStore store)
+        public IEnumerable<string> BuildCategoryUrls(IEnumerable<UmbracoContent> items, IStore store)
         {
             var urls = new HashSet<string>();
 
@@ -163,69 +166,66 @@ namespace Ekom.U8.Services
             // Umbraco cultures & hostnames can include a prefix
             // This code matches to find correct prefix,
             // aside from that, relative urls should be similar between domains
-            var umbCtx = Current.Factory.GetInstance<UmbracoContext>();
-            var pubReq = umbCtx?.PublishedRequest;
-            var debugLogging = false;
-            Uri uri = null;
-            if (pubReq == null)
+
+            using (var cref = _context.EnsureUmbracoContext())
             {
-                var httpCtx = Current.Factory.GetInstance<HttpContextBase>();
+                var pubReq = cref.UmbracoContext.PublishedRequest;
 
-                if (httpCtx != null)
+                var debugLogging = false;
+                Uri uri = null;
+                if (pubReq == null)
                 {
-                    uri = CookieHelper.GetUmbracoDomain(httpCtx.Request.Cookies);
 
-                    // This could happen when background service calls an api on the store end.
-                    // Cookie needs to be sent with the api request.
-
-                    if (uri == null)
+                    if (_httpContext != null)
                     {
-                        debugLogging = true;
+                        uri = CookieHelper.GetUmbracoDomain(_httpContext.Request.Cookies);
+
+                        // This could happen when background service calls an api on the store end.
+                        // Cookie needs to be sent with the api request.
+
+                        if (uri == null)
+                        {
+                            debugLogging = true;
+                        }
+
                     }
-
-                }
-            }
-            else
-            {
-                uri = pubReq.Domain?.Uri;
-            }
-
-            if (uri == null)
-            {
-                var message = "Unable to determine umbraco domain." + (umbCtx == null ? "Umbraco Context is null, the Url getter is not supported in background services." : "") + (pubReq != null && pubReq.Domain == null ? "Domain is not found in context. Check if domain is set in culture and hostnames under the store root node" : "") + (pubReq == null ? "Publish request is null. Fallbacking to cookie did not work." : "") + " - " + new System.Diagnostics.StackTrace();
-
-                // Handle when umbraco couldn't find matching domain for request
-                // This can be due to the following error message, or some failure with the cookie solution
-                // Historically this would happen when ajaxing to surface controllers without including the ufprt ctx
-                // today the cookie solution should cover that as well
-
-                if (debugLogging)
-                {
-                    Current.Logger.Debug(
-                        node.GetType(),
-                        message);
                 }
                 else
                 {
-                    Current.Logger.Error(
-                        node.GetType(),
-                        message);
+                    uri = pubReq.Domain?.Uri;
                 }
 
+                if (uri == null)
+                {
+                    var message = "Unable to determine umbraco domain." + (cref.UmbracoContext == null ? "Umbraco Context is null, the Url getter is not supported in background services." : "") + (pubReq != null && pubReq.Domain == null ? "Domain is not found in context. Check if domain is set in culture and hostnames under the store root node" : "") + (pubReq == null ? "Publish request is null. Fallbacking to cookie did not work." : "") + " - " + new System.Diagnostics.StackTrace();
 
-                return node.Urls.FirstOrDefault();
+                    // Handle when umbraco couldn't find matching domain for request
+                    // This can be due to the following error message, or some failure with the cookie solution
+                    // Historically this would happen when ajaxing to surface controllers without including the ufprt ctx
+                    // today the cookie solution should cover that as well
+
+                    if (debugLogging)
+                    {
+                        _logger.Debug<NodeService>(message);
+                    }
+                    else
+                    {
+                        _logger.Error<NodeService>(message);
+                    }
+
+                    return node.Urls.FirstOrDefault();
+                }
+
+                var path = uri
+                    .AbsolutePath
+                    .ToLower()
+                    .AddTrailing();
+
+                var findUrlByPrefix = node.Urls
+                    .FirstOrDefault(x => x.StartsWith(path));
+
+                return findUrlByPrefix ?? node.Urls.FirstOrDefault();
             }
-
-            var path = uri
-                .AbsolutePath
-                .ToLower()
-                .AddTrailing();
-
-            var findUrlByPrefix = node.Urls
-                .FirstOrDefault(x => x.StartsWith(path));
-
-            return findUrlByPrefix ?? node.Urls.FirstOrDefault();
-
         }
     }
 }

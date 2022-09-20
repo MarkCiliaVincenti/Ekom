@@ -115,10 +115,7 @@ namespace Ekom.API
         /// Do not use for cart or checkout display.
         /// </summary>
         /// <returns></returns>
-        public IOrderInfo GetOrder(Guid uniqueId)
-        {
-            return (IOrderInfo)_orderService.GetOrderAsync(uniqueId);
-        }
+        public IOrderInfo GetOrder(Guid uniqueId) => _orderService.GetOrderAsync(uniqueId).Result;
 
         /// <summary>
         /// Get completed order using cookie data and provided store.

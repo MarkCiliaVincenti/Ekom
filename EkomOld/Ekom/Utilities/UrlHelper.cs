@@ -23,7 +23,7 @@ namespace Ekom.Utilities
         /// <summary>
         /// Build URLs for category
         /// </summary>
-        /// <param name="examineItems">All categories in hierarchy inclusive</param>
+        /// <param name="items">All categories in hierarchy inclusive</param>
         /// <param name="store"></param>
         /// <returns>Collection of urls for all domains</returns>
         public static IEnumerable<string> BuildCategoryUrls(List<IPublishedContent> items, IStore store)

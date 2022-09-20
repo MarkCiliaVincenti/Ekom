@@ -82,14 +82,14 @@ namespace Ekom.Models
         /// Used by Ekom extensions
         /// </summary>
         /// <param name="store"></param>
-        public ShippingProvider(IStore store) : base(store) { }
+        internal protected ShippingProvider(IStore store) : base(store) { }
 
         /// <summary>
         /// Construct ShippingProvider
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public ShippingProvider(UmbracoContent item, IStore store) : base(item, store)
+        internal protected ShippingProvider(UmbracoContent item, IStore store) : base(item, store)
         {
             Constraints = new Constraints(this);
         }

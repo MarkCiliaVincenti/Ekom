@@ -1,4 +1,4 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using Umbraco.Core.Models.PublishedContent;
 
 namespace Ekom.U8.Models
 {
-    public class Umbraco8Content : UmbracoContent
+    class Umbraco8Content : UmbracoContent
     {
         public Umbraco8Content(IPublishedContent content)
             : base(new Dictionary<string, string>
@@ -35,7 +35,5 @@ namespace Ekom.U8.Models
                 x => x.Alias,
                 x => x.GetValue().ToString()))
         { }
-
-
     }
 }

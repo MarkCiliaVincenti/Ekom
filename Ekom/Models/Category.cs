@@ -1,4 +1,5 @@
 using Ekom.Cache;
+using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
@@ -25,11 +26,6 @@ namespace Ekom.Models
         public string Slug => Properties.GetPropertyValue("slug", base.Store.Alias);
 
         /// <summary>
-        /// Parent umbraco node
-        /// </summary>
-        public int ParentId { get; set; }
-
-        /// <summary>
         /// All category Urls, computed from stores
         /// </summary>
         public IEnumerable<string> Urls { get; set; }
@@ -45,7 +41,14 @@ namespace Ekom.Models
         }
 
         /// <inheritdoc/>
-        public virtual string Url => UrlHelper.GetNodeEntityUrl(this);
+        public virtual string Url
+        {
+            get
+            {
+                var urlSvc = Configuration.Resolver.GetService<IUrlService>();
+                return urlSvc.GetNodeEntityUrl(this);
+            }
+        }
 
         /// <summary>
         /// All direct child categories
@@ -55,9 +58,9 @@ namespace Ekom.Models
             get
             {
                 return _categoryCache.Cache[Store.Alias]
-                                    .Where(x => x.Value.ParentId == Id)
-                                    .Select(x => x.Value)
-                                    .OrderBy(x => x.SortOrder);
+                    .Where(x => x.Value.ParentId == Id)
+                    .Select(x => x.Value)
+                    .OrderBy(x => x.SortOrder);
             }
         }
 
@@ -140,17 +143,17 @@ namespace Ekom.Models
         /// Used by Ekom extensions, keep logic empty to allow full customisation of object construction.
         /// </summary>
         /// <param name="store"></param>
-        public Category(IStore store) : base(store) { }
+        internal protected Category(IStore store) : base(store) { }
         /// <summary>
         /// Construct Category from IPublishedContent item
         /// </summary>
         /// <param name="item"></param>
         /// <param name="store"></param>
-        public Category(UmbracoContent item, IStore store) : base(item, store)
+        internal protected Category(UmbracoContent item, IStore store) : base(item, store)
         {
-            ParentId = item.Parent.Id;
-
-            Urls = UrlHelper.BuildCategoryUrls(Node8Helper.Instance.GetAllCatalogAncestors(item), store);
+            var urlSvc = Configuration.Resolver.GetService<IUrlService>();
+            var nodeSvc = Configuration.Resolver.GetService<INodeService>();
+            Urls = urlSvc.BuildCategoryUrls(nodeSvc.GetAllCatalogAncestors(item), store);
         }
     }
 }

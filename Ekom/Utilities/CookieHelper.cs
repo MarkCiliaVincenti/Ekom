@@ -29,6 +29,8 @@ namespace Ekom
             return currencies.FirstOrDefault();
         }
 
+#if NETFRAMEWORK
+
         public static void SetUmbracoDomain(System.Web.HttpCookieCollection cookieCollection, Uri uri)
             => cookieCollection[Configuration.Cookie_UmbracoDomain].Value = uri.ToString();
 
@@ -39,5 +41,17 @@ namespace Ekom
 
             return uri;
         }
+#else
+        public static void SetUmbracoDomain(IResponseCookies cookieCollection, Uri uri)
+            => cookieCollection.Append(Configuration.Cookie_UmbracoDomain, uri.ToString());
+
+        public static Uri GetUmbracoDomain(IRequestCookieCollection cookieCollection)
+        {
+            var umbracoDomain = cookieCollection[Configuration.Cookie_UmbracoDomain];
+            Uri.TryCreate(umbracoDomain, UriKind.Absolute, out var uri);
+
+            return uri;
+        }
+#endif
     }
 }

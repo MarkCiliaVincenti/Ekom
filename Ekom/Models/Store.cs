@@ -102,12 +102,12 @@ namespace Ekom.Models
         /// <summary>
         /// Used by Ekom extensions
         /// </summary>
-        public Store() : base() { }
+        internal protected Store() : base() { }
         /// <summary>
         /// Construct Store
         /// </summary>
         /// <param name="item"></param>
-        public Store(UmbracoContent item) : base(item)
+        internal protected Store(UmbracoContent item) : base(item)
         {
 
             if (item.Properties.HasPropertyValue("storeRootNode"))

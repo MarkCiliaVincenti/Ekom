@@ -1,4 +1,4 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace Ekom.U8
 
                         var list = new List<UrlInfo>();
 
-                        var stores = Core.API.Store.Instance.GetAllStores().ToList();
+                        var stores = API.Store.Instance.GetAllStores().ToList();
 
                         if (!stores.Any()) return list;
 
@@ -79,11 +79,11 @@ namespace Ekom.U8
                             INodeEntityWithUrl node;
                             if (content.ContentType.Alias == "ekmProduct")
                             {
-                                node = Core.API.Catalog.Instance.GetProduct(store.Alias, id);
+                                node = API.Catalog.Instance.GetProduct(store.Alias, id);
                             }
                             else
                             {
-                                node = Core.API.Catalog.Instance.GetCategory(store.Alias, id);
+                                node = API.Catalog.Instance.GetCategory(store.Alias, id);
                             }
 
                             if (node != null)

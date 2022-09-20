@@ -90,6 +90,11 @@ namespace Ekom.Models
         /// Umbraco node properties
         /// </summary>
         IReadOnlyDictionary<string, string> Properties { get; }
+
+        /// <summary>
+        /// Parent umbraco node
+        /// </summary>
+        int ParentId { get; }
     }
 
     /// <summary>

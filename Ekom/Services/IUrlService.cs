@@ -9,7 +9,7 @@ namespace Ekom.Services
 {
     interface IUrlService
     {
-        IEnumerable<string> BuildCategoryUrls(List<UmbracoContent> items, IStore store);
+        IEnumerable<string> BuildCategoryUrls(IEnumerable<UmbracoContent> items, IStore store);
         IEnumerable<string> BuildCategoryUrls(string slug, List<string> hierarchy, IStore store);
         IEnumerable<string> BuildProductUrls(string slug, IEnumerable<ICategory> categories, IStore store);
         string GetDomainPrefix(string url);

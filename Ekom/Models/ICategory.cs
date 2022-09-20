@@ -9,10 +9,6 @@ namespace Ekom.Models
     public interface ICategory : INodeEntityWithUrl, IPerStoreNodeEntity
     {
         /// <summary>
-        /// Parent umbraco node
-        /// </summary>
-        int ParentId { get; set; }
-        /// <summary>
         /// All direct child products of category. (No descendants)
         /// </summary>
         IEnumerable<IProduct> Products { get; }

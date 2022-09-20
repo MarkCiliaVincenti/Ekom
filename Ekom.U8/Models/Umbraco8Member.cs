@@ -1,11 +1,10 @@
-using Ekom.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Models;
 
 namespace Ekom.U8.Models
 {
-    public class Umbraco8Member : UmbracoMember
+    class Umbraco8Member : Ekom.Models.UmbracoMember
     {
         public Umbraco8Member(IMember member)
             : base(new Dictionary<string, string>

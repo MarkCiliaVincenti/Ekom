@@ -1,4 +1,4 @@
-using Ekom.Core.Models;
+using Ekom.Models;
 using Ekom.Services;
 using Ekom.U8.Models;
 using System;
@@ -6,18 +6,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
+using Umbraco.Web.Routing;
 
 namespace Ekom.U8.Services
 {
     class NodeService : INodeService
     {
-        protected readonly IUmbracoContextFactory _context;
-        public NodeService(IUmbracoContextFactory context)
+        readonly ILogger _logger;
+        readonly IUmbracoContextFactory _context;
+        readonly HttpContextBase _httpContext;
+        public NodeService(
+            IUmbracoContextFactory context,
+            HttpContextBase httpContext,
+            ILogger logger)
         {
             _context = context;
+            _httpContext = httpContext;
+            _logger = logger;
         }
 
         public IEnumerable<UmbracoContent> NodesByTypes(string contentTypeAlias)
@@ -86,7 +96,7 @@ namespace Ekom.U8.Services
             return false;
         }
 
-        public List<IPublishedContent> GetAllCatalogAncestors(UmbracoContent item)
+        public IEnumerable<UmbracoContent> GetAllCatalogAncestors(UmbracoContent item)
         {
             var node = GetNodeById(item.Id);
 
@@ -94,7 +104,7 @@ namespace Ekom.U8.Services
 
             ancestors.Reverse();
 
-            return ancestors;
+            return ancestors.Select(x => new Umbraco8Content(x));
         }
 
         /// <summary>
@@ -197,7 +207,8 @@ namespace Ekom.U8.Services
         public UmbracoContent NodeById(string id)
         {
 
-            if (int.TryParse(id, out int _intId)) {
+            if (int.TryParse(id, out int _intId))
+            {
                 return NodeById(_intId);
             }
 
@@ -332,6 +343,7 @@ namespace Ekom.U8.Services
                 return cref.UmbracoContext.UrlProvider.GetUrl(node);
             }
         }
+
 
     }
 }
