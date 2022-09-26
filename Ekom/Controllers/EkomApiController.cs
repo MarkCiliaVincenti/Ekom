@@ -34,6 +34,9 @@ namespace Ekom.Controllers
 #if NETFRAMEWORK
     public class EkomApiController : ApiController
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public EkomApiController()
         {
             _config = Ekom.Configuration.Resolver.GetService<Configuration>();
@@ -42,6 +45,9 @@ namespace Ekom.Controllers
 #else
     public class EkomApiController : ControllerBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public EkomApiController(Configuration config, CountriesRepository countriesRepo)
         {
             _config = config;
@@ -54,6 +60,9 @@ namespace Ekom.Controllers
         readonly Configuration _config;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<Country> GetCountries()
         {
             return _countriesRepo.GetAllCountries();

@@ -50,7 +50,10 @@ namespace Ekom.Services
 
                 o = await _orderRepo.GetOrderAsync(key).ConfigureAwait(false);
 
-                if (o == null) throw new ArgumentException("Unable to find order with key: " + key, nameof(key));
+                if (o == null)
+                {
+                    return;
+                }
 
                 oi = new OrderInfo(o);
 

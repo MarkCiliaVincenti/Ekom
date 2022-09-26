@@ -1,5 +1,4 @@
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom.Services;
 using Ekom.U8.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace Ekom.U8.Services
             _domainService = domainService;
         }
 
-        public IEnumerable<UmbracoDomain> GetDomains(bool includeWildcards = false)
+        public IEnumerable<Umbraco8Domain> GetDomains(bool includeWildcards = false)
         {
             return _domainService.GetAll(includeWildcards).Select(x => new Umbraco8Domain(x));
         }

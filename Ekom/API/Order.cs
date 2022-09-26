@@ -319,6 +319,9 @@ namespace Ekom.API
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public async Task<IOrderInfo> UpdateCustomerInformationAsync(
             Dictionary<string, string> form,
             OrderSettings settings = null)
@@ -332,6 +335,9 @@ namespace Ekom.API
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public async Task<IOrderInfo> UpdateShippingInformationAsync(
             Guid shippingProvider,
             string storeAlias,
@@ -346,6 +352,9 @@ namespace Ekom.API
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public async Task<IOrderInfo> UpdatePaymentInformationAsync(
             Guid paymentProvider,
             string storeAlias,
@@ -423,6 +432,9 @@ namespace Ekom.API
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public async Task CompleteOrderAsync(Guid orderId)
         {
             await _checkoutService.CompleteAsync(orderId)

@@ -1,3 +1,5 @@
+using Ekom.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,21 +19,13 @@ namespace Ekom.Models
             {
                 var typeValue = Properties.GetPropertyValue("type");
 
-                if (int.TryParse(typeValue, out int typeValueInt))
-                {
-                    var dt = DataTypeService.GetDataType(typeValueInt);
+                var umbSvc = Configuration.Resolver.GetService<IUmbracoService>();
+                var dt = umbSvc.GetDataType(typeValue);
 
-                    // FIX: verify
-                    typeValue = dt.ConfigurationAs<string>();
-                }
-
-                typeValue = typeValue.Contains('[') ? JsonConvert.DeserializeObject<string[]>(typeValue).FirstOrDefault() : typeValue;
-
-                switch (typeValue)
+                switch (dt)
                 {
                     case "Fixed":
                         return DiscountType.Fixed;
-
                     case "Percentage":
                         return DiscountType.Percentage;
                     default:
@@ -68,14 +62,11 @@ namespace Ekom.Models
                 // Im returning INT instead of GUID if we would like to query by Path that is stored as comma seperate int
                 var returnList = new List<string>();
 
-                var nodes = Properties.GetPropertyValue("discountItems")
-                    ?.Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x => UmbHelper.Content(GuidUdiHelper.GetGuid(x)))
-                    .Where(x => x != null)
-                    .ToList();
+                var umbSvc = Configuration.Resolver.GetService<IUmbracoService>();
 
-                returnList.AddRange(nodes.Select(x => x.Id.ToString()));
+                var nodes = Properties.GetPropertyValue("discountItems");
+
+                returnList.AddRange(umbSvc.GetContent(nodes));
 
                 //foreach (var node in nodes.Where(x => x != null))
                 //{

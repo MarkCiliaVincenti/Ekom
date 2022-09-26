@@ -226,14 +226,14 @@ namespace Ekom.Services
                 }
             }
 
-            if (order.PaymentProvider == null || (order.PaymentProvider != null && order.PaymentProvider.Key == paymentRequest.PaymentProvider))
+            if (order.PaymentProvider == null || (order.PaymentProvider != null && order.PaymentProvider.Key != paymentRequest.PaymentProvider))
             {
                 await Order.Instance.UpdatePaymentInformationAsync(
                     paymentRequest.PaymentProvider,
                     order.StoreInfo.Alias).ConfigureAwait(false);
             }
 
-            if (order.ShippingProvider == null || (order.ShippingProvider != null && order.ShippingProvider.Key == paymentRequest.ShippingProvider))
+            if (order.ShippingProvider == null || (order.ShippingProvider != null && order.ShippingProvider.Key != paymentRequest.ShippingProvider))
             {
                 await Order.Instance.UpdateShippingInformationAsync(
                     paymentRequest.ShippingProvider,

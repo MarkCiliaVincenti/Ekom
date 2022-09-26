@@ -58,7 +58,7 @@ namespace Ekom.Models
             get
             {
                 return _categoryCache.Cache[Store.Alias]
-                    .Where(x => x.Value.ParentId == Id)
+                    .Where(x => x.Value.Ancestors().Any(z => z.Id == Id))
                     .Select(x => x.Value)
                     .OrderBy(x => x.SortOrder);
             }

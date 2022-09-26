@@ -188,7 +188,6 @@ namespace Ekom.Models
 
                 var variantGroup = variant.VariantGroup;
 
-
                 variantGroups.Add(new OrderedVariantGroup(variant, variantGroup, storeInfo, Vat));
 
                 VariantGroups = variantGroups;

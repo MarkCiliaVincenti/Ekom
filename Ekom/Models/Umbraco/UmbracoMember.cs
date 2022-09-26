@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Ekom.Models
 {
-    class UmbracoMember
+    public class UmbracoMember
     {
         public UmbracoMember()
         {

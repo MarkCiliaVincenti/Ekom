@@ -1,14 +1,13 @@
 using Ekom.Models;
-using Ekom.Services;
-using Ekom.U8.Models;
+using Ekom.U10.Models;
 using System.Collections.Generic;
 
-namespace Ekom.U8.Services
+namespace Ekom.U10.Services
 {
     class MemberService : Ekom.Services.IMemberService
     {
-        private readonly Umbraco.Core.Services.IMemberService _ms;
-        MemberService(Umbraco.Core.Services.IMemberService ms) {
+        private readonly Umbraco.Cms.Core.Services.IMemberService _ms;
+        MemberService(Umbraco.Cms.Core.Services.IMemberService ms) {
             _ms = ms;
         }
 
@@ -21,12 +20,7 @@ namespace Ekom.U8.Services
                 return null;
             }
 
-            return new Umbraco8Member(m);
-        }
-
-        public UmbracoMember GetCurrentMember()
-        {
-            throw new System.NotImplementedException();
+            return new Umbraco10Member(m);
         }
 
         public void Save(Dictionary<string, object> data, UmbracoMember member)
@@ -54,12 +48,6 @@ namespace Ekom.U8.Services
 
             _ms.Save(m);
            
-        }
-
-
-        UmbracoMember IMemberService.GetByUsername(string t)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

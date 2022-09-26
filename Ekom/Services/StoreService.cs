@@ -1,6 +1,7 @@
 using Ekom.Cache;
 using Ekom.Exceptions;
 using Ekom.Models;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,20 @@ namespace Ekom.Services
     {
         readonly IStoreDomainCache _domainCache;
         readonly IBaseCache<IStore> _storeCache;
+        readonly IMemoryCache _memoryCache;
 
         /// <summary>
         /// ctor
         /// </summary>
         public StoreService(
             IStoreDomainCache domainCache,
-            IBaseCache<IStore> storeCache
+            IBaseCache<IStore> storeCache,
+            IMemoryCache memoryCache
         )
         {
             _domainCache = domainCache;
             _storeCache = storeCache;
+            _memoryCache = memoryCache;
         }
 
         public IStore GetStoreByDomain(string domain = "", string culture = "")
@@ -72,7 +76,7 @@ namespace Ekom.Services
 
         public IStore GetStoreFromCache()
         {
-            var r = _reqCache.GetCacheItem<ContentRequest>("ekmRequest");
+            var r = _memoryCache.Get<ContentRequest>("ekmRequest");
 
             return r?.Store ?? GetAllStores().FirstOrDefault();
         }
