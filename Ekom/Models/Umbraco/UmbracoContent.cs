@@ -45,5 +45,9 @@ namespace Ekom.Models
         {
             return ContentTypeAlias == alias;
         }
+        public bool IsPublished()
+        {
+            return true;
+        }
     }
 }

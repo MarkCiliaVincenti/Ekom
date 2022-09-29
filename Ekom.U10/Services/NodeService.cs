@@ -1,30 +1,24 @@
 using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Core.Web.Routing;
+using Umbraco.Extensions;
 
 namespace Ekom.U10.Services
 {
     class NodeService : INodeService
     {
-        readonly ILogger _logger;
+        readonly ILogger<NodeService> _logger;
         readonly IUmbracoContextFactory _context;
-        readonly HttpContextBase _httpContext;
+        readonly HttpContext _httpContext;
         public NodeService(
             IUmbracoContextFactory context,
-            HttpContextBase httpContext,
-            ILogger logger)
+            HttpContext httpContext,
+            ILogger<NodeService> logger)
         {
             _context = context;
             _httpContext = httpContext;
@@ -61,7 +55,7 @@ namespace Ekom.U10.Services
         {
             var node = GetNodeById(id);
 
-            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco8Content(x));
+            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco10Content(x));
 
             ancestors.Reverse();
 
@@ -104,7 +98,7 @@ namespace Ekom.U10.Services
             var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
             ancestors.Reverse();
-
+            
             return ancestors.Select(x => new Umbraco10Content(x));
         }
 
@@ -144,8 +138,8 @@ namespace Ekom.U10.Services
                 {
                     return cache.GetById(_guidId);
                 }
-
-                if (Udi.TryParse(id, out Udi _udiId))
+                
+                if (UdiParser.TryParse(id, out Udi _udiId))
                 {
                     return cache.GetById(_udiId);
                 }
@@ -218,7 +212,7 @@ namespace Ekom.U10.Services
                 return NodeById(_guidId);
             }
 
-            if (Udi.TryParse(id, out Udi _udiId))
+            if (UdiParser.TryParse(id, out Udi _udiId))
             {
                 return NodeById(_udiId);
             }
@@ -290,7 +284,7 @@ namespace Ekom.U10.Services
                 return MediaById(_guidId);
             }
 
-            if (Udi.TryParse(id, out Udi _udiId))
+            if (UdiParser.TryParse(id, out Udi _udiId))
             {
                 return MediaById(_udiId);
             }
@@ -320,7 +314,7 @@ namespace Ekom.U10.Services
                     return cache.GetById(_guidId);
                 }
 
-                if (Udi.TryParse(id, out Udi _udiId))
+                if (UdiParser.TryParse(id, out Udi _udiId))
                 {
                     return cache.GetById(_udiId);
                 }
@@ -341,7 +335,7 @@ namespace Ekom.U10.Services
 
             using (var cref = _context.EnsureUmbracoContext())
             {
-                return cref.UmbracoContext.UrlProvider.GetUrl(node);
+                return cref.UmbracoContext.Content.GetById(node.Id).Url();
             }
         }
 

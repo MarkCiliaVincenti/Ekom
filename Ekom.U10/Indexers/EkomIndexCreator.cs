@@ -9,7 +9,7 @@ using Umbraco.Cms.Infrastructure.Examine;
 
 namespace Ekom.U10.Indexers
 {
-    public class EkomIndexCreator : LuceneIndexCreator, IUmbracoIndexesCreator
+    public class EkomIndexCreator //: LuceneIndexCreator, IUmbracoIndexesCreator
     {
         private readonly IProfilingLogger _profilingLogger;
         private readonly ILocalizationService _localizationService;
@@ -27,18 +27,18 @@ namespace Ekom.U10.Indexers
         }
 
 
-        public override IEnumerable<IIndex> Create()
-        {
-            var index = new UmbracoContentIndex("EkomIndex",
-                CreateFileSystemLuceneDirectory("EkomIndex"),
-                new UmbracoFieldDefinitionCollection(),
-                new CultureInvariantWhitespaceAnalyzer(),
-                _profilingLogger,
-                _localizationService,
+        //public override IEnumerable<IIndex> Create()
+        //{
+        //    var index = new UmbracoContentIndex("EkomIndex",
+        //        CreateFileSystemLuceneDirectory("EkomIndex"),
+        //        new UmbracoFieldDefinitionCollection(),
+        //        new CultureInvariantWhitespaceAnalyzer(),
+        //        _profilingLogger,
+        //        _localizationService,
 
-                new ContentValueSetValidator(true, false, _publicAccessService, includeItemTypes: new string[] { "ekmProduct", "ekmCategory", "ekmProductVariant", "ekmProductVariantGroup" }));
+        //        new ContentValueSetValidator(true, false, _publicAccessService, includeItemTypes: new string[] { "ekmProduct", "ekmCategory", "ekmProductVariant", "ekmProductVariantGroup" }));
 
-            return new[] { index };
-        }
+        //    return new[] { index };
+        //}
     }
 }

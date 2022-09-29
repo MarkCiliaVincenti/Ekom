@@ -21,7 +21,7 @@ namespace Ekom.U10
     class EkomMiddleware
     {
         private readonly RequestDelegate _next;
-        private ILogger _logger;
+        private ILogger<EkomMiddleware> _logger;
         private HttpContext _context;
 
         public EkomMiddleware(RequestDelegate next)

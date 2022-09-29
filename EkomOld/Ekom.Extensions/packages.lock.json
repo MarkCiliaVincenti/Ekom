@@ -536,13 +536,13 @@
       "Ekom.Core.v8": {
         "type": "Project",
         "dependencies": {
-          "Examine": "1.2.2",
-          "GMO.Vorto.v8": "0.3.0",
-          "Hangfire": "1.7.14",
-          "Microsoft.Web.Infrastructure": "1.0.0",
+          "Examine": "[1.2.2, )",
+          "GMO.Vorto.v8": "[0.3.0, )",
+          "Hangfire": "[1.7.14, )",
+          "Microsoft.Web.Infrastructure": "[1.0.0, )",
           "UmbracoCms.Core": "[8.6.1, 9.0.0)",
           "UmbracoCms.Web": "[8.6.1, 9.0.0)",
-          "WebActivatorEx": "2.2.0"
+          "WebActivatorEx": "[2.2.0, )"
         }
       }
     }

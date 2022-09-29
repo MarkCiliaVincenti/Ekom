@@ -189,16 +189,15 @@ namespace Ekom.Models
         {
             var httpCtx = Configuration.Resolver.GetService<HttpContext>();
 
-            var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
 #if NETCOREAPP
+            var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
+#else
+            var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias].Value;
+#endif
+
             if (cookie != null && !string.IsNullOrEmpty(cookie))
             {
                 var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
-#else
-            if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
-            {
-                var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie.Value);
-#endif
 
                 if (price != null)
                 {

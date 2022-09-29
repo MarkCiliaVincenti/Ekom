@@ -1,7 +1,7 @@
-using Ekom.Core;
-using Ekom.Core.Cache;
-using Ekom.Core.Models;
-using Ekom.Core.Services;
+using Ekom;
+using Ekom.Cache;
+using Ekom.Models;
+using Ekom.Services;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Ekom.U8
     class CatalogContentFinder : IContentFinder
     {
         readonly ILogger _logger;
-        readonly Core.Configuration _config;
+        readonly Configuration _config;
         readonly IStoreService _storeSvc;
         readonly IPerStoreCache<ICategory> _categoryCache;
         readonly IPerStoreCache<IProduct> _productCache;
@@ -24,7 +24,7 @@ namespace Ekom.U8
 
         public CatalogContentFinder(
             ILogger logger,
-            Core.Configuration config,
+            Configuration config,
             IStoreService storeSvc,
             IPerStoreCache<ICategory> categoryCache,
             IPerStoreCache<IProduct> productCache,

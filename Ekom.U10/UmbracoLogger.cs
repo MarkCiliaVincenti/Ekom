@@ -7,8 +7,8 @@ namespace Ekom.U10
     /// Umbraco logger compat for <see cref="ILogger"/>.
     /// Modified from https://dotnetthoughts.net/how-to-use-log4net-with-aspnetcore-for-logging/
     /// </summary>
-    public class UmbracoLogger : ILogger
-    {
+    public class UmbracoLogger //: ILogger
+    {/*
         /// <summary>
         /// The log.
         /// </summary>
@@ -109,6 +109,6 @@ namespace Ekom.U10
         IDisposable ILogger.BeginScope<TState>(TState state)
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

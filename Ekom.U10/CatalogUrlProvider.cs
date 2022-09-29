@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
+using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 using Umbraco.Extensions;
 
@@ -10,17 +11,18 @@ namespace Ekom.U10
 {
     class CatalogUrlProvider : IUrlProvider
     {
-        readonly ILogger _logger;
+        readonly ILogger<CatalogUrlProvider> _logger;
         readonly IAppCache _reqCache;
+        readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-        public CatalogUrlProvider(ILogger logger, AppCaches appCaches)
+        public CatalogUrlProvider(ILogger<CatalogUrlProvider> logger, AppCaches appCaches, IUmbracoContextAccessor umbracoContextAccessor)
         {
             _logger = logger;
             _reqCache = appCaches.RequestCache;
+            _umbracoContextAccessor = umbracoContextAccessor;
         }
 
         public UrlInfo GetUrl(
-            UmbracoContext umbracoContext,
             IPublishedContent content,
             UrlMode mode,
             string culture,
@@ -28,7 +30,8 @@ namespace Ekom.U10
         {
             try
             {
-                var urls = GetUrls(umbracoContext, content.Id, current);
+                
+                var urls = GetUrls(content.Id, current);
 
                 // In practice this will simply return the first url from the collection
                 // since we're comparing store title to culture.
@@ -38,7 +41,7 @@ namespace Ekom.U10
             catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
-                _logger.LogError(ex);
+                _logger.LogError(ex.ToString());
                 return null;
             }
         }
@@ -47,12 +50,12 @@ namespace Ekom.U10
         /// Our <see cref="CatalogContentFinder"/> takes care of routing, 
         /// this is mostly used to display URLs in the backoffice.
         /// </summary>
-        public IEnumerable<UrlInfo> GetOtherUrls(UmbracoContext umbracoContext, int id, Uri current)
+        public IEnumerable<UrlInfo> GetOtherUrls(int id, Uri current)
         {
-            return GetUrls(umbracoContext, id, current);
+            return GetUrls(id, current);
         }
 
-        private IEnumerable<UrlInfo> GetUrls(UmbracoContext umbracoContext, int id, Uri current)
+        private IEnumerable<UrlInfo> GetUrls(int id, Uri current)
         {
             return _reqCache.GetCacheItem(
                 "EkomUrlProvider-GetOtherUrls-" + id,
@@ -60,7 +63,8 @@ namespace Ekom.U10
                 {
                     try
                     {
-                        var content = umbracoContext.Content.GetById(id);
+                        _umbracoContextAccessor.TryGetUmbracoContext(out IUmbracoContext? context);
+                        var content = context.Content.GetById(id);
 
                         if (content == null ||
                             (content.ContentType.Alias != "ekmProduct" && content.ContentType.Alias != "ekmCategory"))

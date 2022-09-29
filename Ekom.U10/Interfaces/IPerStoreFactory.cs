@@ -11,18 +11,11 @@ namespace Ekom.Interfaces
     public interface IPerStoreFactory<T>
     {
         /// <summary>
-        /// Create object from IContent with explicit store
+        /// Create object from UmbracoContent with explicit store
         /// </summary>
-        /// <param name="item">IContent item</param>
+        /// <param name="item">UmbracoContent item</param>
         /// <param name="store"></param>
         /// <returns></returns>
-        T Create(IContent item, IStore store);
-        /// <summary>
-        /// Create object from IPublishedContent with explicit store
-        /// </summary>
-        /// <param name="item">IPublishedContent item</param>
-        /// <param name="store"></param>
-        /// <returns></returns>
-        T Create(IPublishedContent item, IStore store);
+        T Create(UmbracoContent item, IStore store);
     }
 }

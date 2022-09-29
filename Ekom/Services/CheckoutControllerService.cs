@@ -473,7 +473,7 @@ namespace Ekom.Services
                     netPaymentService.OnSuccess(
                         ekomPP.Key,
                         ekomPP.Name,
-                        MemberService.GetCurrentMember().Key.ToString(),
+                        (await MemberService.GetCurrentMemberAsync().ConfigureAwait(false)).Key.ToString(),
                         order.UniqueId.ToString());
 
                     return new CheckoutResponse

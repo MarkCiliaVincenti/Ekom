@@ -1,19 +1,12 @@
 using Ekom.Models;
-using Ekom.Services;
 using Ekom.U10.Models;
 using Examine;
 using Examine.Lucene.Providers;
 using Examine.Lucene.Search;
 using Examine.Search;
 using Lucene.Net.QueryParsers.Classic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Logging;
-using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Web;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Infrastructure.Examine;
 using static Ekom.Utilities.SearchHelper;
@@ -24,10 +17,12 @@ namespace Ekom.Services
     {
         private readonly ILogger _logger;
         private readonly IPublishedContentQuery _query;
-        public SearchService(IPublishedContentQuery query, ILogger logger)
+        private readonly IExamineManager _examineManager;
+        public SearchService(IPublishedContentQuery query, ILogger logger, IExamineManager examineManager)
         {
             _logger = logger;
             _query = query;
+            _examineManager = examineManager;
         }
         public IEnumerable<UmbracoContent> QueryCatalog(string query, out long totalRecords)
         {
@@ -36,7 +31,7 @@ namespace Ekom.Services
 
             try
             {
-                if (ExamineManager.Instance.TryGetIndex("InternalIndex", out var index) || !(index is IUmbracoIndex umbIndex))
+                if (_examineManager.TryGetIndex("InternalIndex", out var index) || !(index is IUmbracoIndex umbIndex))
                 {
                     var fields = new List<SearchField>()
                     {
@@ -64,7 +59,7 @@ namespace Ekom.Services
                         }
                     };
 
-                    var searcher = (BaseLuceneSearcher)index.GetSearcher();
+                    _examineManager.TryGetSearcher("InternalIndex", out var searcher);
 
                     var queryWithOutStopWords = query.RemoveStopWords();
 

@@ -10,11 +10,9 @@ public class EkomIndexComposer: IComposer
 {
     public void Compose(IUmbracoBuilder composition)
     {
-        composition.Components().Append<EkomIndexComponent>();
-        composition.RegisterUnique<EkomIndexCreator>();
-        composition.Services.AddExamineLuceneIndex<ProductIndex, ConfigurationEnabledDirectoryFactory>("ProductIndex");
-        composition.Services.ConfigureOptions<ConfigureCustomIndexOptions>();
-        composition.Services.AddSingleton<ProductIndexValueSetBuilder>();
-        composition.Services.AddSingleton<ProductIndexPopulator>();
+        composition.Services.AddExamineLuceneIndex<EkomIndex, ConfigurationEnabledDirectoryFactory>("EkomIndex");
+        composition.Services.ConfigureOptions<ConfigureEkomIndexOptions>();
+        composition.Services.AddSingleton<EkomIndexValueSetBuilder>();
+        composition.Services.AddSingleton<EkomIndexPopulator>();
     }
 }

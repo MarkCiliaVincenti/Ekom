@@ -471,10 +471,10 @@ namespace Ekom.API
             //{
             //    throw new ArgumentException($"Stock is already set to provided value.", nameof(value));
             //}
-            if (value < 0)
-            {
-                throw new ArgumentException($"Cannot set stock of {stockData.UniqueId} to negative number.", nameof(value));
-            }
+            //if (value < 0)
+            //{
+            //    throw new ArgumentException($"Cannot set stock of {stockData.UniqueId} to negative number.", nameof(value));
+            //}
 
             var semaphore = GetStockLock(stockData.UniqueId);
             if (!outerLock)

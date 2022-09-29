@@ -5,26 +5,29 @@ using Microsoft.Extensions.Logging;
 using System.Configuration;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Routing;
+using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace Ekom.U10
 {
     class CatalogContentFinder : IContentFinder
     {
-        readonly ILogger _logger;
+        readonly ILogger<CatalogContentFinder> _logger;
         readonly Configuration _config;
         readonly IStoreService _storeSvc;
         readonly IPerStoreCache<ICategory> _categoryCache;
         readonly IPerStoreCache<IProduct> _productCache;
         readonly AppCaches _appCaches;
+        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public CatalogContentFinder(
-            ILogger logger,
+            ILogger<CatalogContentFinder> logger,
             Configuration config,
             IStoreService storeSvc,
             IPerStoreCache<ICategory> categoryCache,
             IPerStoreCache<IProduct> productCache,
-            AppCaches appCaches)
+            AppCaches appCaches,
+            IUmbracoContextAccessor umbracoContextAccessor)
         {
             _logger = logger;
             _config = config;
@@ -32,14 +35,41 @@ namespace Ekom.U10
             _categoryCache = categoryCache;
             _productCache = productCache;
             _appCaches = appCaches;
+            _umbracoContextAccessor = umbracoContextAccessor;
         }
 
+
+        public Task<bool> TryFindContent(IPublishedRequestBuilder contentRequest)
+        {
+            var path = contentRequest.Uri.GetAbsolutePathDecoded();
+            if (path.StartsWith("/umbraco") is false)
+            {
+                return Task.FromResult(false); // Not found
+            }
+
+            if (!_umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext))
+            {
+                return Task.FromResult(false);
+            }
+            
+            // Have we got a node with ID
+            var content = umbracoContext.Content.GetById(contentRequest.PublishedContent.Id);
+            if (content is null)
+            {
+                // If not found, let another IContentFinder in the collection try.
+                return Task.FromResult(false);
+            }
+
+            // If content is found, then render that node
+            contentRequest.SetPublishedContent(content);
+            return Task.FromResult(true);
+        }
         /// <summary>
         /// Maps virtual URLs to IPublishedContent items
         /// Performs various request related processing
         /// F.x. determining the Store/Currency first from Cookie, then domain and then default
         /// </summary>
-        public bool TryFindContent(PublishedRequest contentRequest)
+        /*public bool TryFindContent(PublishedRequest contentRequest)
         {
             try
             {
@@ -129,6 +159,6 @@ namespace Ekom.U10
             }
 
             return false;
-        }
+        }*/
     }
 }

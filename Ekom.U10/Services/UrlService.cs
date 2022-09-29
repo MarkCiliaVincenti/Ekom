@@ -1,16 +1,10 @@
 using Ekom.Models;
 using Ekom.Services;
 using Ekom.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core.Logging;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
@@ -20,7 +14,8 @@ namespace Ekom.U10.Services
     {
         readonly ILogger _logger;
         readonly IUmbracoContextFactory _context;
-        readonly HttpContextBase _httpContext;
+        readonly HttpContext _httpContext;
+        readonly IShortStringHelper shortStringHelper;
         /// <summary>
         /// Build URLs for category
         /// </summary>
@@ -38,12 +33,12 @@ namespace Ekom.U10.Services
                 foreach (var domainPath in domains)
                 {
                     var builder = new StringBuilder(domainPath);
-
+                    
                     foreach (var item in items)
                     {
                         var categorySlug = item.GetStoreProperty("slug", store.Alias);
                         if (!string.IsNullOrWhiteSpace(categorySlug))
-                            builder.Append(categorySlug.ToUrlSegment().AddTrailing());
+                            builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
                     }
 
                     var url = builder.ToString().AddTrailing().ToLower();
@@ -60,7 +55,7 @@ namespace Ekom.U10.Services
                     var categorySlug = item.GetStoreProperty("slug", store.Alias);
                     if (!string.IsNullOrWhiteSpace(categorySlug))
                     {
-                        builder.Append(categorySlug.ToUrlSegment().AddTrailing());
+                        builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
                     }
                 }
 
@@ -97,7 +92,7 @@ namespace Ekom.U10.Services
                         builder.Append(item + "/");
                     }
 
-                    var slugSafeAlias = slug.ToUrlSegment();
+                    var slugSafeAlias = slug.ToUrlSegment(shortStringHelper);
                     if (!string.IsNullOrEmpty(slugSafeAlias))
                     {
                         builder.Append(slugSafeAlias);
@@ -126,7 +121,7 @@ namespace Ekom.U10.Services
             {
                 foreach (var categoryUrl in category.Urls)
                 {
-                    var url = categoryUrl + slug.ToUrlSegment().AddTrailing().ToLower();
+                    var url = categoryUrl + slug.ToUrlSegment(shortStringHelper).AddTrailing().ToLower();
 
                     urls.Add(url);
                 }
