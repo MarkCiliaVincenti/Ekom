@@ -462,7 +462,7 @@ namespace Ekom.Services
 #if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()))
 #else
-                        new Uri(System.Web.HttpContext.Current.Request.Url.AbsolutePath))
+                        new Uri(_httpCtx.Request.Url.AbsolutePath))
 #endif
                     + "?orderId=" + order.UniqueId;
 
@@ -496,7 +496,7 @@ namespace Ekom.Services
 #if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()));
 #else
-                        new Uri(System.Web.HttpContext.Current.Request.Url.AbsolutePath));
+                        new Uri(_httpCtx.Request.Url.AbsolutePath));
 #endif
 
                     return new CheckoutResponse

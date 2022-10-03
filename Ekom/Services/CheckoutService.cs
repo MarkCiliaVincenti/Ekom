@@ -20,7 +20,7 @@ namespace Ekom.Services
         readonly OrderRepository _orderRepo;
         readonly CouponRepository _couponRepo;
         readonly OrderService _orderService;
-        readonly MailService _mailService;
+        readonly IMailService _mailService;
         public CheckoutService(
             ILogger<CheckoutService> logger,
             Configuration config,
@@ -28,7 +28,7 @@ namespace Ekom.Services
             CouponRepository couponRepo,
             OrderService orderService,
             DiscountStockRepository discountStockRepo,
-            MailService mailService)
+            IMailService mailService)
         {
             _logger = logger;
             _config = config;
@@ -119,13 +119,16 @@ namespace Ekom.Services
             }
             catch (NotEnoughStockException ex)
             {
-                _logger.LogError(ex, $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. "
-                    + $"Order id: {oi?.UniqueId}");
+                _logger.LogError(
+                    ex, 
+                    $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. " + 
+                    $"Order id: {oi?.UniqueId}");
 
-                _mailService.Recipient = _config.EmailNotifications ?? _mailService.Recipient;
-                _mailService.Subject = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. "
+                var subject 
+                    = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. "
                     + $"Order id: {oi?.UniqueId}";
-                var body = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}."
+                var body 
+                    = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}."
                     + $"Order id: {oi?.UniqueId}\r\n";
 
                 if (ex is NotEnoughLineStockException exl)
@@ -134,21 +137,22 @@ namespace Ekom.Services
                 }
 
                 body += ex.ToString();
-                _mailService.Body = body;
 
-                await _mailService.SendAsync().ConfigureAwait(false);
+                await _mailService.SendAsync(subject, body).ConfigureAwait(false);
+
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to Send Email");
-                _mailService.Recipient = _config.EmailNotifications ?? _mailService.Recipient;
-                _mailService.Subject = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. "
+                _logger.LogError(ex, "Unexpected checkout error");
+                var subject 
+                    = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}. "
                     + $"Order id: {oi?.UniqueId}";
-                _mailService.Body = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}."
+                var body 
+                    = $"Unable to complete paid checkout for customer {o?.CustomerName} {o?.CustomerEmail}."
                     + $"Order id: {oi?.UniqueId}\r\n\r\n" + ex.ToString();
 
-                await _mailService.SendAsync().ConfigureAwait(false);
+                await _mailService.SendAsync(subject, body).ConfigureAwait(false);
                 throw;
             }
         }

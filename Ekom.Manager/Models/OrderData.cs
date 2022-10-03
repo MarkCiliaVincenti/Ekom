@@ -1,4 +1,4 @@
-using Ekom.Models.Data;
+using Ekom.Models;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

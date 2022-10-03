@@ -79,7 +79,7 @@ namespace Ekom.Repositories
             using (var db = _databaseFactory.GetDatabase())
             {
                 var query = db.OrderData
-                    .Where(x => orderStatuses.Contains((OrderStatus)x.OrderStatusCol));
+                    .Where(x => orderStatuses.Select(y => y.ToString()).Contains(x.OrderStatusCol));
 
                 if (filter != null)
                 {

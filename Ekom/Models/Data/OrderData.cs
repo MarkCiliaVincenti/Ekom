@@ -41,15 +41,16 @@ namespace Ekom.Models
         /// This is necessary for the creation of the column.
         /// </summary>
         [Column]
-        public int OrderStatusCol { get; set; }
+        public string OrderStatusCol { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Column(IsColumn = false)]
         public OrderStatus OrderStatus
         {
-            get { return (OrderStatus)OrderStatusCol; }
-            set { OrderStatusCol = (int)value; }
+            get { return (OrderStatus) Enum.Parse(typeof(OrderStatus), OrderStatusCol); }
+            set { OrderStatusCol = value.ToString(); }
         }
 
         /// <summary>

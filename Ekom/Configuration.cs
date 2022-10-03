@@ -24,9 +24,9 @@ namespace Ekom
             _configuration = configuration;
         }
 
-        public static IServiceProvider Resolver { get; set; }
+        public static IServiceProvider Resolver { get; internal set; }
        
-        internal static Configuration Instance => Resolver.GetService<Configuration>();
+        public static Configuration Instance => Resolver.GetService<Configuration>();
 
         internal const string Cookie_UmbracoDomain = "EkomUmbracoDomain";
 

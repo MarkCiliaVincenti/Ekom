@@ -187,11 +187,12 @@ namespace Ekom.Models
 
         private IPrice GetPrice()
         {
-            var httpCtx = Configuration.Resolver.GetService<HttpContext>();
 
 #if NETCOREAPP
+            var httpCtx = Configuration.Resolver.GetService<IHttpContextAccessor>().HttpContext;
             var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
 #else
+            var httpCtx = Configuration.Resolver.GetService<HttpContextBase>();
             var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias].Value;
 #endif
 

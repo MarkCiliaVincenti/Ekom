@@ -1,4 +1,5 @@
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +35,7 @@ namespace Ekom.Models
             get
             {
 #if NETCOREAPP
-                var httpContext = Configuration.Resolver.GetService<HttpContext>();
+                var httpContext = Configuration.Resolver.GetService<IHttpContextAccessor>().HttpContext;
 
                 if (httpContext?.Request != null)
                 {
@@ -44,9 +45,11 @@ namespace Ekom.Models
                     {
                         var price = Prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
 #else
-                if (HttpContext.Current != null)
+                var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
+
+                if (httpContext != null)
                 {
-                    var cookie = HttpContext.Current.Request.Cookies["EkomCurrency-" + Store.Alias];
+                    var cookie = httpContext.Request.Cookies["EkomCurrency-" + Store.Alias];
 
                     if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
                     {

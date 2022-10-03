@@ -6,9 +6,9 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         
         <!-- Package properties -->
-        <PackageId>Ekom.v8</PackageId>
+        <PackageId>Ekom.Manager</PackageId>
         <Version>0.1.3</Version>
-        <Title>Ekom.v8</Title>
+        <Title>Ekom.Manager</Title>
         <Authors>Vettvangur</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
@@ -59,5 +59,9 @@
         </PackageReference>
         <PackageReference Include="UmbracoCms.Core" Version="[8.6.1,9.0)" />
         <PackageReference Include="UmbracoCms.Web" Version="[8.6.1,9.0)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ekom\Ekom.Core.csproj" />
     </ItemGroup>
 </Project>

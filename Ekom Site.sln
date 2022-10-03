@@ -1,0 +1,140 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{486CD777-F50E-4422-9058-A981A489D843}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
+		release-build.ps1 = release-build.ps1
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Ekom.Manager.Frontend", "Ekom.Manager.Frontend\", "{A8E76D41-1323-4B00-A441-8422D89AEF21}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_27847"
+		Debug.AspNetCompiler.PhysicalPath = "Ekom.Manager.Frontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_27847\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_27847"
+		Release.AspNetCompiler.PhysicalPath = "Ekom.Manager.Frontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_27847\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "27847"
+		SlnRelativePath = "Ekom.Manager.Frontend\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ekom.Manager", "Ekom.Manager", "{90B610CF-70A2-45E1-9C57-3DAC701DFE1B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Manager", "Ekom.Manager\Ekom.Manager.csproj", "{3CDB6926-D3B7-4178-987E-DD523A4C5EF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Tests", "Umbraco.Tests\Umbraco.Tests.csproj", "{179CD03A-2592-4013-9446-7A5274721863}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ekom", "Ekom", "{B5C9BAF3-857C-4182-B0E3-E11236D8C6F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Core", "Ekom\Ekom.Core.csproj", "{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ekom.Extensions", "Ekom.Extensions", "{97BB32C0-AF60-484C-BC68-FE3DE03061C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Extensions.v8", "Ekom.Extensions\Ekom.Extensions.U8\Ekom.Extensions.v8.csproj", "{31485B7C-2D66-43F3-BFA2-68E8D33F62B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Extensions.v9", "Ekom.Extensions\Ekom.Extensions.U9\Ekom.Extensions.v9.csproj", "{67DF48BB-853E-4088-AEBF-F7BA7D34DE50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNetCore", "AspNetCore", "{90A9A2E7-EAB5-40FA-AB46-6701D7A6B9FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNetFramework", "AspNetFramework", "{D56C8178-33E8-4573-BCF5-FA11517366A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.AspNetCore", "AspNetCore\Ekom.AspNetCore\Ekom.AspNetCore.csproj", "{14B44BFE-58B1-4653-B4FC-2C99B64A9336}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.U9", "AspNetCore\Ekom.U9\Ekom.U9.csproj", "{805379DC-7D41-4E5E-846E-454BCF632B28}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.U10", "AspNetCore\Ekom.U10\Ekom.U10.csproj", "{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.U8", "AspNetFramework\Ekom.U8\Ekom.U8.csproj", "{81EEAB66-9291-4276-ADC0-7422CA13A016}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.AspNetFramework", "AspNetFramework\Ekom.AspNetFramework\Ekom.AspNetFramework.csproj", "{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{5C9C52EB-97D0-4B90-82BF-E8DA47301127}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ekom.Site", "Samples\U10\Ekom.Site\Ekom.Site.csproj", "{FBD675E7-5930-45CD-B95B-9FB6DA871703}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8E76D41-1323-4B00-A441-8422D89AEF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E76D41-1323-4B00-A441-8422D89AEF21}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CDB6926-D3B7-4178-987E-DD523A4C5EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CDB6926-D3B7-4178-987E-DD523A4C5EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CDB6926-D3B7-4178-987E-DD523A4C5EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CDB6926-D3B7-4178-987E-DD523A4C5EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179CD03A-2592-4013-9446-7A5274721863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179CD03A-2592-4013-9446-7A5274721863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31485B7C-2D66-43F3-BFA2-68E8D33F62B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31485B7C-2D66-43F3-BFA2-68E8D33F62B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31485B7C-2D66-43F3-BFA2-68E8D33F62B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31485B7C-2D66-43F3-BFA2-68E8D33F62B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67DF48BB-853E-4088-AEBF-F7BA7D34DE50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DF48BB-853E-4088-AEBF-F7BA7D34DE50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14B44BFE-58B1-4653-B4FC-2C99B64A9336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14B44BFE-58B1-4653-B4FC-2C99B64A9336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14B44BFE-58B1-4653-B4FC-2C99B64A9336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14B44BFE-58B1-4653-B4FC-2C99B64A9336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{805379DC-7D41-4E5E-846E-454BCF632B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{805379DC-7D41-4E5E-846E-454BCF632B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{805379DC-7D41-4E5E-846E-454BCF632B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{805379DC-7D41-4E5E-846E-454BCF632B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81EEAB66-9291-4276-ADC0-7422CA13A016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81EEAB66-9291-4276-ADC0-7422CA13A016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81EEAB66-9291-4276-ADC0-7422CA13A016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81EEAB66-9291-4276-ADC0-7422CA13A016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBD675E7-5930-45CD-B95B-9FB6DA871703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBD675E7-5930-45CD-B95B-9FB6DA871703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBD675E7-5930-45CD-B95B-9FB6DA871703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBD675E7-5930-45CD-B95B-9FB6DA871703}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8E76D41-1323-4B00-A441-8422D89AEF21} = {90B610CF-70A2-45E1-9C57-3DAC701DFE1B}
+		{3CDB6926-D3B7-4178-987E-DD523A4C5EF2} = {90B610CF-70A2-45E1-9C57-3DAC701DFE1B}
+		{179CD03A-2592-4013-9446-7A5274721863} = {B5C9BAF3-857C-4182-B0E3-E11236D8C6F4}
+		{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470} = {B5C9BAF3-857C-4182-B0E3-E11236D8C6F4}
+		{31485B7C-2D66-43F3-BFA2-68E8D33F62B8} = {97BB32C0-AF60-484C-BC68-FE3DE03061C1}
+		{67DF48BB-853E-4088-AEBF-F7BA7D34DE50} = {97BB32C0-AF60-484C-BC68-FE3DE03061C1}
+		{90A9A2E7-EAB5-40FA-AB46-6701D7A6B9FB} = {B5C9BAF3-857C-4182-B0E3-E11236D8C6F4}
+		{D56C8178-33E8-4573-BCF5-FA11517366A4} = {B5C9BAF3-857C-4182-B0E3-E11236D8C6F4}
+		{14B44BFE-58B1-4653-B4FC-2C99B64A9336} = {90A9A2E7-EAB5-40FA-AB46-6701D7A6B9FB}
+		{805379DC-7D41-4E5E-846E-454BCF632B28} = {90A9A2E7-EAB5-40FA-AB46-6701D7A6B9FB}
+		{8C89F85B-D4D6-4FAF-AA00-2AA3F2F669B2} = {90A9A2E7-EAB5-40FA-AB46-6701D7A6B9FB}
+		{81EEAB66-9291-4276-ADC0-7422CA13A016} = {D56C8178-33E8-4573-BCF5-FA11517366A4}
+		{FDDFF0E3-B4D8-4994-8D55-ABA0073A3E21} = {D56C8178-33E8-4573-BCF5-FA11517366A4}
+		{FBD675E7-5930-45CD-B95B-9FB6DA871703} = {5C9C52EB-97D0-4B90-82BF-E8DA47301127}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {411ECB7B-B382-43CA-8534-05EA8ED2F48D}
+	EndGlobalSection
+EndGlobal

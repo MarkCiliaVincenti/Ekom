@@ -48,7 +48,7 @@ namespace Ekom.Models
                 try
                 {
 #if NETCOREAPP
-                    var httpContext = Configuration.Resolver.GetService<HttpContext>();
+                    var httpContext = Configuration.Resolver.GetService<IHttpContextAccessor>().HttpContext;
 #else
                     var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
 #endif
@@ -125,7 +125,7 @@ namespace Ekom.Models
                 try
                 {
 #if NETCOREAPP
-                    var httpContext = Configuration.Resolver.GetService<HttpContext>();
+                    var httpContext = Configuration.Resolver.GetService<IHttpContextAccessor>().HttpContext;
 #else
                     var httpContext = Configuration.Resolver.GetService<HttpContextBase>();
 #endif

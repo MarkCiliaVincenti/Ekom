@@ -42,7 +42,11 @@ namespace Ekom
         /// <summary>
         /// 
         /// </summary>
-        Dispatched,
+        ReadyForPickup = 12,
+        /// <summary>
+        /// 
+        /// </summary>
+        Dispatched = 8,
         /// <summary>
         /// Used to lock order for modifications.
         /// If user requests the order while it is in this state he receives a new one with the old data.
@@ -56,10 +60,6 @@ namespace Ekom
         /// 
         /// </summary>
         Wishlist,
-        /// <summary>
-        /// 
-        /// </summary>
-        ReadyForPickup
     }
 
     /// <summary>

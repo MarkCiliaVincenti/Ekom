@@ -1,6 +1,6 @@
-using Ekom.API.Settings;
+using Ekom.API;
 using Ekom.Manager.Models;
-using Ekom.Models.Data;
+using Ekom.Models;
 using Ekom.Utilities;
 using System;
 using System.Collections.Generic;

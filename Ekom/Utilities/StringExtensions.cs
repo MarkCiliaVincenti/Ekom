@@ -189,7 +189,7 @@ namespace Ekom
                     var currency = storeCurrencies.FirstOrDefault(x => x.CurrencyValue == currencyValue) ?? storeCurrencies.FirstOrDefault();
 
                     IDiscount productDiscount = !string.IsNullOrEmpty(path)
-                        ? Configuration.Resolver.GetService<IProductDiscountService>()
+                        ? Configuration.Resolver.GetService<ProductDiscountService>()
                             .GetProductDiscount(
                                 path,
                                 storeAlias,
@@ -219,7 +219,7 @@ namespace Ekom
                 }
 
                 IDiscount productDiscount = !string.IsNullOrEmpty(path)
-                    ? Configuration.Resolver.GetService<IProductDiscountService>()
+                    ? Configuration.Resolver.GetService<ProductDiscountService>()
                         .GetProductDiscount(
                             path,
                             storeAlias,

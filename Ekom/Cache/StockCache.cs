@@ -1,6 +1,7 @@
 using Ekom.Exceptions;
 using Ekom.Interfaces;
 using Ekom.Models;
+using Ekom.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -11,14 +12,14 @@ namespace Ekom.Cache
 {
     class StockCache : BaseCache<StockData>
     {
-        readonly IStockRepository _stockRepo;
+        readonly StockRepository _stockRepo;
         /// <summary>
         /// ctor
         /// </summary>
         public StockCache(
             Configuration config,
             ILogger<BaseCache<StockData>> logger,
-            IStockRepository stockRepo,
+            StockRepository stockRepo,
             IServiceProvider serviceProvider
         ) : base(config, logger, null, serviceProvider)
         {

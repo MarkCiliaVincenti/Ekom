@@ -1,7 +1,6 @@
 using Ekom.API;
 using Ekom.Cache;
 using Ekom.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
@@ -9,8 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-//using System.Web;
-#if NET461
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Configuration;
 #endif
@@ -147,30 +148,11 @@ namespace Ekom.Models
         /// </summary>
         public IPrice Price
         {
-            get
-            {
-                var httpCtx = Configuration.Resolver.GetService<HttpContext>();
-                var prices = Prices.ToList();
-
-                if (httpCtx.Request != null)
-                {
-                    var cookie = httpCtx?.Request.Cookies["EkomCurrency-" + Store.Alias];
-
-                    if (cookie != null && !string.IsNullOrEmpty(cookie))
-                    {
-                        var price = prices.FirstOrDefault(x => x.Currency.CurrencyValue == cookie);
-
-                        if (price != null)
-                        {
-                            return price;
-                        }
-                    }
-
-                }
-
-                return prices.FirstOrDefault();
-
-            }
+#if NETCOREAPP
+            get => CookieHelper.GetCurrencyPriceCookieValue(Prices, Store.Alias);
+#else
+            get => CookieHelper.GetCurrencyPriceCookieValue(Prices, Store.Alias);
+#endif
         }
 
         public virtual List<IPrice> Prices

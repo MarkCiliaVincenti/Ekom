@@ -1,7 +1,8 @@
-using Ekom.API.Settings;
+using Ekom.API;
 using Ekom.Interfaces;
 using Ekom.Manager.Models;
-using Ekom.Models.Data;
+using Ekom.Models;
+using Ekom.Repositories;
 using Ekom.Utilities;
 using NPoco;
 using System;
@@ -18,20 +19,17 @@ namespace Ekom.Repository
         readonly ILogger _logger;
         readonly Configuration _config;
         readonly IScopeProvider _scopeProvider;
-        readonly IActivityLogRepository _activityLogRepository;
+        readonly ActivityLogRepository _activityLogRepository;
 
         //readonly ActivityLogRepository _activityLogRepository;
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="config"></param>
-        /// <param name="appCtx "></param>
-        /// <param name="logFac"></param>
         public ManagerRepository(
             Configuration config,
             IScopeProvider scopeProvider,
             ILogger logger,
-            IActivityLogRepository activityLogRepository)
+            ActivityLogRepository activityLogRepository)
         {
             _config = config;
             _scopeProvider = scopeProvider;

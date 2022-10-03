@@ -47,7 +47,7 @@ namespace Ekom.API
 
         readonly ILogger<Stock> _logger;
         readonly Configuration _config;
-        readonly IStockRepository _stockRepo;
+        readonly StockRepository _stockRepo;
         readonly DiscountStockRepository _discountStockRepo;
         readonly IStoreService _storeSvc;
         readonly IBaseCache<StockData> _stockCache;
@@ -60,7 +60,7 @@ namespace Ekom.API
             Configuration config,
             ILogger<Stock> logger,
             IBaseCache<StockData> stockCache,
-            IStockRepository stockRepo,
+            StockRepository stockRepo,
             DiscountStockRepository discountStockRepo,
             IStoreService storeService,
             IPerStoreCache<StockData> stockPerStoreCache

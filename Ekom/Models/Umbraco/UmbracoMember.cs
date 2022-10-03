@@ -21,7 +21,7 @@ namespace Ekom.Models
             Id = Convert.ToInt32(Properties.GetPropertyValue("id"));
             Key = new Guid(Properties.GetPropertyValue("__Key"));
             Name = Properties.GetPropertyValue("nodeName");
-            UserName = Properties.GetPropertyValue("userName");
+            UserName = Properties.GetPropertyValue("loginName");
             Email = Properties.GetPropertyValue("email");
         }
 

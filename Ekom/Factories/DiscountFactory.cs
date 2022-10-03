@@ -1,7 +1,7 @@
 using Ekom.Interfaces;
 using Ekom.Models;
 
-namespace Ekom.U10.Factories
+namespace Ekom.Factories
 {
     class DiscountFactory : IPerStoreFactory<IDiscount>
     {
