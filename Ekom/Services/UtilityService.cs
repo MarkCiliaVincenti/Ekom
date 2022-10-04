@@ -8,11 +8,11 @@ namespace Ekom.Services
         {
             try
             {
-                return new DateTime(Convert.ToInt64(value));
+                return DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss:fff", System.Globalization.CultureInfo.InvariantCulture);
             }
             catch
             {
-                return DateTime.ParseExact(value, "yyyyMMddHHmmssfff", System.Globalization.CultureInfo.InvariantCulture);
+                return new DateTime(Convert.ToInt64(value));
             }
         }
     }

@@ -22,7 +22,18 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        public virtual int Id => Convert.ToInt32(Properties.GetPropertyValue("__NodeId"));
+        public virtual int Id
+        {
+            get
+            {
+                if (int.TryParse(Properties.GetPropertyValue("id"), out int _value))
+                {
+                    return _value;
+                }
+
+                return 0;
+            }
+        }
 
 
         /// <summary>
@@ -64,11 +75,51 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        public virtual int SortOrder => Convert.ToInt32(Properties.GetPropertyValue("sortOrder"));
+        public virtual int SortOrder
+        {
+
+            get
+            {
+                if (int.TryParse(Properties.GetPropertyValue("sortOrder"), out int _value))
+                {
+                    return _value;
+                }
+
+                return 0;
+            }
+
+        }
         /// <summary>
         /// Level of node in Umbraco content tree hierarchy
         /// </summary>
-        public virtual int Level => Convert.ToInt32(Properties.GetPropertyValue("level"));
+        public virtual int Level
+        {
+            get
+            {
+                if (int.TryParse(Properties.GetPropertyValue("level"), out int _value))
+                {
+                    return _value;
+                }
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Level of node in Umbraco content tree hierarchy
+        /// </summary>
+        public virtual bool VariesByCulture
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Properties.GetPropertyValue("__VariesByCulture")))
+                {
+                    return false;
+                }
+
+                return Properties.GetPropertyValue("__VariesByCulture").IsBoolean();
+            }
+        }
 
         /// <summary>
         /// CSV of node id's describing hierarchy from left to right leading up to node.

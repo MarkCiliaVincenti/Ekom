@@ -182,80 +182,81 @@ namespace Ekom.App_Start
             string alias,
             ContentSavingNotification e)
         {
-            var stores = API.Store.Instance.GetAllStores();
+            //TODO
+            //var stores = API.Store.Instance.GetAllStores();
 
-            var slugItems = new Dictionary<string, object>();
-            var titleItems = new Dictionary<string, object>();
+            //var slugItems = new Dictionary<string, object>();
+            //var titleItems = new Dictionary<string, object>();
 
-            foreach (var store in stores.OrderBy(x => x.SortOrder))
-            {
-                var name = content.Name.Trim();
+            //foreach (var store in stores.OrderBy(x => x.SortOrder))
+            //{
+            //    var name = content.Name.Trim();
 
-                throw new NotSupportedException("Missing Vorto");
+            //    throw new NotSupportedException("Missing Vorto");
 
-                var title = string.Empty; //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
+            //    var title = string.Empty; //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
 
-                if (string.IsNullOrEmpty(title))
-                {
-                    title = name;
-                }
+            //    if (string.IsNullOrEmpty(title))
+            //    {
+            //        title = name;
+            //    }
 
-                titleItems.Add(store.Alias, title);
+            //    titleItems.Add(store.Alias, title);
 
-                if (alias == "ekmProduct" || alias == "ekmCategory")
-                {
+            //    if (alias == "ekmProduct" || alias == "ekmCategory")
+            //    {
                     
-                    var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
+            //        var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
 
-                    if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
-                    {
-                        slug = title;
-                    }
+            //        if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
+            //        {
+            //            slug = title;
+            //        }
 
-                    slug = slug.ToLowerInvariant();
+            //        slug = slug.ToLowerInvariant();
 
-                    var parentCategory = API.Catalog.Instance.GetCategory(store.Alias, content.ParentId);
+            //        var parentCategory = API.Catalog.Instance.GetCategory(store.Alias, content.ParentId);
 
-                    if (parentCategory !=null)
-                    {
-                        var products = parentCategory.Products.Where(x => x.Id != content.Id);
-                        var categories = parentCategory.SubCategories.Where(x => x.Id != content.Id);
+            //        if (parentCategory !=null)
+            //        {
+            //            var products = parentCategory.Products.Where(x => x.Id != content.Id);
+            //            var categories = parentCategory.SubCategories.Where(x => x.Id != content.Id);
 
-                        if (products.Any(x => x.Slug == slug) || categories.Any(x => x.Slug == slug))
-                        {
-                            Random rnd = new Random();
+            //            if (products.Any(x => x.Slug == slug) || categories.Any(x => x.Slug == slug))
+            //            {
+            //                Random rnd = new Random();
 
-                            slug = slug + "-" + rnd.Next(10, 500);
+            //                slug = slug + "-" + rnd.Next(10, 500);
 
-                            _logger.LogWarning(
-                                "Duplicate slug found for product : {Id} store: {Store}",
-                                content.Id,
-                                store.Alias);
+            //                _logger.LogWarning(
+            //                    "Duplicate slug found for product : {Id} store: {Store}",
+            //                    content.Id,
+            //                    store.Alias);
 
-                            e.Messages.Add(
-                                new EventMessage(
-                                    "Duplicate Slug Found.",
-                                    "Sorry but this slug is already in use, we updated it for you. Store: " + store.Alias,
-                                    EventMessageType.Warning
-                                )
-                            );
-                        }
+            //                e.Messages.Add(
+            //                    new EventMessage(
+            //                        "Duplicate Slug Found.",
+            //                        "Sorry but this slug is already in use, we updated it for you. Store: " + store.Alias,
+            //                        EventMessageType.Warning
+            //                    )
+            //                );
+            //            }
 
-                    }
+            //        }
 
-                    slugItems.Add(store.Alias, slug.ToUrlSegment(_shortStringHelper));
-                }
-            }
+            //        slugItems.Add(store.Alias, slug.ToUrlSegment(_shortStringHelper));
+            //    }
+            //}
 
-            if (slugItems.Any())
-            {
-                //content.SetVortoValue("slug", slugItems);
-            }
+            //if (slugItems.Any())
+            //{
+            //    //content.SetVortoValue("slug", slugItems);
+            //}
 
-            if (titleItems.Any())
-            {
-                //content.SetVortoValue("title", titleItems);
-            }
+            //if (titleItems.Any())
+            //{
+            //    //content.SetVortoValue("title", titleItems);
+            //}
         }
 
         public void Handle(DomainSavedNotification saveEventArgs)

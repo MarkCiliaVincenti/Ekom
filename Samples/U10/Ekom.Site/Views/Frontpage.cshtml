@@ -9,7 +9,22 @@
 
 <h2>Total Categories (@categories.Count())</h2>
 
-@foreach (var cat in categories)
-{
-    <p>@cat.Id - @cat.Title</p>
-}
+
+<ul>
+    @foreach (var cat in categories)
+    {
+        <li>
+            @cat.Title - @cat.Key
+
+            <ul>
+                @foreach (var prop in cat.Properties)
+                {
+                    <li>
+                        @prop.Key: @prop.Value
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+</ul>
+

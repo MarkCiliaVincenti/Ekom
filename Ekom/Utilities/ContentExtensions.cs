@@ -54,7 +54,7 @@ namespace Ekom.Utilities
                 }
             }
 
-            var catalogAncestors = ancestors.Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct"));
+            var catalogAncestors = ancestors.Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
             foreach (var ancestor in catalogAncestors)
             {

@@ -436,7 +436,7 @@ namespace Ekom.Services
 
             var ekomPP = Providers.Instance.GetPaymentProvider(paymentRequest.PaymentProvider);
 
-            var isOfflinePayment = ekomPP.GetPropertyValue("offlinePayment", storeAlias).IsBooleanTrue();
+            var isOfflinePayment = ekomPP.GetPropertyValue("offlinePayment", storeAlias).IsBoolean();
 
             var orderItems = new List<OrderInfo>();
             //orderItems.Add(new OrderInfo

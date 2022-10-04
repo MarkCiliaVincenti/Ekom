@@ -37,35 +37,46 @@ namespace Ekom.U10.Services
 
                 var results = ekomRoot.DescendantsOfType(contentTypeAlias).ToList();
 
-                return results.Select(x => new Umbraco10Content(x));
+                var content = results.Select(x => new Umbraco10Content(x)).ToList();
+
+                return content;
             }
         }
 
         public IEnumerable<UmbracoContent> NodeAncestors(string id)
         {
-            var node = GetNodeById(id);
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var node = GetNodeById(id);
 
-            var ancestors = node.Ancestors().Select(x => new Umbraco10Content(x));
+                var ancestors = node.Ancestors().Select(x => new Umbraco10Content(x)).ToList();
 
-            return ancestors;
+                return ancestors;
+            }
         }
         public IEnumerable<UmbracoContent> NodeCatalogAncestors(string id)
         {
-            var node = GetNodeById(id);
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var node = GetNodeById(id);
 
-            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco10Content(x));
+                var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco10Content(x));
 
-            ancestors.Reverse();
+                ancestors.Reverse();
 
-            return ancestors;
+                return ancestors.ToList();
+            }
         }
         public IEnumerable<UmbracoContent> NodeChildren(string id)
         {
-            var node = GetNodeById(id);
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var node = GetNodeById(id);
 
-            var ancestors = node.Children.Select(x => new Umbraco10Content(x));
+                var ancestors = node.Children.Select(x => new Umbraco10Content(x)).ToList();
 
-            return ancestors;
+                return ancestors;
+            }
         }
 
         // <summary>
@@ -91,13 +102,17 @@ namespace Ekom.U10.Services
 
         public IEnumerable<UmbracoContent> GetAllCatalogAncestors(UmbracoContent item)
         {
-            var node = GetNodeById(item.Id);
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var node = GetNodeById(item.Id);
 
-            var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
+                var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).ToList();
 
-            ancestors.Reverse();
-            
-            return ancestors.Select(x => new Umbraco10Content(x));
+                ancestors.Reverse();
+
+                return ancestors.Select(x => new Umbraco10Content(x)).ToList();
+            }
+
         }
 
         /// <summary>

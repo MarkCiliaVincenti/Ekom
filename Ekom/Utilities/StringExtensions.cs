@@ -68,9 +68,9 @@ namespace Ekom
                    || input.StartsWith("[") && input.EndsWith("]");
         }
 
-        internal static bool IsBooleanTrue(this string value)
+        internal static bool IsBoolean(this string value)
         {
-            if (value == "1" || value.Equals("true", StringComparison.InvariantCultureIgnoreCase) || value.Equals("enable", StringComparison.InvariantCultureIgnoreCase))
+            if (value == "1" || value == "y" || value.Equals("true", StringComparison.InvariantCultureIgnoreCase) || value.Equals("enable", StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }

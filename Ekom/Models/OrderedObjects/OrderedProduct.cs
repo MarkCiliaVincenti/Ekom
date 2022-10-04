@@ -72,7 +72,7 @@ namespace Ekom.Models
         [JsonIgnore]
         [XmlIgnore]
         //TODO Store default setup!
-        public bool Backorder => Properties.GetPropertyValue("enableBackorder", StoreInfo.Alias).IsBooleanTrue();
+        public bool Backorder => Properties.GetPropertyValue("enableBackorder", StoreInfo.Alias).IsBoolean();
 
         [JsonIgnore]
         [XmlIgnore]
