@@ -331,10 +331,12 @@ namespace Ekom.U10.Services
                 node = GetMediaById(id);
             }
 
-            using (var cref = _context.EnsureUmbracoContext())
+            if (node == null)
             {
-                return cref.UmbracoContext.Content.GetById(node.Id).Url();
+                return "";
             }
+
+            return node.Url();
         }
 
 

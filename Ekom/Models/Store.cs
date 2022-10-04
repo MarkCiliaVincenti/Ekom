@@ -14,10 +14,8 @@ namespace Ekom.Models
     /// </summary>
     public class Store : NodeEntity, IStore
     {
-        protected IServiceProvider _serviceProvider;
-
-        private INodeService nodeService => _serviceProvider.GetService<INodeService>();
-        private IStoreDomainCache storeDomainCache => _serviceProvider.GetService<IStoreDomainCache>();
+        private INodeService nodeService => Configuration.Resolver.GetService<INodeService>();
+        private IStoreDomainCache storeDomainCache => Configuration.Resolver.GetService<IStoreDomainCache>();
         /// <summary>
         /// Usually a two letter code, f.x. EU/IS/DK
         /// </summary>
