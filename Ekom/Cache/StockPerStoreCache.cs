@@ -18,10 +18,9 @@ namespace Ekom.Cache
             Configuration config,
             ILogger<IPerStoreCache<StockData>> logger,
             IBaseCache<IStore> storeCache,
-            IPerStoreFactory<StockData> perStoreFactory,
             StockRepository stockRepo,
             IServiceProvider serviceProvider
-        ) : base(config, logger, storeCache, perStoreFactory, serviceProvider)
+        ) : base(config, logger, storeCache, null, serviceProvider)
         {
             _stockRepo = stockRepo;
         }

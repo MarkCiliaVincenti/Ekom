@@ -22,9 +22,8 @@ namespace Ekom.Cache
         public StoreDomainCache(
             Configuration config,
             ILogger<BaseCache<UmbracoDomain>> logger,
-            IObjectFactory<UmbracoDomain> objectFactory,
             IServiceProvider serviceProvider
-        ) : base(config, logger, objectFactory, serviceProvider)
+        ) : base(config, logger, null, serviceProvider)
         {
             _config = config;
             _logger = logger;
