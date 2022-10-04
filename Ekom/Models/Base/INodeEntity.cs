@@ -71,6 +71,15 @@ namespace Ekom.Models
         int Level { get; }
 
         /// <summary>
+        /// Varies by culture
+        /// </summary>
+        /// <value>
+        /// The path.
+        /// </value>
+        bool VariesByCulture { get; } 
+        
+
+        /// <summary>
         /// Path for the node
         /// </summary>
         /// <value>

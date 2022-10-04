@@ -5,16 +5,18 @@
     Layout = "Master.cshtml";
 
     var categories = Catalog.Instance.GetAllCategories();
+
+
+    var node = Umbraco.Content(1097);
 }
 
-<h2>Total Categories (@categories.Count())</h2>
-
+<h2>Total Categories (@categories.Count()) (@Model.GetCultureFromDomains())</h2>
 
 <ul>
     @foreach (var cat in categories)
     {
         <li>
-            @cat.Title - @cat.Key
+            @cat.Title - @cat.Key - @cat.VariesByCulture
 
             <ul>
                 @foreach (var prop in cat.Properties)

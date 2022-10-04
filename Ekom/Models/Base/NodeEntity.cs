@@ -106,7 +106,7 @@ namespace Ekom.Models
         }
 
         /// <summary>
-        /// Level of node in Umbraco content tree hierarchy
+        ///
         /// </summary>
         public virtual bool VariesByCulture
         {

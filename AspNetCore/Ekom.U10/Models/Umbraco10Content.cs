@@ -18,7 +18,8 @@ namespace Ekom.U10.Models
                 { "level", content.Level.ToString() },
                 { "__Path", content.Path },
                 { "createDate", content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") }
+                { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
+                { "__VariesByCulture", content.Cultures.Count > 1 ? "y" : "n" }
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
@@ -37,7 +38,8 @@ namespace Ekom.U10.Models
                 { "level", content.Level.ToString() },
                 { "__Path", content.Path },
                 { "createDate", content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") }
+                { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
+                { "__VariesByCulture", content.AvailableCultures.Count() > 1 ? "y" : "n" }
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
@@ -56,7 +58,8 @@ namespace Ekom.U10.Models
                 { "level", content.Content.Level.ToString() },
                 { "__Path", content.Content.Path },
                 { "createDate", content.Content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "updateDate", content.Content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") }
+                { "updateDate", content.Content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
+                { "__VariesByCulture", content.Content.Cultures.Count > 1 ? "y" : "n" }
             },
             content.Content.Properties.ToDictionary(
                 x => x.Alias,
