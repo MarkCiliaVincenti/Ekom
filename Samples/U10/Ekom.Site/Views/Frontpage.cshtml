@@ -1,0 +1,15 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Ekom.API;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var categories = Catalog.Instance.GetAllCategories();
+}
+
+<h2>Total Categories (@categories.Count())</h2>
+
+@foreach (var cat in categories)
+{
+    <p>@cat.Id - @cat.Title</p>
+}

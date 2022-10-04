@@ -46,7 +46,7 @@ namespace Ekom.Cache
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            _logger.LogInformation("Starting to fill...");
+            _logger.LogInformation("Starting to fill stock cache...");
 
             var allStock = _stockRepo.GetAllStockAsync().Result;
             foreach (var stock in allStock.Where(stock => stock.UniqueId.Length == 36))

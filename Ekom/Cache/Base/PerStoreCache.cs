@@ -79,7 +79,8 @@ namespace Ekom.Cache
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                _logger.LogDebug("Starting to fill...");
+                _logger.LogDebug("Starting to fill per store cache for {NodeAlias}...", NodeAlias);
+
                 int count = 0;
 
                 try
@@ -100,13 +101,14 @@ namespace Ekom.Cache
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Filling per store cache Failed!");
+                    _logger.LogError(ex, "Filling per store cache Failed for {NodeAlias}!", NodeAlias);
                 }
 
                 stopwatch.Stop();
                 _logger.LogInformation(
-                    "Finished filling per store cache with {Count} items. Time it took to fill: {Elapsed}",
+                    "Finished filling per store cache with {Count} items for {NodeAlias}. Time it took to fill: {Elapsed}",
                     count,
+                    NodeAlias,
                     stopwatch.Elapsed
                 );
             }

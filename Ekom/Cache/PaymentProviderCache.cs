@@ -59,7 +59,7 @@ namespace Ekom.Cache
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Filling per store cache Failed!");
+                    _logger.LogError(ex, "Filling per store cache Failed for {NodeAlias}!", NodeAlias);
                 }
 
                 stopwatch.Stop();

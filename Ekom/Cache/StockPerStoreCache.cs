@@ -47,7 +47,7 @@ namespace Ekom.Cache
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            _logger.LogInformation("Starting to fill...");
+            _logger.LogInformation("Starting to fill stock cache...");
 
             int count = 0;
 

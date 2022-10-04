@@ -6,13 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 #endif
 
 using Ekom.Domain.Repositories;
-using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Ekom.Exceptions;

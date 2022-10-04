@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ekom.API;
 using Ekom.AspNetCore.Services;
 using Ekom.Cache;
 using Ekom.Domain.Repositories;
@@ -13,7 +7,6 @@ using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Ekom.AspNetCore
 {

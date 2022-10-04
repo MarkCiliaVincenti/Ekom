@@ -62,11 +62,6 @@ namespace Ekom.Site
         /// </summary>
         public void Initialize()
         {
-            _logger.LogInformation("test...");
-
-            var ctx = _umbracoContextFactory.EnsureUmbracoContext();
-            var content = ctx.UmbracoContext.Content.GetAtRoot();
-            _logger.LogInformation("test Started");
         }
 
         public void Terminate()

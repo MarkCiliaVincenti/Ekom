@@ -16,7 +16,7 @@ namespace Ekom.U10.Models
             },
             member.Properties.ToDictionary(
                 x => x.Alias, 
-                x => x.GetValue().ToString()))
+                x => x.GetValue()?.ToString()))
         { }
     }
 }
