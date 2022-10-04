@@ -16,7 +16,7 @@ namespace Ekom.Services
         public DatabaseFactory(IConfiguration configuration)
         {
             var connectionStringName
-                = configuration["UserManagement:ConnectionStringName"]
+                = configuration["ConnectionStrings:umbracoDbDSN"]
                 ?? "umbracoDbDSN";
             _connectionString = configuration.GetConnectionString(connectionStringName);
         }
