@@ -27,7 +27,12 @@
     'Ekom.PropertyEditorResources',
     'umbPropEditorHelper',
     'appState',
-    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState) {
+    '$routeParams',
+    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState, $routeParams) {
+
+      if ($routeParams.section !== 'content') { return; }
+
+      $scope.model.hideLabel = $scope.model.config.hideLabel == 1;
 
       $scope.property = {
         config: {},
@@ -36,6 +41,14 @@
 
       $scope.tabs = [];
       $scope.currentTab = undefined;
+
+      if (!angular.isObject($scope.model.value))
+        $scope.model.value = undefined;
+
+      $scope.model.value = $scope.model.value || {
+        values: {},
+        dtdGuid: "00000000-0000-0000-0000-000000000000"
+      };
 
       var currentSection = appState.getSectionState("currentSection");
       var parentScope = $scope;
@@ -61,22 +74,29 @@
         var propAlias = $scope.model.propertyAlias || $scope.model.alias;
 
         ekmResources.getDataTypeByAlias(currentSection, nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
-          console.log(dataType2);
 
-          if (dataType2.preValues.useStores) {
+          $scope.model.value.dtdGuid = dataType2.guid;
+
+          if (dataType2.preValues.useLanguages) {
+
+            ekmResources.getLanguages().then(function (languages) {
+
+              $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
+
+              $scope.setValues();
+
+            });
+
+          } else {
+
             ekmResources.getStores().then(function (stores) {
 
               $scope.tabs = stores.map(x => ({ value: x.Alias, text: x.Title }));
 
-            });
-          } else {
-            ekmResources.getLanguages().then(function (languages) {
-              console.log(languages);
+              $scope.setValues();
 
-              $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
-
-              console.log($scope.tabs );
             });
+
           }
 
         });
@@ -86,6 +106,39 @@
       $scope.setCurrentTab = function (tab) {
         $scope.currentTab = tab;
       }
+
+      $scope.$on("formSubmitting", function (ev, args) {
+
+        $scope.$broadcast("ekomValuesEvent", { tab: $scope.currentTab.value });
+
+        // Strip out empty entries
+        var cleanValue = {};
+        _.each($scope.tabs, function (tab) {
+
+          cleanValue[tab.value] = $scope.model.value.values[tab.value];
+
+        });
+
+        $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
+
+      });
+
+      $scope.setValues = function () {
+
+        $scope.currentTab = $scope.tabs[0];
+
+        if (!$scope.model.value.values) {
+          $scope.model.value.values = {};
+        }
+
+        _.each($scope.tabs, function (tab) {
+          if (!$scope.model.value.values.hasOwnProperty(tab.value)) {
+            $scope.model.value.values[tab.value] = $scope.model.value.values[tab.value];
+          }
+        });
+
+      }
+
     }]
   );
 
@@ -132,10 +185,10 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
 
 
 /* Directives */
-angular.module("umbraco.directives").directive('vortoProperty',
-  function ($compile, $http, umbPropEditorHelper, $timeout, $rootScope, $q) {
+angular.module("umbraco.directives").directive('ekomProperty',
+  function () {
 
-    var link = function (scope, element, attrs, ctrl) {
+    var link = function (scope, ctrl) {
       scope[ctrl.$name] = ctrl;
 
       scope.model = {};
@@ -149,16 +202,17 @@ angular.module("umbraco.directives").directive('vortoProperty',
       // bug here http://issues.umbraco.org/issue/U4-8266
       scope.model.config = angular.copy(scope.config);
 
-      scope.model.alias = scope.propertyAlias + "." + scope.language;
-      scope.model.value = scope.value.values ? scope.value.values[scope.language] : undefined;
+      scope.model.alias = scope.propertyAlias + "." + scope.tab;
+      scope.model.value = scope.value.values ? scope.value.values[scope.tab] : undefined;
 
-      var unsubscribe = scope.$on("vortoSyncLanguageValue", function (ev, args) {
-        if (args.language === scope.language) {
-          scope.$broadcast("formSubmitting", { scope: scope });
-          if (!scope.value.values)
-            scope.value.values = {};
-          scope.value.values[scope.language] = scope.model.value;
-        }
+      var unsubscribe = scope.$on("ekomValuesEvent", function (ev, args) {
+
+        scope.$broadcast("formSubmitting", { scope: scope });
+        if (!scope.value.values)
+          scope.value.values = {};
+
+        scope.value.values[scope.tab] = scope.model.value;
+
       });
 
       scope.$on('$destroy', function () {
@@ -169,13 +223,13 @@ angular.module("umbraco.directives").directive('vortoProperty',
     return {
       require: "^form",
       restrict: "E",
-      rep1ace: true,
+      replace: true,
       link: link,
       template: '<div ng-include="propertyEditorView"></div>',
       scope: {
         propertyEditorView: '=view',
         config: '=',
-        language: '=',
+        tab: '=',
         propertyAlias: '=',
         value: '='
       }

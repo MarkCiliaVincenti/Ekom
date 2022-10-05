@@ -1,24 +1,24 @@
 <ng-form name="ekomPropertyForm">
   <div id="ekom-{{model.id}}" class="ekomProperty" ng-controller="Ekom.PropertyEditor">
 
-    <ul class="ekom-tabs">
-      <li class="ekom-tabs__item"
-          ng-class="tab.value == currentTab.value ? 'active' : ''"
+    <ul class="ekom-tabs umb-tabs-nav">
+      <li class="ekom-tabs__item umb-tab"
+          ng-class="tab.value == currentTab.value ? 'ekom-tabs__item--active umb-tab--active' : ''"
           ng-repeat="tab in tabs"
           ng-click="setCurrentTab(tab);">
-        <span>{{tab.text}}</span>
+          <button class="btn-reset umb-tab-button" type="button">
+            {{tab.text}}
+          </button>
       </li>
     </ul>
 
     <div class="ekom-property" ng-repeat="tab in tabs" ng-show="currentTab.value == tab.value">
-      <vorto-property 
-        view="property.viewPath" 
-        config="property.config" 
-        language="tab.value"
-        property-alias="model.alias"
-        value="model.value" 
-        ng-if="currentTab.value == tab.value">
-      </vorto-property>
+      <ekom-property view="property.viewPath"
+                     config="property.config"
+                     tab="tab.value"
+                     property-alias="model.alias"
+                     value="model.value">
+      </ekom-property>
     </div>
 
   </div>

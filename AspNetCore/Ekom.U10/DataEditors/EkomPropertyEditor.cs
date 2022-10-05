@@ -14,6 +14,7 @@ namespace Ekom.U10.DataEditors
     ValueType = ValueTypes.Json,
     HideLabel = true)]
     [PropertyEditorAsset(AssetType.Javascript, "/App_Plugins/Ekom/DataTypes/PropertyEditor/js/ekmPropertyEditor.controller.js")]
+    [PropertyEditorAsset(AssetType.Css, "/App_Plugins/Ekom/DataTypes/PropertyEditor/css/ekomProperty.css")]
     public class EkomPropertyEditor : DataEditor
     {
         private readonly IIOHelper _ioHelper;
@@ -52,11 +53,18 @@ namespace Ekom.U10.DataEditors
 
 
         [ConfigurationField(
-        "useStores",
-        "Use Stores",
+        "useLanguages",
+        "Use Languages",
         "boolean",
         Description =
-            "Defaults on Languages, select this to use Stores instead")]
-        public bool useStores { get; set; }
+            "Defaults on Stores, select this to use languages instead")]
+        public bool useLanguages { get; set; }
+
+        [ConfigurationField(
+            "hideLabel", 
+            "Hide Label", 
+            "boolean", 
+            Description = "Hide the Umbraco property title and description, making the property span the entire page width")]
+        public bool HideLabel { get; set; }
     }
 }
