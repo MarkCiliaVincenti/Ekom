@@ -5,28 +5,40 @@
     Layout = "Master.cshtml";
 
     var categories = Catalog.Instance.GetAllCategories();
-
-
-    var node = Umbraco.Content(1097);
+    var store = Store.Instance.GetStore();
 }
 
-<h2>Total Categories (@categories.Count()) (@Model.GetCultureFromDomains())</h2>
+<h2>Total Categories (@categories.Count())</h2>
+<h3>Culture: @Model.GetCultureFromDomains()</h3>
+<h3>Store: @store.Alias</h3>
 
-<ul>
+<div style="margin-left:40px; border-top:1px solid #ccc;">
     @foreach (var cat in categories)
     {
-        <li>
-            @cat.Title - @cat.Key - @cat.VariesByCulture
+        <h4>Title: @cat.Title</h4>
+        <p>Key: @cat.Key</p>
+        <p>Id: @cat.Id</p>
 
-            <ul>
-                @foreach (var prop in cat.Properties)
-                {
-                    <li>
-                        @prop.Key: @prop.Value
-                    </li>
-                }
-            </ul>
-        </li>
+        <h4>Category properties</h4>
+
+        <ul>
+            @foreach (var prop in cat.Properties)
+            {
+                <li>
+                    @prop.Key: @prop.Value
+                </li>
+            }
+        </ul>
+
+        <h4>Products</h4>
+
+        <ul>
+            @foreach (var product in cat.ProductsRecursive)
+            {
+                <li>
+                   @product.Title - @product.Id - @product.Url
+                </li>
+            }
+        </ul>
     }
-</ul>
-
+</div>

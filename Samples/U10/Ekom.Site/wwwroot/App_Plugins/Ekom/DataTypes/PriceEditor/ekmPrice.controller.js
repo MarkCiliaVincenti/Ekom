@@ -1,10 +1,13 @@
-angular.module("umbraco").controller("Ekom.Price", function ($scope, $http) {
+angular.module("umbraco").controller("Ekom.Price", function ($scope, $http, $routeParams) {
+
+  if ($routeParams.section !== 'content') { return; }
+
   $scope.fieldAlias = $scope.model.alias;
 
   //$scope.currencies = [];
   $scope.stores = [];
 
-  $http.get('/umbraco/backoffice/ekom/api/getAllStores').then(function (results) {
+  $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
 
     $scope.stores = results.data;
 

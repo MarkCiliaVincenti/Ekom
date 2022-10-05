@@ -83,7 +83,7 @@
 
               $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
 
-              $scope.setValues();
+              setValues();
 
             });
 
@@ -93,7 +93,7 @@
 
               $scope.tabs = stores.map(x => ({ value: x.Alias, text: x.Title }));
 
-              $scope.setValues();
+              setValues();
 
             });
 
@@ -111,19 +111,26 @@
 
         $scope.$broadcast("ekomValuesEvent", { tab: $scope.currentTab.value });
 
-        // Strip out empty entries
-        var cleanValue = {};
-        _.each($scope.tabs, function (tab) {
+        validateProperty();
 
-          cleanValue[tab.value] = $scope.model.value.values[tab.value];
 
-        });
+        if ($scope.ekomPropertyForm.$valid) {
 
-        $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
+          var cleanValue = {};
+          _.each($scope.tabs, function (tab) {
+
+            cleanValue[tab.value] = $scope.model.value.values[tab.value];
+
+          });
+
+          $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
+        }
+
+
 
       });
 
-      $scope.setValues = function () {
+      var setValues = function () {
 
         $scope.currentTab = $scope.tabs[0];
 
@@ -139,6 +146,51 @@
 
       }
 
+      var validateProperty = function () {
+        // Validate value changes
+        if ($scope.model.validation.mandatory) {
+
+          var mandatoryBehaviour = "all";
+          var primaryLanguage = "none"
+
+          //TODO: Might be better if we could get the inner control to validate this?
+
+          var isValid = true;
+
+          switch (mandatoryBehaviour) {
+            case "all":
+              _.each($scope.tabs, function (tab) {
+                if (!(tab.value in $scope.model.value.values) ||
+                  !$scope.model.value.values[tab.value]) {
+                  isValid = false;
+                  return;
+                }
+              });
+              break;
+            case "any":
+              isValid = false;
+              _.each($scope.languages, function (language) {
+                if (language.isoCode in $scope.model.value.values &&
+                  $scope.model.value.values[language.isoCode]) {
+                  isValid = true;
+                  return;
+                }
+              });
+              break;
+            case "primary":
+              if (primaryLanguage in $scope.model.value.values
+                && $scope.model.value.values[primaryLanguage]) {
+                isValid = true;
+              } else {
+                isValid = false;
+              }
+              break;
+          }
+
+          $scope.ekomPropertyForm.$setValidity("required", isValid);
+        }
+      };
+
     }]
   );
 
@@ -151,31 +203,31 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
     return {
       getNonEkomDataTypes: function () {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + "GetNonEkomDataTypes"),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetNonEkomDataTypes"),
           'Failed to retrieve datatypes'
         );
       },
       getDataTypeById: function (id) {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + "GetDataTypeById?id=" + id),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeById?id=" + id),
           'Failed to retrieve datatype'
         );
       },
       getDataTypeByAlias: function (contentType, contentTypeAlias, propertyAlias) {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + "GetDataTypeByAlias?contentType=" + contentType + "&contentTypeAlias=" + contentTypeAlias + "&propertyAlias=" + propertyAlias),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeByAlias?contentType=" + contentType + "&contentTypeAlias=" + contentTypeAlias + "&propertyAlias=" + propertyAlias),
           'Failed to retrieve datatype'
         );
       },
       getLanguages: function () {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + "GetLanguages"),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetLanguages"),
           'Failed to retrieve languages'
         );
       },
       getStores: function () {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + "GetStores"),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetStores"),
           'Failed to retrieve stores'
         );
       }

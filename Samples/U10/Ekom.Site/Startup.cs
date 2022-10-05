@@ -38,6 +38,7 @@ namespace Ekom.Site
                 .Build();
 
             services.AddEkom();
+
         }
 
         /// <summary>

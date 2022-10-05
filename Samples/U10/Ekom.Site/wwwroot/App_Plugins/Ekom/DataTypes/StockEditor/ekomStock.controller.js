@@ -7,7 +7,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
   $scope.perStoreStock = false;
 
   $scope.GetStores = function () {
-    $http.get('/umbraco/backoffice/ekom/api/getAllStores').then(function (results) {
+    $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
 
       $scope.storeList = results.data;
 
@@ -22,14 +22,14 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
   $scope.GetStock = function (storeAlias) {
 
     if (storeAlias !== '') {
-      $http.get('/umbraco/backoffice/ekom/api/GetStockByStore?id=' + $scope.content.key + "&storeAlias=" + storeAlias)
+      $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'GetStockByStore?id=' + $scope.content.key + "&storeAlias=" + storeAlias)
         .then(function (result) {
 
           $scope.stockValue = parseInt(result.data);
 
         });
     } else {
-      $http.get('/umbraco/backoffice/ekom/api/GetStock?id=' + $scope.content.key).then(function (result) {
+      $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'GetStock?id=' + $scope.content.key).then(function (result) {
 
         $scope.stockValue = parseInt(result.data);
 
@@ -41,7 +41,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
 
   $scope.UpdateStock = function () {
 
-    $http.post('/umbraco/backoffice/ekom/api/setStock?id=' + $scope.content.key + "&stock=" + $scope.stockValue + "&storeAlias=" + $scope.storeSelected)
+    $http.post(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'setStock?id=' + $scope.content.key + "&stock=" + $scope.stockValue + "&storeAlias=" + $scope.storeSelected)
       .then(
         function () {
           notificationsService.success("Success", "Stock has been updated");
@@ -61,7 +61,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
       .then(function (data) {
         $scope.content = data;
 
-        $http.get('/umbraco/backoffice/ekom/api/GetConfig').then(function (result) {
+        $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'GetConfig').then(function (result) {
 
           $scope.config = result.data;
 
