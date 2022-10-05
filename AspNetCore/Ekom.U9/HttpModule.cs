@@ -88,7 +88,7 @@ namespace Ekom.U9
                 if (umbCtx?.UmbracoContext != null)
                 {
                     appCaches.RequestCache.Get("ekmRequest", () =>
-                        new ContentRequest(_context.Request, _context)
+                        new ContentRequest(_context)
                         {
                             User = new User(),
                         }

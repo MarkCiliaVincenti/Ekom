@@ -2,9 +2,8 @@ using Ekom.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
-using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 
 namespace Ekom.U10
@@ -33,13 +32,13 @@ namespace Ekom.U10
         public async Task InvokeAsync(
             HttpContext context,
             ILogger<EkomMiddleware> logger,
-            UmbracoContextFactory umbracoContextFac,
+            IUmbracoContextFactory umbracoContextFac,
             AppCaches appCaches,
             IMemberService memberService,
             IServiceProvider serviceProvider
         )
         {
-            Configuration.Resolver = serviceProvider;
+            //Configuration.Resolver = serviceProvider;
 
             _logger = logger;
             _context = context;
@@ -61,7 +60,7 @@ namespace Ekom.U10
         /// Another option would have been to always return the list of urls for a product/category,
         /// leaving it to the frontend to match, sub-par solution but simpler?
         /// </summary>
-        private void Context_PostRequestHandlerExecute(UmbracoContextFactory umbracoContextFac)
+        private void Context_PostRequestHandlerExecute(IUmbracoContextFactory umbracoContextFac)
         {
             try
             {
@@ -79,7 +78,7 @@ namespace Ekom.U10
             }
         }
 
-        private void Application_BeginRequest(UmbracoContextFactory umbracoContextFac, AppCaches appCaches)
+        private void Application_BeginRequest(IUmbracoContextFactory umbracoContextFac, AppCaches appCaches)
 
         {
             try

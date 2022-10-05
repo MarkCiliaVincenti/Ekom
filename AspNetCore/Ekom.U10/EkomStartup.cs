@@ -3,17 +3,15 @@ using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.U10.Services;
-using Ekom.Utilities;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.WebAssets;
 using Umbraco.Cms.Web.BackOffice.Trees;
 
 namespace Ekom.U10
@@ -55,6 +53,7 @@ namespace Ekom.U10
                     .AddNotificationHandler<ContentMovedToRecycleBinNotification, UmbracoEventListeners>()
                     .AddNotificationHandler<ContentMovedNotification, UmbracoEventListeners>()
                     .AddNotificationHandler<DomainSavedNotification, UmbracoEventListeners>()
+                    .AddNotificationHandler<ServerVariablesParsingNotification, UmbracoEventListeners>()
                     .AddNotificationHandler<DomainDeletedNotification, UmbracoEventListeners>();
             }
         }
@@ -83,7 +82,7 @@ namespace Ekom.U10
         readonly IServiceProvider _factory;
         readonly IUmbracoDatabaseFactory _databaseFactory;
         readonly ExamineService _es;
-
+        readonly ServerVariablesParser _svp;
         BackgroundJobServer _hangfireServer;
 
         /// <summary>
@@ -94,13 +93,15 @@ namespace Ekom.U10
             ILogger<EkomStartup> logger,
             IServiceProvider factory,
             IUmbracoDatabaseFactory databaseFactory,
-            ExamineService es)
+            ExamineService es,
+            ServerVariablesParser svp)
         {
             _config = config;
             _logger = logger;
             _factory = factory;
             _databaseFactory = databaseFactory;
             _es = es;
+            _svp = svp;
         }
 
         /// <summary>
@@ -140,7 +141,6 @@ namespace Ekom.U10
 
                 _factory.GetService<ICouponCache>()
                     .FillCache();
-
 
                 // Hangfire
                 GlobalConfiguration.Configuration.UseSqlServerStorage(_databaseFactory.ConnectionString);

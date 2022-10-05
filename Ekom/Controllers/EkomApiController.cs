@@ -52,8 +52,8 @@ namespace Ekom.Controllers
             _countriesRepo = countriesRepo;
         }
 
-#endif        
-            
+#endif
+
         readonly CountriesRepository _countriesRepo;
         readonly Configuration _config;
 

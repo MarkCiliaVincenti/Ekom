@@ -1,15 +1,7 @@
 using Ekom.Cache;
-using Ekom.Exceptions;
-using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.U10.Models;
-using Ekom.Utilities;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Entities;
@@ -31,7 +23,8 @@ namespace Ekom.App_Start
         INotificationHandler<ContentMovedToRecycleBinNotification>,
         INotificationHandler<ContentMovedNotification>,
         INotificationHandler<DomainSavedNotification>,
-        INotificationHandler<DomainDeletedNotification>
+        INotificationHandler<DomainDeletedNotification>,
+        INotificationHandler<ServerVariablesParsingNotification>
     {
         readonly ILogger _logger;
         readonly IShortStringHelper _shortStringHelper;
@@ -333,6 +326,14 @@ namespace Ekom.App_Start
                 //    _storeCache.AddReplace(ekmStoreContent);
                 
             }
+        }
+
+        public void Handle(ServerVariablesParsingNotification notification)
+        {
+            notification.ServerVariables.Add("ekom", new
+            {
+                apiEndpoint = "/umbraco/backoffice/api/ekombackofficeapi/"
+            });
         }
 
         private void RefreshCacheForDescendants(int Id, bool remove = false)
