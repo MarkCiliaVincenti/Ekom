@@ -2,12 +2,15 @@ angular.module("umbraco").controller("Ekom.Price", function ($scope, $http, $rou
 
   if ($routeParams.section !== 'content') { return; }
 
+  $scope.model.hideLabel = false;
+
   $scope.fieldAlias = $scope.model.alias;
 
   //$scope.currencies = [];
   $scope.stores = [];
 
   $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
+
 
     $scope.stores = results.data;
 
@@ -97,7 +100,7 @@ angular.module("umbraco").controller("Ekom.Price", function ($scope, $http, $rou
       }
     })
 
-    if ($scope.model.value === null || $scope.model.value === '' || $scope.model.value === undefined) {
+    if ($scope.prices === 'null' || $scope.model.value === null || $scope.model.value === '' || $scope.model.value === undefined) {
 
       $scope.prices = {};
 

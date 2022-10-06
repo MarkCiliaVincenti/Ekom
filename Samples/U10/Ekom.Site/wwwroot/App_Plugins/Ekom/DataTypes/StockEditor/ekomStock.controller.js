@@ -5,6 +5,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
   $scope.storeSelected = '';
   $scope.config = null;
   $scope.perStoreStock = false;
+  $scope.model.hideLabel = false;
 
   $scope.GetStores = function () {
     $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
@@ -41,7 +42,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
 
   $scope.UpdateStock = function () {
 
-    $http.post(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'setStock?id=' + $scope.content.key + "&stock=" + $scope.stockValue + "&storeAlias=" + $scope.storeSelected)
+    $http.post(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + 'setStock?id=' + $scope.content.key + "&stock=" + $scope.stockValue + ($scope.storeSelected !== '' ? "&storeAlias=" + $scope.storeSelected : '')  )
       .then(
         function () {
           notificationsService.success("Success", "Stock has been updated");

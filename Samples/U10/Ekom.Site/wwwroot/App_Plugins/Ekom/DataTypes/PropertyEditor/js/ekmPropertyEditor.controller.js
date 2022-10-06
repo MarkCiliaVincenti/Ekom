@@ -28,7 +28,8 @@
     'umbPropEditorHelper',
     'appState',
     '$routeParams',
-    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState, $routeParams) {
+    'Ekom.LocalStorageService',
+    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState, $routeParams, localStorageService) {
 
       if ($routeParams.section !== 'content') { return; }
 
@@ -103,8 +104,15 @@
 
       });
 
-      $scope.setCurrentTab = function (tab) {
+      $scope.setCurrentTab = function (tab, broadcast) {
+
         $scope.currentTab = tab;
+
+        if (broadcast) {
+          localStorageService.set('ekomCurrentTab', tab.value);
+          $rootScope.$broadcast("ekomSync");
+        }
+        
       }
 
       $scope.$on("formSubmitting", function (ev, args) {
@@ -126,9 +134,25 @@
           $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
         }
 
-
-
       });
+
+      var unsubSync = $scope.$on("ekomSync", function (evt) {
+        sync();
+      });
+
+      $scope.$on("$destroy", function () {
+        unsubSync();
+      });
+
+      var sync = function () {
+        var currentTabValue = localStorageService.get('ekomCurrentTab');
+
+        var currentTab = _.find($scope.tabs, function (itm) {
+          return itm.value == currentTabValue;
+        }) || $scope.currentTab;
+
+        $scope.setCurrentTab(currentTab, false);
+      };
 
       var setValues = function () {
 
@@ -287,3 +311,44 @@ angular.module("umbraco.directives").directive('ekomProperty',
       }
     };
   });
+
+/* Services */
+angular.module('umbraco.services').factory('Ekom.LocalStorageService',
+  function ($cookies) {
+
+    var supportsLocalStorage = function () {
+      try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    var stash = function (key, value) {
+      if (supportsLocalStorage()) {
+        localStorage.setItem(key, value);
+      } else {
+        $cookies[key] = value;
+      }
+    }
+
+    var unstash = function (key) {
+      if (supportsLocalStorage()) {
+        return localStorage.getItem(key);
+      } else {
+        return $cookies[key];
+      }
+    }
+
+    return {
+      get: function (key, fallback) {
+        var rawVal = unstash(key);
+        if (!rawVal) return fallback;
+        return JSON.parse(rawVal);
+      },
+      set: function (key, obj) {
+        stash(key, JSON.stringify(obj));
+      }
+    };
+  }
+);

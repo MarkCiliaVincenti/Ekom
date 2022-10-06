@@ -5,7 +5,7 @@
       <li class="ekom-tabs__item umb-tab"
           ng-class="tab.value == currentTab.value ? 'ekom-tabs__item--active umb-tab--active' : ''"
           ng-repeat="tab in tabs"
-          ng-click="setCurrentTab(tab);">
+          ng-click="setCurrentTab(tab, true);">
           <button class="btn-reset umb-tab-button" type="button">
             {{tab.text}}
           </button>

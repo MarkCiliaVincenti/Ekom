@@ -1,4 +1,5 @@
 using Ekom.U10;
+using Newtonsoft.Json.Serialization;
 
 namespace Ekom.Site
 {
@@ -31,6 +32,7 @@ namespace Ekom.Site
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddUmbraco(_env, _config)
                 .AddBackOffice()
                 .AddWebsite()

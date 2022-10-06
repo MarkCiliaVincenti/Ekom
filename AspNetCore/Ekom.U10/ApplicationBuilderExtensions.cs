@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace Ekom.U10
         public static IServiceCollection AddEkom(this IServiceCollection services)
         {
             services.AddAspNetCoreEkom();
+
+            services.AddControllers()
+                .AddNewtonsoftJson(option => option.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             // What follows are explicit factory constructors for the API methods
             // This is needed since many of their dependencies are internal classes

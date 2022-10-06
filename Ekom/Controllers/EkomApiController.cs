@@ -7,13 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using Ekom.Domain.Repositories;
 using Ekom.Models;
-using Ekom.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Ekom.Exceptions;
 
 namespace Ekom.Controllers
 {
