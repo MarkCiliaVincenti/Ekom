@@ -11,6 +11,7 @@ using Ekom.Services;
 using Ekom.U10;
 using Ekom.U10.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,8 @@ namespace Ekom.U10
     {
         public static IServiceCollection AddEkom(this IServiceCollection services)
         {
+            services.AddTransient<IStartupFilter, StartupFilter>();
+
             services.AddAspNetCoreEkom();
 
             services.AddControllers()
@@ -41,7 +44,7 @@ namespace Ekom.U10
             services.AddTransient<Catalog>(f =>
                 new Catalog(
                     f.GetService<ILogger<Catalog>>(),
-                    f.GetService<IMemoryCache>(),
+                    f.GetService<ICacheService>(),
                     f.GetService<Configuration>(),
                     f.GetService<IPerStoreCache<IProduct>>(),
                     f.GetService<IPerStoreCache<ICategory>>(),
@@ -108,13 +111,14 @@ namespace Ekom.U10
              );
             services.AddTransient<IMemberService, MemberService>();
             services.AddTransient<INodeService, NodeService>();
+            services.AddTransient<ICacheService, CacheService>();
             services.AddTransient<CatalogSearchService>();
             services.AddTransient<IUmbracoService, UmbracoService>();
             services.AddTransient<IUrlService, UrlService>();
             services.AddTransient<ExamineService>();
             services.AddSingleton<DatabaseFactory>();
 
-            services.AddMemoryCache();
+            //services.AddMemoryCache();
 
             services.Configure<MvcOptions>(mvcOptions =>
             {
@@ -128,8 +132,6 @@ namespace Ekom.U10
 
         public static IApplicationBuilder UseEkom(this IApplicationBuilder app)
         {
-            app.UseEkomMiddleware();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -147,6 +149,15 @@ namespace Ekom.U10
             });
 
             return app;
+        }
+
+        private class StartupFilter : IStartupFilter
+        {
+            public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
+            {
+                app.UseEkomMiddleware();
+                next(app);
+            };
         }
     }
 }

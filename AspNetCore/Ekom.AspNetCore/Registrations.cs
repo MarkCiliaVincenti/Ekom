@@ -34,6 +34,7 @@ namespace Ekom.AspNetCore
             services.AddSingleton<DiscountCache>();
             services.AddSingleton<IPerStoreCache<IDiscount>>(f => f.GetService<DiscountCache>()); // Lifetime based on preceding line
 
+
             services.AddTransient<IStoreService, StoreService>();
             services.AddTransient<OrderService>();
             services.AddTransient<CheckoutService>();

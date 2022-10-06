@@ -22,7 +22,7 @@ namespace Ekom.U10
         private readonly RequestDelegate _next;
         private ILogger<EkomMiddleware> _logger;
         private HttpContext _context;
-
+        private Ekom.Services.ICacheService _cacheService;
         public EkomMiddleware(RequestDelegate next)
             => _next = next;
 
@@ -34,7 +34,7 @@ namespace Ekom.U10
             HttpContext context,
             ILogger<EkomMiddleware> logger,
             IUmbracoContextFactory umbracoContextFac,
-            AppCaches appCaches,
+            Ekom.Services.ICacheService cacheService,
             IMemberService memberService,
             IServiceProvider serviceProvider
         )
@@ -43,11 +43,10 @@ namespace Ekom.U10
 
             _logger = logger;
             _context = context;
+            _cacheService = cacheService;
 
-            _logger.LogInformation("InvokeAsync");
-
-            Application_BeginRequest(umbracoContextFac, appCaches);
-            Application_AuthenticateRequest(appCaches, memberService);
+            Application_BeginRequest(umbracoContextFac, _cacheService);
+            Application_AuthenticateRequest(_cacheService, memberService);
 
             Context_PostRequestHandlerExecute(umbracoContextFac);
 
@@ -81,25 +80,22 @@ namespace Ekom.U10
             }
         }
 
-        private void Application_BeginRequest(IUmbracoContextFactory umbracoContextFac, AppCaches appCaches)
+        private void Application_BeginRequest(IUmbracoContextFactory umbracoContextFac, Ekom.Services.ICacheService cacheService)
 
         {
             try
             {
-                _logger.LogInformation("Application_BeginRequest");
-
-                using var umbCtx = umbracoContextFac.EnsureUmbracoContext();
-
-                // No umbraco context exists for static file requests
-                if (umbCtx?.UmbracoContext != null)
+                using (var umbCtx = umbracoContextFac.EnsureUmbracoContext())
                 {
-                    appCaches.RequestCache.Get("ekmRequest", () =>
+                    cacheService.GetOrAdd("ekmRequest", () =>
                         new ContentRequest(_context)
                         {
                             User = new User(),
                         }
                     );
                 }
+                  
+
             }
             catch (Exception ex)
             {
@@ -108,14 +104,14 @@ namespace Ekom.U10
         }
 
         private void Application_AuthenticateRequest(
-            AppCaches appCaches,
+            Ekom.Services.ICacheService cacheService,
             IMemberService memberService)
         {
             try
             {
                 if (_context.User?.Identity.IsAuthenticated == true)
                 {
-                    if (appCaches.RequestCache.Get("ekmRequest") is ContentRequest ekmRequest)
+                    if (cacheService.Get<ContentRequest>("ekmRequest") is ContentRequest ekmRequest)
                     {
                         // This is always firing!, ekmRequest.User.Username is always empty
                         if (ekmRequest.User.Username != _context.User.Identity.Name)

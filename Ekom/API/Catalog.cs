@@ -1,7 +1,7 @@
 using Ekom.Cache;
+using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -23,7 +23,7 @@ namespace Ekom.API
 
         readonly Configuration _config;
         readonly ILogger<Catalog> _logger;
-        readonly IMemoryCache _memoryCache;
+        readonly ICacheService _requestCache;
         readonly IStoreService _storeSvc;
         readonly IPerStoreCache<IProductDiscount> _productDiscountCache; // must be before product cache
         readonly IPerStoreCache<IProduct> _productCache;
@@ -35,7 +35,7 @@ namespace Ekom.API
         /// </summary>
         internal Catalog(
             ILogger<Catalog> logger,
-            IMemoryCache memoryCache,
+            ICacheService requestCache,
             Configuration config,
             IPerStoreCache<IProduct> productCache,
             IPerStoreCache<ICategory> categoryCache,
@@ -47,7 +47,7 @@ namespace Ekom.API
         {
             _config = config;
             _logger = logger;
-            _memoryCache = memoryCache;
+            _requestCache = requestCache;
             _productCache = productCache;
             _categoryCache = categoryCache;
             _variantCache = variantCache;
@@ -62,7 +62,7 @@ namespace Ekom.API
         /// <returns></returns>
         public IProduct GetProduct()
         {
-            var r = _memoryCache.Get<ContentRequest>("ekmRequest");
+            var r = _requestCache.Get<ContentRequest>("ekmRequest");
 
             return r?.Product;
         }
@@ -310,7 +310,7 @@ namespace Ekom.API
         /// <returns></returns>
         public ICategory GetCategory()
         {
-            var r = _memoryCache.Get<ContentRequest>("ekmRequest");
+            var r = _requestCache.Get<ContentRequest>("ekmRequest");
             return r?.Category;
         }
 

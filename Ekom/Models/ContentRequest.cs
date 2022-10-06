@@ -24,10 +24,12 @@ namespace Ekom.Models
         {
             set
             {
-                // Make sure to update users cookies on store change
-                var legacyCookie = _httpCtx.Request.Cookies["StoreInfo"];
-                legacyCookie = Regex.Replace(legacyCookie, "(StoreAlias =)[^&]", value.Alias);
-                _httpCtx.Response.Cookies.Append("StoreInfo", legacyCookie);
+                _httpCtx.Response.Cookies.Append("StoreInfo", "StoreAlias=" + value.Alias);
+
+                //// Make sure to update users cookies on store change
+                //var legacyCookie = _httpCtx.Request.Cookies["StoreInfo"];
+                //legacyCookie = Regex.Replace(legacyCookie, "(StoreAlias =)[^&]", value.Alias);
+                //_httpCtx.Response.Cookies.Append("StoreInfo", legacyCookie);
 
                 _store = value;
             }

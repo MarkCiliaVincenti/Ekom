@@ -18,6 +18,7 @@ namespace Ekom.U10
         readonly IPerStoreCache<ICategory> _categoryCache;
         readonly IPerStoreCache<IProduct> _productCache;
         readonly AppCaches _appCaches;
+        readonly ICacheService _cacheService;
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public CatalogContentFinder(
@@ -27,6 +28,7 @@ namespace Ekom.U10
             IPerStoreCache<ICategory> categoryCache,
             IPerStoreCache<IProduct> productCache,
             AppCaches appCaches,
+            ICacheService cacheService,
             IUmbracoContextAccessor umbracoContextAccessor)
         {
             _logger = logger;
@@ -35,6 +37,7 @@ namespace Ekom.U10
             _categoryCache = categoryCache;
             _productCache = productCache;
             _appCaches = appCaches;
+            _cacheService = cacheService;
             _umbracoContextAccessor = umbracoContextAccessor;
         }
 
@@ -105,17 +108,17 @@ namespace Ekom.U10
                     }
                     // else Requesting Neither
                 }
-
                 #endregion
-                _logger.LogInformation("Debug: " + store.Alias + " * " + _appCaches.RequestCache.Get("ekmRequest"));
-                if (_appCaches.RequestCache.Get("ekmRequest") is ContentRequest ekmRequest)
+
+                var ekmRequest = _cacheService.Get<ContentRequest>("ekmRequest");
+
+                if (ekmRequest != null)
                 {
-                    _logger.LogInformation("Set Request: " + store.Alias);
+
                     ekmRequest.Store = store;
                     ekmRequest.Product = product;
                     ekmRequest.Category = category;
                 }
-
 
                 // Request for Product or Category
                 if (contentId != 0)
