@@ -1,4 +1,5 @@
 angular.module("umbraco").controller("Ekom.Range", function ($scope, $http) {
+  $scope.model.hideLabel = false;
   $scope.fieldAlias = $scope.model.alias;
 
   //$scope.currencies = [];

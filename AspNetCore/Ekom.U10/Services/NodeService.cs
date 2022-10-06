@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
@@ -16,7 +17,8 @@ namespace Ekom.U10.Services
         readonly IUmbracoContextFactory _context;
         public NodeService(
             IUmbracoContextFactory context,
-            ILogger<NodeService> logger)
+            ILogger<NodeService> logger
+            )
         {
             _context = context;
             _logger = logger;
@@ -381,20 +383,11 @@ namespace Ekom.U10.Services
 
         public string GetUrl(string id)
         {
-            var node = GetNodeById(id);
-
-            if (node == null)
-            {
-                node = GetMediaById(id);
-            }
-
-            if (node == null)
-            {
-                return "";
-            }
 
             using (var cref = _context.EnsureUmbracoContext())
             {
+                var node = GetNodeById(id);
+
                 var url = node.Url();
 
                 return url;

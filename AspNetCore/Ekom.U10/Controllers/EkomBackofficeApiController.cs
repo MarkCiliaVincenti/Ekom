@@ -194,7 +194,7 @@ namespace Ekom.U10.Controllers
         /// If PerStoreStock is configured, gets store from cache and updates relevant item.
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost]
+        [HttpPost("{stock:int}")]
         public async Task SetStock(Guid id, int stock)
         {
             try

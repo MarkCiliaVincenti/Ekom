@@ -1,7 +1,7 @@
 angular.module("umbraco").controller("Ekom.Country", function ($scope, assetsService, $routeParams, $http, editorState) {
 
   $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'GetCountries').then(function (res) {
-
+    $scope.model.hideLabel = false;
     $scope.ItemArray = res.data;
 
     $scope.combined = function (country) {

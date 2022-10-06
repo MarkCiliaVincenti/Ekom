@@ -1,5 +1,5 @@
 angular.module('umbraco').controller('Ekom.Coupon', function ($scope, assetsService, contentEditingHelper, $routeParams, editorState, $http, notificationsService, contentResource) {
-
+  $scope.model.hideLabel = false;
   var key = editorState.current.key;
 
   $scope.Coupons = [];

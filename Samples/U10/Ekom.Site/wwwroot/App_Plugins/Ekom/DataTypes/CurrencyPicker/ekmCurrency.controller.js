@@ -1,6 +1,7 @@
 angular.module("umbraco").controller("Ekom.Currency", function ($scope, assetsService, $http) {
 
   $scope.currencies = $scope.model.value;
+  $scope.model.hideLabel = false;
 
   if ($scope.model.value === null || $scope.model.value === '' || $scope.model.value === undefined) {
     $scope.currencies = [];

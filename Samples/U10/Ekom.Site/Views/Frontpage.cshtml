@@ -16,7 +16,9 @@
 <div style="margin-left:40px; border-top:1px solid #ccc;">
     @foreach (var cat in categories)
     {
-        <h4>Title: @cat.Title</h4>
+        <h4>
+            <a href="@cat.Url">Title: @cat.Title</a>
+        </h4>
         <p>Key: @cat.Key</p>
         <p>Id: @cat.Id</p>
 
@@ -37,7 +39,9 @@
             @foreach (var product in cat.ProductsRecursive)
             {
                 <li>
-                   @product.Title - @product.Id - @product.Url - @product.Price.WithVat.CurrencyString
+                    <a href="@product.Url">
+                        @product.Title - @product.Id - @product.Url - @product.Price.WithVat.CurrencyString
+                    </a>
                 </li>
             }
         </ul>
@@ -47,7 +51,11 @@
 <div style="margin-left:40px; border-top:1px solid #ccc;">
     @foreach (var s in allStores)
     {
-        <h4>Alias: @s.Title</h4>
+        <h4>
+            <a href="@s.Url">
+                Alias: @s.Title
+            </a>
+        </h4>
         <p>Key: @s.Key</p>
         <p>Id: @s.Id</p>
         <p>Root: @s.StoreRootNode</p>

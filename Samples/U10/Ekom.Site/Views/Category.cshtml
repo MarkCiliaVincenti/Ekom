@@ -1,5 +1,10 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Ekom.API;
 @{
-	Layout = "Master.cshtml";
+    Layout = "Master.cshtml";
+
+    var category = Catalog.Instance.GetCategory();
 }
+
+<h1>@category.Title</h1>
