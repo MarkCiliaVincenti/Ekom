@@ -30,7 +30,7 @@ namespace Ekom.U10
         /// <see cref="IHttpModule"/> init method
         /// </summary>
         /// <param name="context"></param>
-        public async Task Invoke(
+        public async Task InvokeAsync(
             HttpContext context,
             ILogger<EkomMiddleware> logger,
             IUmbracoContextFactory umbracoContextFac,

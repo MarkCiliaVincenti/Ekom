@@ -128,6 +128,8 @@ namespace Ekom.U10
 
         public static IApplicationBuilder UseEkom(this IApplicationBuilder app)
         {
+            app.UseEkomMiddleware();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -143,8 +145,6 @@ namespace Ekom.U10
                     "api/{controller}/{action}/{id?}",
                     new { controller = "EkomOrder" });
             });
-
-            app.UseEkomMiddleware();
 
             return app;
         }
