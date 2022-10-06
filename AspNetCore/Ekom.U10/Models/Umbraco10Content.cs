@@ -1,6 +1,7 @@
 using Ekom.Models;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace Ekom.U10.Models
 {
@@ -23,7 +24,7 @@ namespace Ekom.U10.Models
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
-                x => x.GetValue()?.ToString()))
+                x => content.Properties.FirstOrDefault(z => z.Alias == x.Alias)?.GetSourceValue()?.ToString()))
         { }
 
         public Umbraco10Content(IContent content)
@@ -43,7 +44,7 @@ namespace Ekom.U10.Models
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
-                x => x.GetValue()?.ToString()))
+                x => content.GetValue<string>(x.Alias)))
         { }
 
         public Umbraco10Content(PublishedSearchResult content)
@@ -63,7 +64,7 @@ namespace Ekom.U10.Models
             },
             content.Content.Properties.ToDictionary(
                 x => x.Alias,
-                x => x.GetValue()?.ToString()))
+                x => content.Content.Properties.FirstOrDefault(z => z.Alias == x.Alias)?.GetSourceValue()?.ToString()))
         { }
     }
 }

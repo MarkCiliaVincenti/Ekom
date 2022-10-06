@@ -144,7 +144,7 @@ namespace Ekom.U10
                     new { controller = "EkomOrder" });
             });
 
-            app.UseMiddleware<EkomMiddleware>();
+            app.UseEkomMiddleware();
 
             return app;
         }

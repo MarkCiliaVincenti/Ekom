@@ -172,8 +172,15 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                }
             }
+
+            return null;
         }
 
         /// <summary>
@@ -187,8 +194,16 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                }
+                
             }
+
+            return null;
         }
 
 
@@ -203,8 +218,15 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                } 
             }
+
+            return null;
         }
 
         /// <summary>
@@ -244,8 +266,14 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                }
             }
+            return null;
         }
 
         /// <summary>
@@ -259,8 +287,15 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                }
             }
+
+            return null;
         }
 
 
@@ -275,8 +310,15 @@ namespace Ekom.U10.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                return cache.GetById(id) as Umbraco10Content;
+                var node = cache.GetById(id);
+
+                if (node != null)
+                {
+                    return new Umbraco10Content(node);
+                }
             }
+
+            return null;
         }
 
         /// <summary>
@@ -351,7 +393,13 @@ namespace Ekom.U10.Services
                 return "";
             }
 
-            return node.Url();
+            using (var cref = _context.EnsureUmbracoContext())
+            {
+                var url = node.Url();
+
+                return url;
+            }
+   
         }
 
 

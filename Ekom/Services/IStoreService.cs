@@ -9,5 +9,6 @@ namespace Ekom.Services
         IStore GetStoreByAlias(string alias);
         IStore GetStoreByDomain(string domain = "", string culture = "");
         IStore GetStoreFromCache();
+        IEnumerable<UmbracoDomain> GetDomains();
     }
 }

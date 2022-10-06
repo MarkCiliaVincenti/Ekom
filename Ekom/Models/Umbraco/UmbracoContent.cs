@@ -49,5 +49,10 @@ namespace Ekom.Models
         {
             return true;
         }
+
+        public string GetValue(string alias)
+        {
+            return Properties.GetPropertyValue(alias);
+        }
     }
 }

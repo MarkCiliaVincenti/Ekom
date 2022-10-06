@@ -6,6 +6,7 @@
 
     var categories = Catalog.Instance.GetAllCategories();
     var store = Store.Instance.GetStore();
+    var allStores = Store.Instance.GetAllStores();
 }
 
 <h2>Total Categories (@categories.Count())</h2>
@@ -37,6 +38,42 @@
             {
                 <li>
                    @product.Title - @product.Id - @product.Url - @product.Price.WithVat.CurrencyString
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+<div style="margin-left:40px; border-top:1px solid #ccc;">
+    @foreach (var s in allStores)
+    {
+        <h4>Alias: @s.Title</h4>
+        <p>Key: @s.Key</p>
+        <p>Id: @s.Id</p>
+        <p>Root: @s.StoreRootNode</p>
+
+        <h4>Store Domains</h4>
+
+        @if (s.Domains != null)
+        {
+            <ul>
+                @foreach (var prop in s.Domains)
+                {
+                    <li>
+                        @prop.Key: @prop.DomainName
+                    </li>
+                }
+            </ul>      
+        }
+
+
+        <h4>All Domains</h4>
+        
+        <ul>
+            @foreach (var prop in Store.Instance.GetDomains())
+            {
+                <li>
+                    @prop.Key: @prop.DomainName - @prop.RootContentId
                 </li>
             }
         </ul>

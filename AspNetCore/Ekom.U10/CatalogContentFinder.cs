@@ -38,74 +38,47 @@ namespace Ekom.U10
             _umbracoContextAccessor = umbracoContextAccessor;
         }
 
-
-        public Task<bool> TryFindContent(IPublishedRequestBuilder contentRequest)
-        {
-            var path = contentRequest.Uri.GetAbsolutePathDecoded();
-            if (path.StartsWith("/umbraco") is false)
-            {
-                return Task.FromResult(false); // Not found
-            }
-
-            if (!_umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext))
-            {
-                return Task.FromResult(false);
-            }
-            
-            // Have we got a node with ID
-            var content = umbracoContext.Content.GetById(contentRequest.PublishedContent.Id);
-            if (content is null)
-            {
-                // If not found, let another IContentFinder in the collection try.
-                return Task.FromResult(false);
-            }
-
-            // If content is found, then render that node
-            contentRequest.SetPublishedContent(content);
-            return Task.FromResult(true);
-        }
         /// <summary>
         /// Maps virtual URLs to IPublishedContent items
         /// Performs various request related processing
         /// F.x. determining the Store/Currency first from Cookie, then domain and then default
         /// </summary>
-        /*public bool TryFindContent(PublishedRequest contentRequest)
+        public Task<bool> TryFindContent(IPublishedRequestBuilder contentRequest)
         {
             try
             {
-                var umbracoContext = contentRequest.UmbracoContext;
-                var httpContext = umbracoContext.HttpContext;
-                var umbHelper = Current.UmbracoHelper;
-                // Allows for configuration of content nodes to use for matching all requests
-                // Use case: Ekom populated by adapter, used as in memory cache with no backing umbraco nodes
-                var virtualContent = ConfigurationManager.AppSettings["Ekom.VirtualContent"];
+                var path = contentRequest.Uri.GetAbsolutePathDecoded().ToLower().AddTrailing();
 
-                var path = contentRequest.Uri
-                                         .AbsolutePath
-                                         .ToLower()
-                                         .AddTrailing();
-
-                if (contentRequest.Uri.AbsolutePath.StartsWith("/umbraco"))
+                if (path.StartsWith("/umbraco"))
                 {
-                    return false;
+                    return Task.FromResult(false); // Not found
                 }
 
-                var store = _storeSvc.GetStoreByDomain(contentRequest.Domain?.Name, contentRequest.Culture.Name);
+                if (!_umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext))
+                {
+                    return Task.FromResult(false);
+                }
+
+                _logger.LogInformation("Get Store By Domain: " + contentRequest.Domain?.Name + " Culture: " + contentRequest.Culture);
+
+                var store = _storeSvc.GetStoreByDomain(contentRequest.Domain?.Name, contentRequest.Culture);
+
+                var virtualContent = _config.VirtualContent;
 
                 #region Product and/or Category
 
                 // Requesting Product?
                 var product = _productCache.Cache[store.Alias]
-                                                  .FirstOrDefault(x => x.Value.Urls != null &&
-                                                                       x.Value.Urls.Contains(path))
-                                                  .Value;
+                                .FirstOrDefault(x => x.Value.Urls != null &&
+                                                    x.Value.Urls.Contains(path)).Value;
 
                 var contentId = 0;
                 ICategory category;
 
                 if (product != null && !string.IsNullOrEmpty(product.Slug))
                 {
-                    contentId = virtualContent.InvariantEquals("true") ? int.Parse(umbHelper.GetDictionaryValue("virtualProductNode")) : product.Id;
+                    //contentId = virtualContent ? int.Parse(umbHelper.GetDictionaryValue("virtualProductNode")) : product.Id;
+                    contentId = product.Id;
 
                     var urlArray = path.Split('/');
                     var categoryUrlArray = urlArray.Take(urlArray.Length - 2);
@@ -124,41 +97,48 @@ namespace Ekom.U10
 
                     if (category != null && !string.IsNullOrEmpty(category.Slug))
                     {
-                        contentId = virtualContent.InvariantEquals("true")
-                            ? int.Parse(umbHelper.GetDictionaryValue("virtualCategoryNode"))
-                            : category.Id;
+                        //contentId = virtualContent.InvariantEquals("true")
+                        //    ? int.Parse(umbHelper.GetDictionaryValue("virtualCategoryNode"))
+                        //    : category.Id;
+
+                        contentId = category.Id;
                     }
                     // else Requesting Neither
                 }
-                #endregion
 
+                #endregion
+                _logger.LogInformation("Debug: " + store.Alias + " * " + _appCaches.RequestCache.Get("ekmRequest"));
                 if (_appCaches.RequestCache.Get("ekmRequest") is ContentRequest ekmRequest)
                 {
+                    _logger.LogInformation("Set Request: " + store.Alias);
                     ekmRequest.Store = store;
                     ekmRequest.Product = product;
                     ekmRequest.Category = category;
                 }
 
+
                 // Request for Product or Category
                 if (contentId != 0)
                 {
-                    var contentCache = umbracoContext.Content;
-
-                    var content = contentCache.GetById(contentId);
+                    var content = umbracoContext.Content.GetById(contentId);
 
                     if (content != null)
                     {
-                        contentRequest.PublishedContent = content;
-                        return true;
+                        contentRequest.SetPublishedContent(content);
+                        return Task.FromResult(true);
+                    }
+                    else
+                    {
+                        return Task.FromResult(false);
                     }
                 }
-            }
-            catch (Exception ex)
+
+            } catch(Exception ex)
             {
-                _logger.LogError(ex, "Error trying to find matching content for request");
+                _logger.LogError(ex, "Failed to find Ekom content.");
             }
 
-            return false;
-        }*/
+            return Task.FromResult(false);
+        }
     }
 }

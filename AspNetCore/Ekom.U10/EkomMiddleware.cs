@@ -1,4 +1,5 @@
 using Ekom.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
@@ -29,7 +30,7 @@ namespace Ekom.U10
         /// <see cref="IHttpModule"/> init method
         /// </summary>
         /// <param name="context"></param>
-        public async Task InvokeAsync(
+        public async Task Invoke(
             HttpContext context,
             ILogger<EkomMiddleware> logger,
             IUmbracoContextFactory umbracoContextFac,
@@ -42,6 +43,8 @@ namespace Ekom.U10
 
             _logger = logger;
             _context = context;
+
+            _logger.LogInformation("InvokeAsync");
 
             Application_BeginRequest(umbracoContextFac, appCaches);
             Application_AuthenticateRequest(appCaches, memberService);
@@ -83,6 +86,8 @@ namespace Ekom.U10
         {
             try
             {
+                _logger.LogInformation("Application_BeginRequest");
+
                 using var umbCtx = umbracoContextFac.EnsureUmbracoContext();
 
                 // No umbraco context exists for static file requests
@@ -141,6 +146,14 @@ namespace Ekom.U10
             {
                 _logger.LogError(ex, "AuthenticateRequest Failed");
             }
+        }
+    }
+
+    public static class EkomMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseEkomMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<EkomMiddleware>();
         }
     }
 }

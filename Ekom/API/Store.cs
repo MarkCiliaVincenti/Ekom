@@ -74,6 +74,16 @@ namespace Ekom.API
             return _storeSvc.GetAllStores();
         }
 
+
+        /// <summary>
+        /// Get domains
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<UmbracoDomain> GetDomains()
+        {
+            return _storeSvc.GetDomains();
+        }
+
         public void RefreshCache()
         {
             foreach (var cacheEntry in _config.CacheList.Value)

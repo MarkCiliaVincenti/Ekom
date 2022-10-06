@@ -110,7 +110,7 @@ namespace Ekom.Models
 
             if (item.Properties.HasPropertyValue("storeRootNode"))
             {
-                var storeRootNodeUdi = item.Properties.GetPropertyValue("storeRootNode");
+                var storeRootNodeUdi = item.GetValue("storeRootNode");
 
                 var storeRootNode = nodeService.NodeById(storeRootNodeUdi);
 
