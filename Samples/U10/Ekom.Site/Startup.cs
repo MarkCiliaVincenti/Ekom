@@ -32,15 +32,11 @@ namespace Ekom.Site
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddUmbraco(_env, _config)
                 .AddBackOffice()
                 .AddWebsite()
                 .AddComposers()
                 .Build();
-
-            services.AddEkom();
-
         }
 
         /// <summary>
@@ -67,8 +63,6 @@ namespace Ekom.Site
                     u.UseBackOfficeEndpoints();
                     u.UseWebsiteEndpoints();
                 });
-
-            app.UseEkom();
         }
     }
 }

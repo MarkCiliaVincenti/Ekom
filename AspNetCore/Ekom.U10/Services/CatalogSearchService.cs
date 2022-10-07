@@ -12,7 +12,7 @@ using Umbraco.Cms.Infrastructure.Examine;
 using static Ekom.Utilities.SearchHelper;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace Ekom.Services
+namespace Ekom.U10.Services
 {
     class CatalogSearchService
     {

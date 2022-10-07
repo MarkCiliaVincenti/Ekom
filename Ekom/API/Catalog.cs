@@ -1,3 +1,11 @@
+#if NETFRAMEWORK
+using System.Web;
+using System.Web.Http;
+#else
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+#endif
 using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
@@ -7,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 
 namespace Ekom.API
 {
@@ -23,7 +32,7 @@ namespace Ekom.API
 
         readonly Configuration _config;
         readonly ILogger<Catalog> _logger;
-        readonly ICacheService _requestCache;
+        readonly HttpContext _httpContext;
         readonly IStoreService _storeSvc;
         readonly IPerStoreCache<IProductDiscount> _productDiscountCache; // must be before product cache
         readonly IPerStoreCache<IProduct> _productCache;
@@ -35,7 +44,6 @@ namespace Ekom.API
         /// </summary>
         internal Catalog(
             ILogger<Catalog> logger,
-            ICacheService requestCache,
             Configuration config,
             IPerStoreCache<IProduct> productCache,
             IPerStoreCache<ICategory> categoryCache,
@@ -43,17 +51,25 @@ namespace Ekom.API
             IPerStoreCache<IVariant> variantCache,
             IPerStoreCache<IVariantGroup> variantGroupCache,
             IStoreService storeService
+#if NETCOREAPP
+            ,IHttpContextAccessor httpContextAccessor
+#endif
         )
         {
             _config = config;
             _logger = logger;
-            _requestCache = requestCache;
             _productCache = productCache;
             _categoryCache = categoryCache;
             _variantCache = variantCache;
             _variantGroupCache = variantGroupCache;
             _productDiscountCache = productDiscountCache;
             _storeSvc = storeService;
+
+#if NETFRAMEWORK
+            _httpContext = HttpContext.Current;
+#else
+            _httpContext = httpContextAccessor.HttpContext;
+#endif
         }
 
         /// <summary>
@@ -62,7 +78,16 @@ namespace Ekom.API
         /// <returns></returns>
         public IProduct GetProduct()
         {
-            var r = _requestCache.Get<ContentRequest>("ekmRequest");
+            ContentRequest r = null;
+#if NETFRAMEWORK
+            if (_httpContext.Items.Contains("ekmRequest"))
+#else
+            if (_httpContext.Items.ContainsKey("ekmRequest"))
+#endif
+            {
+                r = _httpContext.Items["ekmRequest"] as ContentRequest;
+                return r?.Product;
+            }
 
             return r?.Product;
         }
@@ -310,8 +335,17 @@ namespace Ekom.API
         /// <returns></returns>
         public ICategory GetCategory()
         {
-            var r = _requestCache.Get<ContentRequest>("ekmRequest");
-            return r?.Category;
+#if NETFRAMEWORK
+            if (_httpContext.Items.Contains("ekmRequest"))
+#else
+            if (_httpContext.Items.ContainsKey("ekmRequest"))
+#endif
+            {
+                var r = _httpContext.Items["ekmRequest"] as ContentRequest;
+                return r?.Category;
+            }
+
+            return null;
         }
 
         /// <summary>
