@@ -10,12 +10,6 @@ namespace Ekom.Models
         /// </summary>
         IStore Store { get; }
 
-        /// <summary>
-        /// Get value in properties by store
-        /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
-        string GetPropertyValue(string propAlias, string storeAlias);
+
     }
 }

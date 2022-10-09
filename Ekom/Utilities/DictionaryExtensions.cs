@@ -11,9 +11,9 @@ namespace Ekom
         /// alias name = field + "_" + storeAlias <para/>
         /// f.x. disabled_IS
         /// </summary>
-        public static string GetPropertyValue(this Dictionary<string, string> properties, string propertyAlias, string storeAlias = null, string language = null)
+        public static string GetPropertyValue(this Dictionary<string, string> properties, string propertyAlias, string alias = null)
         {
-            return GetBasePropertyValue(properties, propertyAlias, storeAlias, language);
+            return GetBasePropertyValue(properties, propertyAlias, alias);
         }
 
         /// <summary>
@@ -22,28 +22,25 @@ namespace Ekom
         /// alias name = field + "_" + storeAlias <para/>
         /// f.x. disabled_IS
         /// </summary>
-        public static string GetPropertyValue(this IReadOnlyDictionary<string, string> properties, string propertyAlias, string storeAlias = null, string language = null)
+        public static string GetPropertyValue(this IReadOnlyDictionary<string, string> properties, string propertyAlias, string alias = null)
         {
-            return GetBasePropertyValue(properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), propertyAlias, storeAlias, language);
+            return GetBasePropertyValue(properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), propertyAlias, alias);
         }
 
-        private static string GetBasePropertyValue(Dictionary<string, string> properties, string propertyAlias, string storeAlias = null, string language = null)
+        private static string GetBasePropertyValue(Dictionary<string, string> properties, string propertyAlias, string alias = null)
         {
             string val = string.Empty;
 
-            if (!string.IsNullOrEmpty(language))
-            {
-                propertyAlias = propertyAlias + "_" + language.ToLowerInvariant();
-            }
+            propertyAlias = properties.ContainsKey(propertyAlias + "_" + alias) ? propertyAlias + "_" + alias : properties.ContainsKey(propertyAlias) ? propertyAlias : propertyAlias + "_" + System.Globalization.CultureInfo.CurrentCulture.Name;  
 
             if (!string.IsNullOrEmpty(propertyAlias))
             {
                 properties.TryGetValue(propertyAlias, out val);
             }
 
-            if (!string.IsNullOrEmpty(storeAlias))
+            if (!string.IsNullOrEmpty(alias))
             {
-                return val.GetVortoValue(storeAlias) ?? string.Empty;
+                return val.GetPropertyEditorValue(alias) ?? string.Empty;
             }
             else
             {
@@ -57,16 +54,16 @@ namespace Ekom
         /// alias name = field + "_" + storeAlias <para/>
         /// f.x. disabled_IS
         /// </summary>
-        public static bool HasPropertyValue(this IReadOnlyDictionary<string, string> properties, string propertyAlias, string storeAlias = null, string language = null)
+        public static bool HasPropertyValue(this IReadOnlyDictionary<string, string> properties, string propertyAlias, string alias = null)
         {
-            if (!string.IsNullOrEmpty(language))
-            {
-                propertyAlias = propertyAlias + "_" + language.ToLowerInvariant();
-            }
+            //if (!string.IsNullOrEmpty(language))
+            //{
+            //    propertyAlias = propertyAlias + "_" + language.ToLowerInvariant();
+            //}
 
             if (properties.ContainsKey(propertyAlias))
             {
-                if (!string.IsNullOrEmpty(GetPropertyValue(properties, propertyAlias, storeAlias)))
+                if (!string.IsNullOrEmpty(GetPropertyValue(properties, propertyAlias, alias)))
                 {
                     return true;
                 }

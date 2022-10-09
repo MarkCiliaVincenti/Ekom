@@ -48,7 +48,8 @@
 
       $scope.model.value = $scope.model.value || {
         values: {},
-        dtdGuid: "00000000-0000-0000-0000-000000000000"
+        dtdGuid: "00000000-0000-0000-0000-000000000000",
+        type: "Store"
       };
 
       var currentSection = appState.getSectionState("currentSection");
@@ -80,6 +81,8 @@
 
           if (dataType2.preValues.useLanguages) {
 
+            $scope.model.value.type = "Language";
+
             ekmResources.getLanguages().then(function (languages) {
 
               $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
@@ -89,6 +92,8 @@
             });
 
           } else {
+
+            $scope.model.value.type = "Store";
 
             ekmResources.getStores().then(function (stores) {
 

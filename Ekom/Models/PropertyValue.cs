@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ekom.Models
 {
-    internal class VortoValue
+    internal class PropertyValue
     {
         public IDictionary<string, object> Values = new Dictionary<string, object>();
+        public string Type {get; set;}
     }
 }

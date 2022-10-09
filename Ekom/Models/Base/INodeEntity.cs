@@ -74,7 +74,7 @@ namespace Ekom.Models
         /// Varies by culture
         /// </summary>
         /// <value>
-        /// The path.
+        /// Boolean if node varies by culture
         /// </value>
         bool VariesByCulture { get; } 
         
@@ -88,12 +88,11 @@ namespace Ekom.Models
         string Path { get; }
 
         /// <summary>
-        /// Get value from properties
+        /// Get value in properties by store or languge
         /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
-        string GetPropertyValue(string alias);
+        /// <param name="propAlias"></param>
+        /// <param name="alias"></param>
+        string GetValue(string propAlias, string alias = null);
 
         /// <summary>
         /// Umbraco node properties

@@ -7,9 +7,11 @@
     var categories = Catalog.Instance.GetAllCategories();
     var store = Store.Instance.GetStore();
     var allStores = Store.Instance.GetAllStores();
+    var allProducts = Catalog.Instance.GetAllProducts();
 }
 
 <h2>Total Categories (@categories.Count())</h2>
+<h2>Total Products (@allProducts.Count())</h2>
 <h3>Culture: @Model.GetCultureFromDomains()</h3>
 <h3>Store: @store.Alias</h3>
 
@@ -40,8 +42,27 @@
             {
                 <li>
                     <a href="@product.Url">
-                        @product.Title - @product.Id - @product.Url - @product.Price.WithVat.CurrencyString
+
+                        <p>Title: @product.Title</p>
+                        <p>SKU: @product.SKU</p>
+                        <p>Price: @product.Price.WithVat.CurrencyString</p>
+                        <p>
+                            Test: @product.GetValue("test", Model.GetCultureFromDomains())
+                        </p>
+                        <p>
+                            Test2: @product.GetValue("test2")
+                        </p>
                     </a>
+
+                    <ul>
+                        @foreach (var prop in product.Properties)
+                        {
+                            <li>
+                                @prop.Key: @prop.Value
+                            </li>
+                        }
+                    </ul>
+
                 </li>
             }
         </ul>
@@ -71,12 +92,12 @@
                         @prop.Key: @prop.DomainName
                     </li>
                 }
-            </ul>      
+            </ul>
         }
 
 
         <h4>All Domains</h4>
-        
+
         <ul>
             @foreach (var prop in Store.Instance.GetDomains())
             {

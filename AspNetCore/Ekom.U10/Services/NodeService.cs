@@ -7,6 +7,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
 namespace Ekom.U10.Services
@@ -36,6 +37,10 @@ namespace Ekom.U10.Services
                 {
                     throw new Exception("Ekom root node not found.");
                 }
+
+                //var contentType = cache.GetContentType(contentTypeAlias);
+
+                //var culture = contentType.VariesByCulture() ? cref.UmbracoContext?.Domains?.DefaultCulture : null;
 
                 var results = ekomRoot.DescendantsOfType(contentTypeAlias).ToList();
 

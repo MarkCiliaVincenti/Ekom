@@ -62,8 +62,6 @@ namespace Ekom.U10
                     return Task.FromResult(false);
                 }
 
-                _logger.LogInformation("Get Store By Domain: " + contentRequest.Domain?.Name + " Culture: " + contentRequest.Culture);
-
                 var store = _storeSvc.GetStoreByDomain(contentRequest.Domain?.Name, contentRequest.Culture);
 
                 var virtualContent = _config.VirtualContent;

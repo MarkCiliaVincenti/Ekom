@@ -11,9 +11,9 @@ namespace Ekom.U10.Models
             : base(new Dictionary<string, string>
             {
                 { "id", content.Id.ToString() },
-                { "parentID", content.Parent?.Id.ToString() },
+                { "parentID", content.Parent?.Id.ToString() ?? "" },
                 { "__Key", content.Key.ToString() },
-                { "nodeName", content.Name },
+                { "nodeName", content.Name ?? "" },
                 { "__NodeTypeAlias", content.ContentType.Alias },
                 { "sortOrder", content.SortOrder.ToString() },
                 { "level", content.Level.ToString() },
@@ -24,7 +24,7 @@ namespace Ekom.U10.Models
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
-                x => content.Properties.FirstOrDefault(z => z.Alias == x.Alias)?.GetSourceValue()?.ToString()))
+                x => x.GetSourceValue()?.ToString()))
         { }
 
         public Umbraco10Content(IContent content)
@@ -33,7 +33,7 @@ namespace Ekom.U10.Models
                 { "id", content.Id.ToString() },
                 { "parentID", content.ParentId.ToString() },
                 { "__Key", content.Key.ToString() },
-                { "nodeName", content.Name },
+                { "nodeName", content.Name ?? ""},
                 { "__NodeTypeAlias", content.ContentType.Alias },
                 { "sortOrder", content.SortOrder.ToString() },
                 { "level", content.Level.ToString() },
@@ -51,9 +51,9 @@ namespace Ekom.U10.Models
             : base(new Dictionary<string, string>
             {
                 { "id", content.Content.Id.ToString() },
-                { "parentID", content.Content.Parent?.Id.ToString() },
+                { "parentID", content.Content.Parent?.Id.ToString() ?? "" },
                 { "__Key", content.Content.Key.ToString() },
-                { "nodeName", content.Content.Name },
+                { "nodeName", content.Content.Name ?? "" },
                 { "__NodeTypeAlias", content.Content.ContentType.Alias },
                 { "sortOrder", content.Content.SortOrder.ToString() },
                 { "level", content.Content.Level.ToString() },
@@ -64,7 +64,38 @@ namespace Ekom.U10.Models
             },
             content.Content.Properties.ToDictionary(
                 x => x.Alias,
-                x => content.Content.Properties.FirstOrDefault(z => z.Alias == x.Alias)?.GetSourceValue()?.ToString()))
+                x => x.GetSourceValue()?.ToString()))
         { }
+
+        private static new Dictionary<string, string> GetProperties(IEnumerable<IPublishedProperty> properties, IReadOnlyDictionary<string, PublishedCultureInfo> cultures, IPublishedContent content)
+        {
+            
+            var dict = new Dictionary<string, string>();
+
+            if (properties == null) { return dict; }
+
+            foreach (var prop in properties)
+            {
+
+                //if (prop.PropertyType.VariesByCulture())
+                //{
+                //    foreach (var culture in cultures)
+                //    {
+                //        var value = prop.GetSourceValue(culture.Value.Culture);
+
+                //        dict.Add(prop.Alias, value?.ToString());
+                //    }
+                //} else
+                //{
+
+                //}
+
+                var value = prop.GetSourceValue();
+
+                dict.Add(prop.Alias, value != null ? value.ToString() : "");
+            }
+
+            return dict;
+        }
     }
 }

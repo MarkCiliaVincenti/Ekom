@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ekom.Interfaces;
 using Ekom.JsonDotNet;
 using Ekom.Models;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Ekom
 {
@@ -80,7 +79,7 @@ namespace Ekom
             }
         }
         // Maybe this should return T and not force String
-        public static string GetVortoValue(this string value, string storeAlias)
+        public static string GetPropertyEditorValue(this string value, string alias)
         {
 
             if (!string.IsNullOrEmpty(value))
@@ -88,26 +87,35 @@ namespace Ekom
 
                 if (value.IsJson())
                 {
-                    VortoValue o = null;
+                    PropertyValue o = null;
+
                     try
                     {
-                        o = JsonConvert.DeserializeObject<VortoValue>(value);
+                        o = JsonConvert.DeserializeObject<PropertyValue>(value);
                     }
                     catch { }
 
                     if (o != null)
                     {
-                        object itemValue = null;
 
-                        var foundValue = o.Values?.TryGetValue(storeAlias, out itemValue);
-
-                        if (foundValue == true)
+                        if (o.Values?.TryGetValue(alias, out object valAlias) == true)
                         {
-                            if (itemValue != null)
+                            if (valAlias != null)
                             {
-                                return itemValue.ToString();
+                                return valAlias.ToString();
                             }
                         }
+
+                        if (o.Values?.TryGetValue(System.Globalization.CultureInfo.CurrentCulture.Name, out object valCulture) == true)
+                        {
+                            if (valCulture != null)
+                            {
+                                return valCulture.ToString();
+                            }
+                        }
+
+
+
                     }
                 }
                 else
@@ -124,7 +132,7 @@ namespace Ekom
             catch { }
 
             JToken itemVal = null;
-            if (parsed?.TryGetValue(storeAlias, out itemVal) == true)
+            if (parsed?.TryGetValue(alias, out itemVal) == true)
             {
                 return itemVal.ToString();
             }

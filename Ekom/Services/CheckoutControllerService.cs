@@ -399,7 +399,7 @@ namespace Ekom.Services
 
             if (store != null)
             {
-                var paymentOrderTitle = store.GetPropertyValue("paymentOrderTitle");
+                var paymentOrderTitle = store.GetValue("paymentOrderTitle");
 
                 if (!string.IsNullOrEmpty(paymentOrderTitle))
                 {
@@ -436,7 +436,7 @@ namespace Ekom.Services
 
             var ekomPP = Providers.Instance.GetPaymentProvider(paymentRequest.PaymentProvider);
 
-            var isOfflinePayment = ekomPP.GetPropertyValue("offlinePayment", storeAlias).IsBoolean();
+            var isOfflinePayment = ekomPP.GetValue("offlinePayment", storeAlias).IsBoolean();
 
             var orderItems = new List<OrderInfo>();
             //orderItems.Add(new OrderInfo
@@ -458,7 +458,7 @@ namespace Ekom.Services
                 try
                 {
                     var successUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
-                        ekomPP.GetPropertyValue("successUrl", storeAlias),
+                        ekomPP.GetValue("successUrl", storeAlias),
 #if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()))
 #else
@@ -492,7 +492,7 @@ namespace Ekom.Services
                         order.UniqueId);
 
                     var errorUrl = Ekom.Utilities.UriHelper.EnsureFullUri(
-                        ekomPP.GetPropertyValue("errorUrl", storeAlias),
+                        ekomPP.GetValue("errorUrl", storeAlias),
 #if NETCOREAPP
                         new Uri(_httpCtx.Request.GetEncodedUrl()));
 #else

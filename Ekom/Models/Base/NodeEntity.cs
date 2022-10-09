@@ -177,12 +177,13 @@ namespace Ekom.Models
         }
 
         /// <summary>
-        /// Get value in properties
+        /// Get value in properties by store or languge
         /// </summary>
+        /// <param name="propAlias"></param>
         /// <param name="alias"></param>
-        public virtual string GetPropertyValue(string alias)
+        public string GetValue(string propAlias, string alias = null)
         {
-            return Properties.GetPropertyValue(alias);
+            return Properties.GetPropertyValue(propAlias, alias);
         }
     }
 }
