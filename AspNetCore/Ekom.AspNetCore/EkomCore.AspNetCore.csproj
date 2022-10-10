@@ -16,7 +16,7 @@
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
       <PackageIcon>images\VV_Logo.png</PackageIcon>
-      <Description>EkomCore - Vettvangur E-Commerce solution</Description>
+      <Description>EkomCore ASP.NET Core - Vettvangur E-Commerce solution</Description>
       <PackageReleaseNotes></PackageReleaseNotes>
       <Copyright>Copyright 2022</Copyright>
       <PackageTags></PackageTags>
@@ -43,6 +43,11 @@
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Package icon -->
+        <None Include="..\..\VV_Logo.png" Pack="true" PackagePath="images\" />
+    </ItemGroup>
 
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
