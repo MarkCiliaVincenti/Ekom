@@ -4,18 +4,33 @@
         <TargetFrameworks>net461;net6.0</TargetFrameworks>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
-        <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+      <!-- Package properties -->
+      <PackageId>EkomCore</PackageId>
+      <Version>0.0.1</Version>
+      <Title>EkomCore</Title>
+      <Authors>Vettvangur</Authors>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
+      <PackageIcon>images\VV_Logo.png</PackageIcon>
+      <Description>EkomCore - Vettvangur E-Commerce solution</Description>
+      <PackageReleaseNotes></PackageReleaseNotes>
+      <Copyright>Copyright 2022</Copyright>
+      <PackageTags></PackageTags>
 
-        <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+      <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+      <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-        <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <RootNamespace>Ekom</RootNamespace>
-        <AssemblyName>Ekom</AssemblyName>
-        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+      <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+      <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+      <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+      <!-- Enable NuGet package caching -->
+      <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>

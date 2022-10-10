@@ -2,16 +2,16 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <AssemblyName>Ekom.U10</AssemblyName>
+        <AssemblyName>Ekom.U9</AssemblyName>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
         <!-- Package properties -->
-        <PackageId>Ekom.U10</PackageId>
+        <PackageId>Ekom.U9</PackageId>
         <Version>1.0.0</Version>
-        <Title>Ekom.U10</Title>
+        <Title>Ekom.U9</Title>
         <Authors>Vettvangur</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
@@ -59,13 +59,13 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Umbraco.Cms.Core" Version="10.2.1" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.2.1" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.2.1" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="[9.2,10.0)" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="[9.2,10.0)" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="[9.2,10.0)" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Ekom\Ekom.Core.csproj" />
-      <ProjectReference Include="..\Ekom.AspNetCore\Ekom.AspNetCore.csproj" />
+      <ProjectReference Include="..\..\Ekom\EkomCore.csproj" />
+      <ProjectReference Include="..\Ekom.AspNetCore\EkomCore.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

@@ -898,7 +898,13 @@
         "resolved": "4.0.0.1",
         "contentHash": "ApeeERIumXC8inaXMF+v0IMikazEp6N6axPqdAVDF6mQoY6K4tlyB3/H9iTIInlUus1ixLtPFHBa+EDzsDF8ng=="
       },
-      "Ekom": {
+      "ekom.aspnetframework": {
+        "type": "Project",
+        "dependencies": {
+          "EkomCore": "[0.0.1, )"
+        }
+      },
+      "EkomCore": {
         "type": "Project",
         "dependencies": {
           "CommonServiceLocator": "[2.0.6, )",
@@ -911,12 +917,6 @@
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.0, )",
           "Newtonsoft.Json": "[12.0.3, )",
           "linq2db": "[3.6.0, )"
-        }
-      },
-      "ekom.aspnetframework": {
-        "type": "Project",
-        "dependencies": {
-          "Ekom": "[1.0.0, )"
         }
       }
     }
