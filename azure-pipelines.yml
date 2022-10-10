@@ -8,8 +8,7 @@ name: $(majorMinorVersion).$(semanticVersion) # $(rev:r) # NOTE: rev resets when
 trigger:
 - EkomCore
 
-pool:
-  vmImage: 'windows-latest'
+pool: HAWKEYE
 
 variables:
   majorMinorVersion: 0.1
