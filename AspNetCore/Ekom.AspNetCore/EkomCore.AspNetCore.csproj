@@ -46,10 +46,10 @@
 
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Ekom.U9</_Parameter1>
+            <_Parameter1>EkomCore.U9</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Ekom.U10</_Parameter1>
+            <_Parameter1>EkomCore.U10</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 
