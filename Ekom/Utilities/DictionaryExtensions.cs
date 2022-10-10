@@ -31,7 +31,11 @@ namespace Ekom
         {
             string val = string.Empty;
 
-            propertyAlias = properties.ContainsKey(propertyAlias + "_" + alias) ? propertyAlias + "_" + alias : properties.ContainsKey(propertyAlias) ? propertyAlias : propertyAlias + "_" + System.Globalization.CultureInfo.CurrentCulture.Name;  
+            propertyAlias = properties.ContainsKey(propertyAlias + "_" + alias) 
+                ? propertyAlias + "_" + alias 
+                : properties.ContainsKey(propertyAlias) 
+                    ? propertyAlias 
+                    : propertyAlias + "_" + System.Globalization.CultureInfo.CurrentCulture.Name;  
 
             if (!string.IsNullOrEmpty(propertyAlias))
             {
@@ -40,7 +44,7 @@ namespace Ekom
 
             if (!string.IsNullOrEmpty(alias))
             {
-                return val.GetPropertyEditorValue(alias) ?? string.Empty;
+                return val.GetEkomPropertyEditorValue(alias) ?? string.Empty;
             }
             else
             {

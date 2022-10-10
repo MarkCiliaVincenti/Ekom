@@ -79,7 +79,7 @@ namespace Ekom
             }
         }
         // Maybe this should return T and not force String
-        public static string GetPropertyEditorValue(this string value, string alias)
+        public static string GetEkomPropertyEditorValue(this string value, string alias)
         {
 
             if (!string.IsNullOrEmpty(value))

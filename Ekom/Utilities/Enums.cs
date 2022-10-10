@@ -113,4 +113,47 @@ namespace Ekom
         /// </summary>
         AwayFromZero
     }
+
+    /// <summary>
+    /// Form controller action to render
+    /// </summary>
+    public enum FormType
+    {
+        /// <summary>
+        /// AddOrderLine action with product page class
+        /// </summary>
+        AddToOrderProduct,
+        /// <summary>
+        /// AddOrderLine action with cart view styles
+        /// </summary>
+        AddToOrderCart,
+        /// <summary>
+        /// Update orderline quantity
+        /// </summary>
+        UpdateOrderLineQuantity,
+        /// <summary>
+        /// 
+        /// </summary>
+        RemoveOrderLine,
+        /// <summary>
+        /// 
+        /// </summary>
+        UpdatePaymentProvider,
+        /// <summary>
+        /// 
+        /// </summary>
+        UpdateShippingProvider,
+        /// <summary>
+        /// 
+        /// </summary>
+        UpdateCustomerInformation,
+        /// <summary>
+        /// 
+        /// </summary>
+        ApplyCouponToOrder,
+        /// <summary>
+        /// 
+        /// </summary>
+        ChangeCurrency
+    }
 }
