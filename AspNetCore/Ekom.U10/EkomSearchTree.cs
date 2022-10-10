@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Trees;
 using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Extensions;
+using Ekom.U10.Services;
 
 namespace Ekom.Tree
 {

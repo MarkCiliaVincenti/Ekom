@@ -1,6 +1,7 @@
 using Ekom.Cache;
 using Ekom.Models;
 using Ekom.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
 using Umbraco.Cms.Core.Cache;
@@ -18,8 +19,8 @@ namespace Ekom.U10
         readonly IPerStoreCache<ICategory> _categoryCache;
         readonly IPerStoreCache<IProduct> _productCache;
         readonly AppCaches _appCaches;
-        readonly ICacheService _cacheService;
-        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+        readonly IHttpContextAccessor _httpContextAccessor;
+        readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public CatalogContentFinder(
             ILogger<CatalogContentFinder> logger,
@@ -28,7 +29,7 @@ namespace Ekom.U10
             IPerStoreCache<ICategory> categoryCache,
             IPerStoreCache<IProduct> productCache,
             AppCaches appCaches,
-            ICacheService cacheService,
+            IHttpContextAccessor httpContextAccessor,
             IUmbracoContextAccessor umbracoContextAccessor)
         {
             _logger = logger;
@@ -37,7 +38,7 @@ namespace Ekom.U10
             _categoryCache = categoryCache;
             _productCache = productCache;
             _appCaches = appCaches;
-            _cacheService = cacheService;
+            _httpContextAccessor = httpContextAccessor;
             _umbracoContextAccessor = umbracoContextAccessor;
         }
 
@@ -108,11 +109,10 @@ namespace Ekom.U10
                 }
                 #endregion
 
-                var ekmRequest = _cacheService.Get<ContentRequest>("ekmRequest");
-
-                if (ekmRequest != null)
+                var httpCtx = _httpContextAccessor.HttpContext;
+                if (httpCtx.Items.TryGetValue("ekmRequest", out var r) 
+                && r is ContentRequest ekmRequest)
                 {
-
                     ekmRequest.Store = store;
                     ekmRequest.Product = product;
                     ekmRequest.Category = category;

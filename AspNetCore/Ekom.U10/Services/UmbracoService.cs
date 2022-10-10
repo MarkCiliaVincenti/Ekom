@@ -6,59 +6,132 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Services
+namespace Ekom.U10.Services;
+
+class UmbracoService : IUmbracoService
 {
-    class UmbracoService : IUmbracoService
+    private readonly IDataTypeService _dataTypeService;
+    private readonly IDomainService _domainService;
+    private readonly UmbracoHelper _umbracoHelper;
+    private readonly ILocalizationService _localizationService;
+    private readonly PropertyEditorCollection _propertyEditorCollection;
+    private readonly IContentTypeService _contentTypeService;
+    public UmbracoService(
+        IDomainService domainService,
+        IDataTypeService dataTypeService,
+        IUmbracoHelperAccessor umbracoHelperAccessor,
+        ILocalizationService localizationService,
+        PropertyEditorCollection propertyEditorCollection,
+        IContentTypeService contentTypeService)
     {
-        private readonly IDataTypeService _dataTypeService;
-        private readonly IDomainService _domainService;
-        private readonly UmbracoHelper _umbracoHelper;
-        public UmbracoService(
-            IDomainService domainService,
-            IDataTypeService dataTypeService,
-            IUmbracoHelperAccessor umbracoHelperAccessor)
-        {
-            _domainService = domainService;
-            _dataTypeService = dataTypeService;
-            umbracoHelperAccessor.TryGetUmbracoHelper(out var _umbracoHelper);
-        }
+        _domainService = domainService;
+        _dataTypeService = dataTypeService;
+        umbracoHelperAccessor.TryGetUmbracoHelper(out var _umbracoHelper);
+        _localizationService = localizationService;
+        _propertyEditorCollection = propertyEditorCollection;
+        _contentTypeService = contentTypeService;
+    }
 
-        public string GetDictionaryValue(string key)
-        {
-            throw new NotImplementedException();
-        }
+    public string GetDictionaryValue(string key)
+    {
+        throw new NotImplementedException();
+    }
 
-        public IEnumerable<UmbracoDomain> GetDomains(bool includeWildcards = false)
-        {
-            return _domainService.GetAll(includeWildcards).Select(x => new Umbraco10Domain(x));
-        }
-        public string GetDataType(string typeValue)
-        {
+    public IEnumerable<Ekom.Models.UmbracoDomain> GetDomains(bool includeWildcards = false)
+    {
+        return _domainService.GetAll(includeWildcards).Select(x => new Umbraco10Domain(x));
+    }
+    public string GetDataType(string typeValue)
+    {
 
-            if (int.TryParse(typeValue, out int typeValueInt))
+        if (int.TryParse(typeValue, out int typeValueInt))
+        {
+            var dt = _dataTypeService.GetDataType(typeValueInt);
+
+            // FIX: verify
+            typeValue = dt.ConfigurationAs<string>();
+        }
+        typeValue = typeValue.Contains('[') ? JsonConvert.DeserializeObject<string[]>(typeValue).FirstOrDefault() : typeValue;
+        return typeValue;
+    }
+    public IEnumerable<string> GetContent(string guid)
+    {
+        var nodes = guid
+                ?.Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => _umbracoHelper.Content(GuidUdiHelper.GetGuid(x)))
+                .Where(x => x != null)
+                .ToList();
+        return nodes.Select(x => x.Id.ToString());
+    }
+
+    public IEnumerable<object> GetNonEkomDataTypes()
+    {
+        return _dataTypeService.GetAll()
+            .Where(x => !x.EditorAlias.StartsWith("Ekom"))
+            .OrderBy(x => x.SortOrder)
+            .Select(x => new
             {
-                var dt = _dataTypeService.GetDataType(typeValueInt);
+                guid = x.Key,
+                name = x.Name,
+                editorAlias = x.EditorAlias
+            });
+    }
 
-                // FIX: verify
-                typeValue = dt.ConfigurationAs<string>();
-            }
-            typeValue = typeValue.Contains('[') ? JsonConvert.DeserializeObject<string[]>(typeValue).FirstOrDefault() : typeValue;
-            return typeValue;
-        }
-        public IEnumerable<string> GetContent(string guid)
+    public object GetDataTypeById(Guid id)
+    {
+        var dtd = _dataTypeService.GetDataType(id);
+        return FormatDataType(dtd);
+    }
+
+    public object GetDataTypeByAlias(
+        string contentTypeAlias,
+        string propertyAlias)
+    {
+
+        var ct = _contentTypeService.Get(contentTypeAlias);
+
+        var prop = ct?.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
+
+        if (prop == null)
         {
-            var nodes = guid
-                    ?.Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x => _umbracoHelper.Content(GuidUdiHelper.GetGuid(x)))
-                    .Where(x => x != null)
-                    .ToList();
-            return nodes.Select(x => x.Id.ToString());
+            throw new Exceptions.HttpResponseException(HttpStatusCode.NotFound);
         }
+
+        var dtd = _dataTypeService.GetDataType(prop.DataTypeKey);
+        return FormatDataType(dtd);
+    }
+
+    public IEnumerable<object> GetLanguages()
+    {
+        var languages = _localizationService.GetAllLanguages();
+
+        return languages;
+    }
+
+    private object FormatDataType(IDataType dtd)
+    {
+        if (dtd == null)
+            throw new Exceptions.HttpResponseException(HttpStatusCode.NotFound);
+
+        var propertyEditor = _propertyEditorCollection.FirstOrDefault(x => x.Alias == dtd.EditorAlias);
+
+        var preValues = dtd.Configuration;
+
+        return new
+        {
+            guid = dtd.Key,
+            propertyEditorAlias = dtd.EditorAlias,
+            preValues = preValues,
+            view = propertyEditor.GetValueEditor(null).View
+        };
     }
 }

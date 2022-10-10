@@ -1,3 +1,9 @@
+#if NETFRAMEWORK
+using System.Web;
+#else
+using Microsoft.AspNetCore.Http;
+#endif
+
 using Ekom.Cache;
 using Ekom.Exceptions;
 using Ekom.Interfaces;
@@ -12,19 +18,25 @@ namespace Ekom.Services
     {
         readonly IStoreDomainCache _domainCache;
         readonly IBaseCache<IStore> _storeCache;
-        readonly ICacheService _requestCache;
+        readonly HttpContext _httpContext;
         /// <summary>
         /// ctor
         /// </summary>
         public StoreService(
             IStoreDomainCache domainCache,
-            IBaseCache<IStore> storeCache,
-            ICacheService requestCache
+            IBaseCache<IStore> storeCache
+#if NETCOREAPP
+            ,IHttpContextAccessor httpContextAccessor
+#endif
         )
         {
             _domainCache = domainCache;
             _storeCache = storeCache;
-            _requestCache = requestCache;
+#if NETFRAMEWORK
+            _httpContext = HttpContext.Current;
+#else
+            _httpContext = httpContextAccessor.HttpContext;
+#endif
         }
 
         public IStore GetStoreByDomain(string domain = "", string culture = "")
@@ -75,7 +87,15 @@ namespace Ekom.Services
 
         public IStore GetStoreFromCache()
         {
-            var r = _requestCache.Get<ContentRequest>("ekmRequest");
+            ContentRequest r = null;
+#if NETFRAMEWORK
+            if (_httpContext.Items.Contains("ekmRequest"))
+#else
+            if (_httpContext.Items.ContainsKey("ekmRequest"))
+#endif
+            {
+                r = _httpContext.Items["ekmRequest"] as ContentRequest;
+            }
 
             return r?.Store ?? GetAllStores().FirstOrDefault();
         }
@@ -89,6 +109,5 @@ namespace Ekom.Services
         {
             return _domainCache.Cache.Select(x => x.Value);
         }
-
     }
 }

@@ -26,6 +26,7 @@ namespace Ekom.Controllers
     public class EkomCatalogController : ApiController
     {
 #else
+    [Route("/api/[controller]/[action]")]
     public class EkomCatalogController : ControllerBase
     {
 

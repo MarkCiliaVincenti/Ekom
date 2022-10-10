@@ -1,85 +1,79 @@
+#if NETFRAMEWORK
+using System.Web.Http;
+#else
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+#endif
+using Ekom.Domain.Repositories;
 using Ekom.Exceptions;
 using Ekom.Utilities;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Net;
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.PropertyEditors;
-using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Web.BackOffice.Controllers;
+using System.Threading.Tasks;
+using Ekom.Services;
+using Ekom.Authorization;
 
-namespace Ekom.U10.Controllers
+namespace Ekom.Controllers
 {
-    public class EkomBackofficeApiController : UmbracoAuthorizedApiController
+    /// <summary>
+    /// 
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Reliability",
+        "CA2007:Consider calling ConfigureAwait on the awaited task",
+        Justification = "Async controller actions don't need ConfigureAwait")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Style",
+        "VSTHRD200:Use \"Async\" suffix for async methods",
+        Justification = "Async controller action")]
+#if NETFRAMEWORK
+
+    public class EkomBackofficeApiController : ApiController
     {
-        private readonly IDataTypeService _dts;
-        private readonly PropertyEditorCollection _propertyEditorCollection;
-        private readonly ILocalizationService _localizationService;
-        private readonly IMemberTypeService _memberTypeService;
-        private readonly IContentTypeService _contentTypeService;
+        /// <summary>
+        /// 
+        /// </summary>
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        {
+        }
+#else
+    [Route("/api/[controller]/[action]")]
+    public class EkomBackofficeApiController : ControllerBase
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        {
+            _config = config;
+            _umbracoService = umbracoService;
+        }
+#endif
 
         readonly Configuration _config;
+        readonly IUmbracoService _umbracoService;
 
-        public EkomBackofficeApiController(
-            IDataTypeService dts,
-            PropertyEditorCollection propertyEditorCollection,
-            ILocalizationService localizationService,
-            IMemberTypeService memberTypeService,
-            IContentTypeService contentTypeService
-            )
-        {
-            _dts = dts;
-            _propertyEditorCollection = propertyEditorCollection;
-            _localizationService = localizationService;
-            _memberTypeService = memberTypeService;
-            _contentTypeService = contentTypeService;
-            _config = Configuration.Resolver.GetService<Configuration>();
-        }
-
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetNonEkomDataTypes()
-        {
-            return _dts.GetAll()
-                .Where(x => !x.EditorAlias.StartsWith("Ekom"))
-                .OrderBy(x => x.SortOrder)
-                .Select(x => new
-                {
-                    guid = x.Key,
-                    name = x.Name,
-                    editorAlias = x.EditorAlias
-                });
-        }
+            => _umbracoService.GetNonEkomDataTypes();
 
+        [UmbracoUserAuthorize]
         public object GetDataTypeById(Guid id)
-        {
-            var dtd = _dts.GetDataType(id);
-            return FormatDataType(dtd);
-        }
+            => _umbracoService.GetDataTypeById(id);
 
+        [UmbracoUserAuthorize]
         public object GetDataTypeByAlias(
             string contentTypeAlias,
             string propertyAlias)
-        {
+            => _umbracoService.GetDataTypeByAlias(contentTypeAlias, propertyAlias);
 
-            var ct = _contentTypeService.Get(contentTypeAlias);
-
-            var prop = ct?.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
-            
-            if (prop == null)
-            {
-                throw new Exceptions.HttpResponseException(HttpStatusCode.NotFound);
-            }
-
-            var dtd = _dts.GetDataType(prop.DataTypeKey);
-            return FormatDataType(dtd);
-        }
-
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetLanguages()
-        {
-            var languages = _localizationService.GetAllLanguages();
+            => _umbracoService.GetLanguages();
 
-            return languages;
-        }
-
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetStores()
         {
             var stores = API.Store.Instance.GetAllStores();
@@ -87,28 +81,11 @@ namespace Ekom.U10.Controllers
             return stores;
         }
 
-        protected object FormatDataType(IDataType dtd)
-        {
-            if (dtd == null)
-                throw new Exceptions.HttpResponseException(HttpStatusCode.NotFound);
-
-            var propertyEditor = _propertyEditorCollection.FirstOrDefault(x => x.Alias == dtd.EditorAlias);
-
-            var preValues = dtd.Configuration;
-
-            return new
-            {
-                guid = dtd.Key,
-                propertyEditorAlias = dtd.EditorAlias,
-                preValues = preValues,
-                view = propertyEditor.GetValueEditor(null).View
-            };
-        }
-
         /// <summary>
         /// Repopulates all Ekom cache
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public bool PopulateCache()
         {
             foreach (var cacheEntry in _config.CacheList.Value)
@@ -122,15 +99,17 @@ namespace Ekom.U10.Controllers
         /// <summary>
         /// Get Config
         /// </summary>
+        [UmbracoUserAuthorize]
         public Configuration GetConfig()
         {
-            return Configuration.Instance;
+            return _config;
         }
 
         /// <summary>
         /// Get Stock By Store
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public int GetStockByStore(Guid id, string storeAlias)
         {
             return API.Stock.Instance.GetStock(id, storeAlias);
@@ -140,6 +119,7 @@ namespace Ekom.U10.Controllers
         /// Get Stock 
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public int GetStock(Guid id)
         {
             return API.Stock.Instance.GetStock(id);
@@ -151,6 +131,7 @@ namespace Ekom.U10.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task<HttpResponseException> IncrementStock(Guid id, int stock)
         {
             try
@@ -173,6 +154,7 @@ namespace Ekom.U10.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task IncrementStock(Guid id, string storeAlias, int stock)
         {
             try
@@ -194,7 +176,8 @@ namespace Ekom.U10.Controllers
         /// If PerStoreStock is configured, gets store from cache and updates relevant item.
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost("{stock:int}")]
+        [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, int stock)
         {
             try
@@ -216,6 +199,7 @@ namespace Ekom.U10.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, string storeAlias, int stock)
         {
             try
@@ -236,6 +220,7 @@ namespace Ekom.U10.Controllers
         /// Insert Coupon
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task InsertCoupon(string couponCode, int numberAvailable, Guid discountId)
         {
             try
@@ -254,6 +239,7 @@ namespace Ekom.U10.Controllers
         /// Remove Coupon
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task RemoveCoupon(string couponCode, Guid discountId)
         {
             try
@@ -272,6 +258,7 @@ namespace Ekom.U10.Controllers
         /// Get Coupons for Discount
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task<object> GetCouponsForDiscount(Guid discountId)
         {
             try
