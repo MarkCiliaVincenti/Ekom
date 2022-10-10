@@ -46,6 +46,7 @@ namespace Ekom.Controllers
             _logger = Ekom.Configuration.Resolver.GetService<ILogger<EkomOrderController>>();
         }
 #else
+    [Route("/api/[controller]/[action]")]
     public partial class EkomOrderController : ControllerBase
     {
         /// <summary>
@@ -55,7 +56,6 @@ namespace Ekom.Controllers
         {
             _logger = logger;
         }
-
 #endif
 
         readonly ILogger _logger;

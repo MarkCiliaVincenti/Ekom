@@ -9,6 +9,7 @@ using Ekom.Domain.Repositories;
 using Ekom.Models;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Ekom.Controllers
 {
@@ -36,12 +37,13 @@ namespace Ekom.Controllers
             _countriesRepo = Ekom.Configuration.Resolver.GetService<CountriesRepository>();
         }
 #else
+    [Route("/api/[controller]/[action]")]
     public class EkomApiController : ControllerBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public EkomApiController(Configuration config, CountriesRepository countriesRepo)
+        public EkomApiController(IServiceProvider serviceProvider, Configuration config, CountriesRepository countriesRepo)
         {
             _config = config;
             _countriesRepo = countriesRepo;
@@ -51,7 +53,6 @@ namespace Ekom.Controllers
 
         readonly CountriesRepository _countriesRepo;
         readonly Configuration _config;
-
 
         /// <summary>
         /// 

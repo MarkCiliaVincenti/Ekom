@@ -8,10 +8,12 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Vettvangur.OrganisationManagement.AspNetCore;
 
 namespace Ekom.AspNetCore
 {
@@ -19,7 +21,16 @@ namespace Ekom.AspNetCore
     {
         public static IServiceCollection AddAspNetCoreEkom(this IServiceCollection services)
         {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "UmbracoUser",
+                    policy => policy.Requirements.Add(new UmbracoUserAuthorization())
+                );
+            });
+
             services.AddSingleton<Configuration>();
+            services.AddSingleton<IStartupFilter, EkomAspNetCoreStartupFilter>();
 
             services.AddSingleton<IStoreDomainCache, StoreDomainCache>();
             services.AddSingleton<IBaseCache<IStore>, StoreCache>();

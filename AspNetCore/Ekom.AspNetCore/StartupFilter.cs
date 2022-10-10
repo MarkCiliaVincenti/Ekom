@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ekom.AspNetCore;
 
-class StartupFilter : IStartupFilter
+class EkomAspNetCoreStartupFilter : IStartupFilter
 {
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
     {

@@ -28,7 +28,6 @@ namespace Ekom.Controllers
         "Style",
         "VSTHRD200:Use \"Async\" suffix for async methods",
         Justification = "Async controller action")]
-    [UmbracoUserAuthorize]
 #if NETFRAMEWORK
 
     public class EkomBackofficeApiController : ApiController
@@ -40,6 +39,7 @@ namespace Ekom.Controllers
         {
         }
 #else
+    [Route("/api/[controller]/[action]")]
     public class EkomBackofficeApiController : ControllerBase
     {
         /// <summary>
@@ -50,26 +50,30 @@ namespace Ekom.Controllers
             _config = config;
             _umbracoService = umbracoService;
         }
-
 #endif
 
         readonly Configuration _config;
         readonly IUmbracoService _umbracoService;
 
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetNonEkomDataTypes()
             => _umbracoService.GetNonEkomDataTypes();
 
+        [UmbracoUserAuthorize]
         public object GetDataTypeById(Guid id)
             => _umbracoService.GetDataTypeById(id);
 
+        [UmbracoUserAuthorize]
         public object GetDataTypeByAlias(
             string contentTypeAlias,
             string propertyAlias)
             => _umbracoService.GetDataTypeByAlias(contentTypeAlias, propertyAlias);
 
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetLanguages()
             => _umbracoService.GetLanguages();
 
+        [UmbracoUserAuthorize]
         public IEnumerable<object> GetStores()
         {
             var stores = API.Store.Instance.GetAllStores();
@@ -81,6 +85,7 @@ namespace Ekom.Controllers
         /// Repopulates all Ekom cache
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public bool PopulateCache()
         {
             foreach (var cacheEntry in _config.CacheList.Value)
@@ -94,6 +99,7 @@ namespace Ekom.Controllers
         /// <summary>
         /// Get Config
         /// </summary>
+        [UmbracoUserAuthorize]
         public Configuration GetConfig()
         {
             return _config;
@@ -103,6 +109,7 @@ namespace Ekom.Controllers
         /// Get Stock By Store
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public int GetStockByStore(Guid id, string storeAlias)
         {
             return API.Stock.Instance.GetStock(id, storeAlias);
@@ -112,6 +119,7 @@ namespace Ekom.Controllers
         /// Get Stock 
         /// </summary>
         /// <returns></returns>
+        [UmbracoUserAuthorize]
         public int GetStock(Guid id)
         {
             return API.Stock.Instance.GetStock(id);
@@ -123,6 +131,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task<HttpResponseException> IncrementStock(Guid id, int stock)
         {
             try
@@ -145,6 +154,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task IncrementStock(Guid id, string storeAlias, int stock)
         {
             try
@@ -167,6 +177,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, int stock)
         {
             try
@@ -188,6 +199,7 @@ namespace Ekom.Controllers
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, string storeAlias, int stock)
         {
             try
@@ -208,6 +220,7 @@ namespace Ekom.Controllers
         /// Insert Coupon
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task InsertCoupon(string couponCode, int numberAvailable, Guid discountId)
         {
             try
@@ -226,6 +239,7 @@ namespace Ekom.Controllers
         /// Remove Coupon
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task RemoveCoupon(string couponCode, Guid discountId)
         {
             try
@@ -244,6 +258,7 @@ namespace Ekom.Controllers
         /// Get Coupons for Discount
         /// </summary>
         [HttpPost]
+        [UmbracoUserAuthorize]
         public async Task<object> GetCouponsForDiscount(Guid discountId)
         {
             try

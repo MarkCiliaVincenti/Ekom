@@ -32,7 +32,7 @@ static class ApplicationBuilderExtensions
 {
     public static IServiceCollection AddEkom(this IServiceCollection services)
     {
-        services.AddTransient<IStartupFilter, StartupFilter>();
+        services.AddSingleton<IStartupFilter, StartupFilter>();
 
         services.AddAspNetCoreEkom();
 
@@ -45,8 +45,8 @@ static class ApplicationBuilderExtensions
         services.AddTransient<IUmbracoService, UmbracoService>();
         services.AddTransient<IUrlService, UrlService>();
         services.AddTransient<ExamineService>();
-        services.AddTransient<BackofficeUserAccessor>();
-        services.AddTransient<ISecurityService, SecurityService>();
+        services.AddScoped<BackofficeUserAccessor>();
+        services.AddScoped<ISecurityService, SecurityService>();
 
         return services;
     }

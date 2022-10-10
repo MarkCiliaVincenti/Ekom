@@ -19,8 +19,8 @@ namespace Ekom.U10
         readonly IPerStoreCache<ICategory> _categoryCache;
         readonly IPerStoreCache<IProduct> _productCache;
         readonly AppCaches _appCaches;
-        readonly HttpContext _httpContext;
-        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+        readonly IHttpContextAccessor _httpContextAccessor;
+        readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
         public CatalogContentFinder(
             ILogger<CatalogContentFinder> logger,
@@ -38,7 +38,7 @@ namespace Ekom.U10
             _categoryCache = categoryCache;
             _productCache = productCache;
             _appCaches = appCaches;
-            _httpContext = httpContextAccessor.HttpContext;
+            _httpContextAccessor = httpContextAccessor;
             _umbracoContextAccessor = umbracoContextAccessor;
         }
 
@@ -111,8 +111,8 @@ namespace Ekom.U10
                 }
                 #endregion
 
-
-                if (_httpContext.Items.TryGetValue("ekmRequest", out var r) 
+                var httpCtx = _httpContextAccessor.HttpContext;
+                if (httpCtx.Items.TryGetValue("ekmRequest", out var r) 
                 && r is ContentRequest ekmRequest)
                 {
                     ekmRequest.Store = store;
