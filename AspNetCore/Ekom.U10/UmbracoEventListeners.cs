@@ -332,7 +332,7 @@ namespace Ekom.App_Start
         {
             notification.ServerVariables.Add("ekom", new
             {
-                backofficeApiEndpoint = "/umbraco/backoffice/api/ekombackofficeapi/",
+                backofficeApiEndpoint = "/api/ekombackofficeapi/",
                 apiEndpoint = "/api/ekomapi/"
             });
         }
