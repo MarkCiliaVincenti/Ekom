@@ -22,7 +22,7 @@ class SecurityService : ISecurityService
         _userService = userService;
     }
 
-    public IEnumerable<string> GetUmbracoUserGroups()
+    public IEnumerable<string>? GetUmbracoUserGroups()
     {
         var userTicket = _backofficeUserAccessor.BackofficeUser;
 
@@ -32,9 +32,12 @@ class SecurityService : ISecurityService
         {
             var u = _userService.GetByUsername(userTicket.GetUserName());
 
-            return u?.Groups.Select(x => x.Alias) ?? Enumerable.Empty<string>();
+            if (u != null)
+            {
+                return u.Groups.Select(x => x.Alias);
+            }
         }
-
-        return Enumerable.Empty<string>();
+        
+        return null;
     }
 }

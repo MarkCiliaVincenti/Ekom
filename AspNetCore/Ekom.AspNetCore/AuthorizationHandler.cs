@@ -33,7 +33,7 @@ class UmbracoUserAuthorizationHandler : AuthorizationHandler<UmbracoUserAuthoriz
         var usrMgmtAuthSvc = _httpContextAccessor.HttpContext?.RequestServices.GetService<ISecurityService>();
         var userGroups = usrMgmtAuthSvc?.GetUmbracoUserGroups();
 
-        if (userGroups?.Any(x => x == "admin") == true)
+        if (userGroups != null)
         {
             context.Succeed(requirement);
         }

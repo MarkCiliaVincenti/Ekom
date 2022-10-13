@@ -22,7 +22,7 @@ namespace Ekom.Authorization
             var securityService = Configuration.Resolver.GetService<ISecurityService>();
             var userGroups = securityService.GetUmbracoUserGroups();
 
-            if (!userGroups.Any(x => x == "admin"))
+            if (userGroups == null)
             {
                 actionContext.Response
                     = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden);
