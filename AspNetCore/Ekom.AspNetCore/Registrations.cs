@@ -8,6 +8,7 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ namespace Ekom.AspNetCore
 
             services.AddSingleton<Configuration>();
             services.AddSingleton<IStartupFilter, EkomAspNetCoreStartupFilter>();
+            services.AddSingleton<IAuthorizationHandler, UmbracoUserAuthorizationHandler>();
 
             services.AddSingleton<IStoreDomainCache, StoreDomainCache>();
             services.AddSingleton<IBaseCache<IStore>, StoreCache>();
