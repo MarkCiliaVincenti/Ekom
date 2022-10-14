@@ -1,5 +1,8 @@
 using Ekom.U10;
+using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json.Serialization;
+using Umbraco.Cms.Core.Configuration.Models;
+using Vettvangur.Shared;
 
 namespace Ekom.Site
 {
@@ -32,11 +35,37 @@ namespace Ekom.Site
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                // https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-5.0#compression-with-secure-protocol
+                .AddResponseCompression(options => options.EnableForHttps = true)
+                // Make sure you call this previous to AddMvc
+                .AddCors()
+                .AddControllers()
+                .AddNewtonsoftJson(opts =>
+                {
+                    opts.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    opts.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                })
+                ;
+#pragma warning disable IDE0022 // Use expression body for methods
             services.AddUmbraco(_env, _config)
                 .AddBackOffice()
+                .AddBackofficeAzureAd()
                 .AddWebsite()
                 .AddComposers()
+                //.AddAzureBlobMediaFileSystem()
+                .AddMembersIdentity()
+                //.AddCdnMediaUrlProvider() // (optional) add the CDN Media UrlProvider
                 .Build();
+#pragma warning restore IDE0022 // Use expression body for methods
+
+            //services.AddApplicationInsightsTelemetry(_config["ApplicationInsights:ConnectionString"]);
+
+            //services.AddTransient<Service>();
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
         }
 
         /// <summary>
@@ -46,22 +75,12 @@ namespace Ekom.Site
         /// <param name="env">The web hosting environment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseUmbraco()
-                .WithMiddleware(u =>
+            app.UseVettvangurDefaults(
+                env,
+                _config,
+                new VettvangurBuilderConfig
                 {
-                    u.UseBackOffice();
-                    u.UseWebsite();
-                })
-                .WithEndpoints(u =>
-                {
-                    u.UseInstallerEndpoints();
-                    u.UseBackOfficeEndpoints();
-                    u.UseWebsiteEndpoints();
+                    // SimpleCorsSetup = true,
                 });
         }
     }
