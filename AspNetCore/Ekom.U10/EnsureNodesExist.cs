@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Ekom.Exceptions;
-using Ekom.Models;
 using Ekom.U10.DataEditors;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -17,7 +13,7 @@ namespace Ekom.App_Start
 {
     class EnsureNodesExist : IComponent
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<EnsureNodesExist> _logger;
         private readonly Configuration _configuration;
         private readonly IContentService _contentService;
         private readonly IFileService _fileService;
@@ -29,7 +25,7 @@ namespace Ekom.App_Start
         private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
 
         public EnsureNodesExist(
-            ILogger logger,
+            ILogger<EnsureNodesExist> logger,
             IFileService fileService,
             IContentService contentService,
             IContentTypeService contentTypeService,
@@ -160,8 +156,8 @@ namespace Ekom.App_Start
                     var textstringDt = _dataTypeService.GetDataType(new Guid("0cc0eba1-9960-42c9-bf9b-60e150b429ae"));
                     var numericDt = _dataTypeService.GetDataType(new Guid("2e6d3631-066e-44b8-aec4-96f09099b2b5"));
                     var contentPickerDt = _dataTypeService.GetDataType(new Guid("fd1e0da5-5606-4862-b679-5d0cf3a52a59"));
-                    var mediaPickerDt = _dataTypeService.GetDataType(new Guid("135d60e0-64d9-49ed-ab08-893c9ba44ae5"));
-                    var multipleMediaPickerDt = _dataTypeService.GetDataType(new Guid("9dbbcbbb-2327-434a-b355-af1b84e5010a"));
+                    var mediaPickerDt = _dataTypeService.GetDataType(new Guid("4309a3ea-0d78-4329-a06c-c80b036af19a"));
+                    var multipleMediaPickerDt = _dataTypeService.GetDataType(new Guid("1b661f40-2242-4b44-b9cb-3990ee2b13c0"));
                     var tagsDt = _dataTypeService.GetDataType(new Guid("b6b73142-b9c1-4bf8-a16d-e1c23320b549"));
                     var rteDt = _dataTypeService.GetDataType(new Guid("ca90c950-0aff-4e72-b976-a30b1ac57dad"));
                     var textareaDt = _dataTypeService.GetDataType(new Guid("c6bac0dd-4ab9-45b1-8e30-e4b619ee5da3"));
@@ -173,14 +169,15 @@ namespace Ekom.App_Start
                         {
                             DataType = new
                             {
-                                Guid = textstringDt.Key,
-                                Name = textstringDt.Name,
-                                PropertyEditorAlias = textstringDt.EditorAlias,
+                                guid = textstringDt.Key,
+                                name = textstringDt.Name,
+                                propertyEditorAlias = textstringDt.EditorAlias,
                             },
                             useLanguages = true,
                             HideLabel = false
                         },
                     });
+
                     var propertyBoolDt = EnsureDataTypeExists(new DataType(editor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Property Editor - Boolean",
@@ -188,14 +185,15 @@ namespace Ekom.App_Start
                         {
                             DataType = new
                             {
-                                Guid = booleanDt.Key,
-                                Name = booleanDt.Name,
-                                PropertyEditorAlias = booleanDt.EditorAlias,
+                                guid = booleanDt.Key,
+                                name = booleanDt.Name,
+                                propertyEditorAlias = booleanDt.EditorAlias,
                             },
                             useLanguages = true,
                             HideLabel = false
                         },
                     });
+
                     var propertyRteDt = EnsureDataTypeExists(new DataType(editor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Property Editor - Richtext Editor",
@@ -203,14 +201,15 @@ namespace Ekom.App_Start
                         {
                             DataType = new
                             {
-                                Guid = rteDt.Key,
-                                Name = rteDt.Name,
-                                PropertyEditorAlias = rteDt.EditorAlias,
+                                guid = rteDt.Key,
+                                name = rteDt.Name,
+                                propertyEditorAlias = rteDt.EditorAlias,
                             },
                             useLanguages = true,
                             HideLabel = false
                         },
                     });
+
                     var propertyTextareaDt = EnsureDataTypeExists(new DataType(editor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Property Editor - Textarea",
@@ -218,9 +217,9 @@ namespace Ekom.App_Start
                         {
                             DataType = new
                             {
-                                Guid = textareaDt.Key,
-                                Name = textareaDt.Name,
-                                PropertyEditorAlias = textareaDt.EditorAlias,
+                                guid = textareaDt.Key,
+                                name = textareaDt.Name,
+                                propertyEditorAlias = textareaDt.EditorAlias,
                             },
                             useLanguages = true,
                             HideLabel = false
@@ -268,10 +267,12 @@ namespace Ekom.App_Start
                             Filter = "ekmProduct, ekmProductVariant, ekmCategory",
                             TreeSource = new MultiNodePickerConfigurationTreeSource()
                             {
+                                 
                                 StartNodeQuery = "$root/ekom/ekmCatalog",
                             }
                         }
                     });
+
                     var multinodeProductDt = EnsureDataTypeExists(new DataType(multiNodeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Product Picker",
@@ -284,6 +285,7 @@ namespace Ekom.App_Start
                             }
                         }
                     });
+
                     var multinodeCategoryDt = EnsureDataTypeExists(new DataType(multiNodeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Category Picker",
@@ -296,6 +298,7 @@ namespace Ekom.App_Start
                             }
                         }
                     });
+
                     var discountTypeDt = EnsureDataTypeExists(new DataType(dropdownEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Discount Type",
@@ -316,6 +319,7 @@ namespace Ekom.App_Start
                         }
                         },
                     });
+
                     var variantGroupDt = EnsureDataTypeExists(new DataType(multiNodeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Variant Group Picker",
@@ -365,6 +369,7 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                    Alias = "settings",
                                     Name = "Settings",
                                     Type = PropertyGroupType.Tab
                                 },
@@ -378,6 +383,7 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                    Alias = "stores",
                                     Name = "Stores",
                                     Type = PropertyGroupType.Tab
                                 },
@@ -408,11 +414,12 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                    Alias = "settings",
                                     Name = "Settings",
                                     Type = PropertyGroupType.Tab
                                 },
-                              }),
-                      }
+                            }),
+                        }
                     );
 
                     var rangeComposition = EnsureContentTypeExists(
@@ -440,11 +447,12 @@ namespace Ekom.App_Start
                                             SortOrder = 21
                                         },
                                     }))
-                                {
+                                { 
+                                    Alias = "settings",
                                     Name = "Settings",
                                     Type = PropertyGroupType.Tab
                                 },
-                                }),
+                            }),
                         }
                     );
 
@@ -468,43 +476,48 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
+                                            SortOrder = 0,
+                                            Mandatory = true
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {
                                             Name = "SKU",
+                                            SortOrder = 1
                                         },
                                         new PropertyType(_shortStringHelper, multipleMediaPickerDt, "images")
                                         {
                                             Name = "Images",
+                                            SortOrder = 2
                                         },
                                         new PropertyType(_shortStringHelper, priceDt, "price")
                                         {
                                             Name = "Price",
+                                            SortOrder = 3
                                         },
                                         new PropertyType(_shortStringHelper, stockDt, "stock")
                                         {
                                             Name = "Stock",
-                                        },
-                                        new PropertyType(_shortStringHelper, booleanDt, "stock")
-                                        {
-                                            Name = "Stock",
+                                            SortOrder = 4
                                         },
                                         new PropertyType(_shortStringHelper, booleanDt, "enableBackorder")
                                         {
                                             Name = "Enable Backorder",
-                                            Description = "If set then the variant can be sold indefinitely"
+                                            Description = "If set then the variant can be sold indefinitely",
+                                            SortOrder = 5
                                         },
                                         new PropertyType(_shortStringHelper, numericDt, "vat")
                                         {
                                             Name = "VAT",
-                                            Description = "%, override store VAT."
+                                            Description = "%, override store VAT.",
+                                            SortOrder = 6
                                         },
                                     }))
                                 {
+                                    Alias = "variant",
                                     Name = "Variant",
                                     Type = PropertyGroupType.Tab
                                 }
-                                }),
+                            }),
                         }
                     );
 
@@ -516,7 +529,7 @@ namespace Ekom.App_Start
                             Icon = "icon-folder",
                             AllowedContentTypes = new List<ContentTypeSort>
                             {
-                            new ContentTypeSort(productVariantCt.Id, 1),
+                                new ContentTypeSort(productVariantCt.Id, 1),
                             },
                             PropertyGroups = new PropertyGroupCollection(
                                 new List<PropertyGroup>
@@ -528,6 +541,7 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
+                                            Mandatory = true
                                         },
                                         new PropertyType(_shortStringHelper, multipleMediaPickerDt, "images")
                                         {
@@ -539,9 +553,10 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                     Alias = "variantGroup",
                                     Name = "Variant Group",
                                 },
-                                }),
+                            }),
                         }
                     );
 
@@ -567,6 +582,7 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
+                                            Mandatory = true
                                         },
                                         new PropertyType(_shortStringHelper, propertyTextDt, "slug")
                                         {
@@ -576,7 +592,7 @@ namespace Ekom.App_Start
                                         {
                                             Name = "SKU",
                                         },
-                                        new PropertyType(_shortStringHelper, propertyTextDt, "description")
+                                        new PropertyType(_shortStringHelper, propertyTextareaDt, "description")
                                         {
                                             Name = "Description",
                                         },
@@ -602,7 +618,7 @@ namespace Ekom.App_Start
                                             Name = "VAT",
                                             Description = "%, override store VAT."
                                         },
-                                        new PropertyType(_shortStringHelper, multinodeProductDt, "categories")
+                                        new PropertyType(_shortStringHelper, multinodeCategoryDt, "categories")
                                         {
                                             Name = "Product Categories",
                                             Description = "Allows a product to belong to categories other than it's umbraco node parent categories. A single product node can therefore belong to multiple logical category tree hierarchies.",
@@ -617,6 +633,7 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                    Alias = "product",
                                     Name = "Product",
                                     Type = PropertyGroupType.Tab
                                 },
@@ -630,6 +647,7 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                    Alias = "stores",
                                     Name = "Stores",
                                     Type = PropertyGroupType.Tab
                                 }
@@ -661,7 +679,7 @@ namespace Ekom.App_Start
                                         {
                                             Name = "Slug",
                                         },
-                                        new PropertyType(_shortStringHelper, propertyTextDt, "description")
+                                        new PropertyType(_shortStringHelper, propertyTextareaDt, "description")
                                         {
                                             Name = "Description",
                                         },
@@ -671,6 +689,7 @@ namespace Ekom.App_Start
                                         }
                                     }))
                                     {
+                                        Alias = "category",
                                         Name = "Category",
                                         Type = PropertyGroupType.Tab
                                     },
@@ -684,6 +703,7 @@ namespace Ekom.App_Start
                                         },
                                     }))
                                 {
+                                     Alias = "stores",
                                     Name = "Stores",
                                     Type = PropertyGroupType.Tab
                                 },
@@ -761,7 +781,8 @@ namespace Ekom.App_Start
                                                 Description = "This couponless discount will be automatically applied to orders that match it's constraints"
                                             },
                                         }))
-                                    {
+                                    { 
+                                        Alias = "settings",
                                         Name = "Settings",
                                         Type = PropertyGroupType.Tab
                                     },
@@ -774,11 +795,12 @@ namespace Ekom.App_Start
                                                 Name = "Coupons",
                                             },
                                         }))
-                                    {
+                                    { 
+                                        Alias = "coupons",
                                         Name = "Coupons",
                                         Type = PropertyGroupType.Tab
                                     }
-                                    }
+                                }
                             ),
                     });
 
@@ -829,7 +851,8 @@ namespace Ekom.App_Start
                                                 Description = "Discount is automatically applied to selected items if the other constraints are valid.",
                                             },
                                         }))
-                                    {
+                                    { 
+                                        Alias = "settings",
                                         Name = "Settings",
                                         Type = PropertyGroupType.Tab
                                     }
@@ -886,10 +909,10 @@ namespace Ekom.App_Start
                                         Description = "Allows payment provider overloading. " +
                                             "F.x. Borgun ISK and Borgun USD nodes with different names and different xml configurations targetting the same base payment provider."
                                     },
-                                    //new PropertyType(numericDt, "discount")
-                                    //{
-                                    //    Name = "Discount",
-                                    //},
+                                    new PropertyType(_shortStringHelper, numericDt, "discount")
+                                    {
+                                        Name = "Discount",
+                                    },
                                     new PropertyType(_shortStringHelper, propertyTextDt, "successUrl")
                                     {
                                         Name = "Success Url",
@@ -917,6 +940,7 @@ namespace Ekom.App_Start
                                     },
                                 }))
                             {
+                                Alias = "settings",
                                 Name = "Settings",
                                 Type = PropertyGroupType.Tab
                             },
@@ -1013,7 +1037,8 @@ namespace Ekom.App_Start
                                     },
                                 })
                             )
-                            {
+                            { 
+                                Alias = "store",
                                 Name = "Store",
                                 Type = PropertyGroupType.Tab
                             }
@@ -1053,7 +1078,8 @@ namespace Ekom.App_Start
                                         Name = "Zone Selector",
                                     },
                                 })
-                            ){
+                            ){ 
+                                Alias = "zones",
                                 Name = "Zones",
                                 Type = PropertyGroupType.Tab
                             }
@@ -1092,6 +1118,7 @@ namespace Ekom.App_Start
                                         }
                                     }))
                                 {
+                                    Alias = "ekom",
                                     Name = "Ekom",
                                     Type= PropertyGroupType.Tab
                                 }

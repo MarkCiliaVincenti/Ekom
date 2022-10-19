@@ -12,7 +12,7 @@
         name: "Textstring",
         propertyEditorAlias: "Umbraco.Textbox"
       };
-
+      console.log($scope.model);
       ekmResources.getNonEkomDataTypes().then(function (data) {
         $scope.model.dataTypes = data;
       });
@@ -34,6 +34,8 @@
       if ($routeParams.section !== 'content') { return; }
 
       $scope.model.hideLabel = $scope.model.config.hideLabel == 1;
+
+      
 
       $scope.property = {
         config: {},
