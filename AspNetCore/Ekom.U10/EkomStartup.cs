@@ -45,7 +45,7 @@ class EkomComposer : IComposer
             .InsertBefore<DefaultUrlProvider, CatalogUrlProvider>();
         builder.Components()
             // Can't use umbraco npoco for this since we use linq2db in core
-            //.Append<EnsureTablesExist>()
+            .Append<EnsureTablesExist>()
             .Append<EnsureNodesExist>()
             .Append<EkomStartup>()
             ;

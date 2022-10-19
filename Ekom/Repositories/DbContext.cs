@@ -1,16 +1,11 @@
 using Ekom.Models;
 using LinqToDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ekom.Repositories
 {
     public class DbContext : LinqToDB.Data.DataConnection
     {
-        public DbContext() : base("umbracoDbDSN") { }
+        public DbContext(string connectionString) : base(LinqToDB.ProviderName.SqlServer, connectionString) { }
 
         public ITable<CouponData> CouponData => GetTable<CouponData>();
         public ITable<CustomerData> CustomerData => GetTable<CustomerData>();
