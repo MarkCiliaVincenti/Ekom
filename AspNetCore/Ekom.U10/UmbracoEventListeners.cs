@@ -181,74 +181,74 @@ namespace Ekom.App_Start
             string alias,
             ContentSavingNotification e)
         {
-            var propertyType = PropertyEditorType.Language;
-            var propertyTypes = new List<string>();
-            var slugItems = new Dictionary<string, object>();
-            var titleItems = new Dictionary<string, object>();
+            //var propertyType = PropertyEditorType.Language;
+            //var propertyTypes = new List<string>();
+            //var slugItems = new Dictionary<string, object>();
+            //var titleItems = new Dictionary<string, object>();
 
-            try
-            {
-                var titlePropertyValue = JsonConvert.DeserializeObject<PropertyValue>(content.GetValue<string>("title"));
+            //try
+            //{
+            //    var titlePropertyValue = JsonConvert.DeserializeObject<PropertyValue>(content.GetValue<string>("title"));
 
-                if (titlePropertyValue.Type == "Language")
-                {
-                    var languages = _umbracoService.GetLanguages();
+            //    if (titlePropertyValue.Type == "Language")
+            //    {
+            //        var languages = _umbracoService.GetLanguages();
 
-                    propertyTypes.AddRange(languages.Select(x => x.IsoCode));
-                }
-                else if (titlePropertyValue.Type == "Store")
-                {
-                    propertyType = PropertyEditorType.Store;
-                    var stores = API.Store.Instance.GetAllStores().OrderBy(x => x.SortOrder);
+            //        propertyTypes.AddRange(languages.Select(x => x.IsoCode));
+            //    }
+            //    else if (titlePropertyValue.Type == "Store")
+            //    {
+            //        propertyType = PropertyEditorType.Store;
+            //        var stores = API.Store.Instance.GetAllStores().OrderBy(x => x.SortOrder);
 
-                    propertyTypes.AddRange(stores.Select(x => x.Alias));
+            //        propertyTypes.AddRange(stores.Select(x => x.Alias));
 
-                }
+            //    }
 
-                var name = content.Name.Trim();
-                var title = ""; //TODO  //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
+            //    var name = content.Name.Trim();
+            //    var title = ""; //TODO  //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
 
-                if (string.IsNullOrEmpty(title))
-                {
-                    title = name;
-                }
+            //    if (string.IsNullOrEmpty(title))
+            //    {
+            //        title = name;
+            //    }
 
-                foreach (var type in propertyTypes)
-                {
-                    titleItems.Add(type, title);
+            //    foreach (var type in propertyTypes)
+            //    {
+            //        titleItems.Add(type, title);
 
-                    if (alias == "ekmProduct" || alias == "ekmCategory")
-                    {
-                        var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
+            //        if (alias == "ekmProduct" || alias == "ekmCategory")
+            //        {
+            //            var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
 
-                        if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
-                        {
-                            slug = title;
-                        }
+            //            if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
+            //            {
+            //                slug = title;
+            //            }
 
-                        slug = slug.ToLowerInvariant();
+            //            slug = slug.ToLowerInvariant();
 
-                        slugItems.Add(type, slug.ToUrlSegment(_shortStringHelper));
+            //            slugItems.Add(type, slug.ToUrlSegment(_shortStringHelper));
 
-                    }
+            //        }
 
-                }
+            //    }
 
-                if (slugItems.Any())
-                {
-                    content.SetProperty("slug", slugItems, propertyType);
-                }
+            //    if (slugItems.Any())
+            //    {
+            //        content.SetProperty("slug", slugItems, propertyType);
+            //    }
 
-                if (titleItems.Any())
-                {
-                    content.SetProperty("title", titleItems, propertyType);
-                }
+            //    if (titleItems.Any())
+            //    {
+            //        content.SetProperty("title", titleItems, propertyType);
+            //    }
 
-            }
-            catch (Exception ex)
-            {
+            //}
+            //catch (Exception ex)
+            //{
 
-            }
+            //}
 
 
             //var stores = API.Store.Instance.GetAllStores();

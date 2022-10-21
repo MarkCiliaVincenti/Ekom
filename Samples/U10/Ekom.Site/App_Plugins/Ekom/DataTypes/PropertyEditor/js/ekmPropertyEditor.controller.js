@@ -12,7 +12,7 @@
         name: "Textstring",
         propertyEditorAlias: "Umbraco.Textbox"
       };
-      console.log($scope.model);
+
       ekmResources.getNonEkomDataTypes().then(function (data) {
         $scope.model.dataTypes = data;
       });
@@ -92,7 +92,8 @@
 
               var eventModel = {
                 model: $scope.model,
-                tabs: $scope.tabs
+                tabs: $scope.tabs,
+                alias: $scope.model.alias
               }
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
@@ -111,7 +112,8 @@
 
               var eventModel = {
                 model: $scope.model,
-                tabs: $scope.tabs
+                tabs: $scope.tabs,
+                alias: $scope.model.alias
               }
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
@@ -141,7 +143,6 @@
 
         validateProperty();
 
-
         if ($scope.ekomPropertyForm.$valid) {
 
           var cleanValue = {};
@@ -151,11 +152,7 @@
 
           });
 
-
-
           $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
-
-          console.log($scope.model.value);
         }
 
       });
@@ -195,13 +192,11 @@
       }
 
       var validateProperty = function () {
-        // Validate value changes
+
         if ($scope.model.validation.mandatory) {
 
-          var mandatoryBehaviour = "all";
+          var mandatoryBehaviour = "any";
           var primaryLanguage = "none"
-
-          //TODO: Might be better if we could get the inner control to validate this?
 
           var isValid = true;
 
@@ -217,9 +212,9 @@
               break;
             case "any":
               isValid = false;
-              _.each($scope.languages, function (language) {
-                if (language.isoCode in $scope.model.value.values &&
-                  $scope.model.value.values[language.isoCode]) {
+              _.each($scope.tabs, function (tab) {
+                if (tab.value in $scope.model.value.values &&
+                  $scope.model.value.values[tab.value]) {
                   isValid = true;
                   return;
                 }
@@ -286,7 +281,7 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
 
 /* Directives */
 angular.module("umbraco.directives").directive('ekomProperty',
-  function () {
+  function (eventsService) {
 
     var link = function (scope, ctrl) {
       scope[ctrl.$name] = ctrl;
@@ -308,6 +303,7 @@ angular.module("umbraco.directives").directive('ekomProperty',
       var unsubscribe = scope.$on("ekomValuesEvent", function (ev, args) {
 
         scope.$broadcast("formSubmitting", { scope: scope });
+
         if (!scope.value.values)
           scope.value.values = {};
 
@@ -315,8 +311,27 @@ angular.module("umbraco.directives").directive('ekomProperty',
 
       });
 
+      var eventsServiceUnsubscribe = eventsService.on('ekmInputChange', function (event, data) {
+
+
+        if (scope.model.alias.indexOf('title') > -1) {
+          scope.$apply(function () {
+            scope.model.value = data.value.title;
+          });
+        }
+
+        if (scope.model.alias.indexOf('slug') > -1) {
+          scope.$apply(function () {
+            scope.model.value = data.value.slug;
+          });
+        }
+
+
+      });
+
       scope.$on('$destroy', function () {
         unsubscribe();
+        eventsServiceUnsubscribe();
       });
     };
 

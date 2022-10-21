@@ -16,7 +16,6 @@
       <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
-      <Content Include="App_Plugins\Ekom\Extensions\ekmUtility.html" />
     </ItemGroup>
     <ItemGroup>
       <None Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js" />
