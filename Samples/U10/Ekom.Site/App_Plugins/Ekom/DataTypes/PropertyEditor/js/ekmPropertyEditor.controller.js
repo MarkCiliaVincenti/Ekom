@@ -29,13 +29,12 @@
     'appState',
     '$routeParams',
     'Ekom.LocalStorageService',
-    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState, $routeParams, localStorageService) {
+    'eventsService',
+    function ($scope, $rootScope, editorState, ekmResources, umbPropEditorHelper, appState, $routeParams, localStorageService, eventsService) {
 
       if ($routeParams.section !== 'content') { return; }
 
       $scope.model.hideLabel = $scope.model.config.hideLabel == 1;
-
-      
 
       $scope.property = {
         config: {},
@@ -51,7 +50,7 @@
       $scope.model.value = $scope.model.value || {
         values: {},
         dtdGuid: "00000000-0000-0000-0000-000000000000",
-        type: "Store"
+        type: "Language"
       };
 
       var currentSection = appState.getSectionState("currentSection");
@@ -91,6 +90,13 @@
 
               setValues();
 
+              var eventModel = {
+                model: $scope.model,
+                tabs: $scope.tabs
+              }
+
+              eventsService.emit("ekmPropertyLoaded", { value: eventModel });
+
             });
 
           } else {
@@ -102,6 +108,13 @@
               $scope.tabs = stores.map(x => ({ value: x.Alias, text: x.Title }));
 
               setValues();
+
+              var eventModel = {
+                model: $scope.model,
+                tabs: $scope.tabs
+              }
+
+              eventsService.emit("ekmPropertyLoaded", { value: eventModel });
 
             });
 
@@ -138,7 +151,11 @@
 
           });
 
+
+
           $scope.model.value.values = !_.isEmpty(cleanValue) ? cleanValue : undefined;
+
+          console.log($scope.model.value);
         }
 
       });

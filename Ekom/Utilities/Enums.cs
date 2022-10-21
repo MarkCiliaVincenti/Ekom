@@ -156,4 +156,13 @@ namespace Ekom
         /// </summary>
         ChangeCurrency
     }
+
+    /// <summary>
+    /// Ekom Property Editor Type
+    /// </summary>
+    public enum PropertyEditorType
+    {
+        Store,
+        Language
+    }
 }

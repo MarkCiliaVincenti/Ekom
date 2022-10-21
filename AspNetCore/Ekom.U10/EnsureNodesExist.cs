@@ -476,8 +476,7 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
-                                            SortOrder = 0,
-                                            Mandatory = true
+                                            SortOrder = 0
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {
@@ -540,8 +539,7 @@ namespace Ekom.App_Start
                                     {
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
-                                            Name = "Title",
-                                            Mandatory = true
+                                            Name = "Title"
                                         },
                                         new PropertyType(_shortStringHelper, multipleMediaPickerDt, "images")
                                         {
@@ -581,8 +579,7 @@ namespace Ekom.App_Start
                                     {
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
-                                            Name = "Title",
-                                            Mandatory = true
+                                            Name = "Title"
                                         },
                                         new PropertyType(_shortStringHelper, propertyTextDt, "slug")
                                         {

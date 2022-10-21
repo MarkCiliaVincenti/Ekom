@@ -1,7 +1,10 @@
 using Ekom.Cache;
 using Ekom.Models;
+using Ekom.Services;
 using Ekom.U10.Models;
+using EkomCore.U10.Utilities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Entities;
@@ -35,6 +38,7 @@ namespace Ekom.App_Start
         readonly IScopeProvider _scopeProvider;
         readonly IUmbracoContextFactory _context;
         readonly IServiceProvider _serviceProvider;
+        readonly IUmbracoService _umbracoService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoEventListeners"/> class.
@@ -48,7 +52,8 @@ namespace Ekom.App_Start
             IScopeProvider scopeProvider,
             IUmbracoContextFactory context,
             IShortStringHelper shortStringHelper,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IUmbracoService umbracoService)
         {
             _logger = logger;
             _config = config;
@@ -59,6 +64,7 @@ namespace Ekom.App_Start
             _context = context;
             _shortStringHelper = shortStringHelper;
             _serviceProvider = serviceProvider;
+            _umbracoService = umbracoService;
         }
 
         public void Handle(ContentSavingNotification e)
@@ -175,7 +181,76 @@ namespace Ekom.App_Start
             string alias,
             ContentSavingNotification e)
         {
-            //TODO
+            var propertyType = PropertyEditorType.Language;
+            var propertyTypes = new List<string>();
+            var slugItems = new Dictionary<string, object>();
+            var titleItems = new Dictionary<string, object>();
+
+            try
+            {
+                var titlePropertyValue = JsonConvert.DeserializeObject<PropertyValue>(content.GetValue<string>("title"));
+
+                if (titlePropertyValue.Type == "Language")
+                {
+                    var languages = _umbracoService.GetLanguages();
+
+                    propertyTypes.AddRange(languages.Select(x => x.IsoCode));
+                }
+                else if (titlePropertyValue.Type == "Store")
+                {
+                    propertyType = PropertyEditorType.Store;
+                    var stores = API.Store.Instance.GetAllStores().OrderBy(x => x.SortOrder);
+
+                    propertyTypes.AddRange(stores.Select(x => x.Alias));
+
+                }
+
+                var name = content.Name.Trim();
+                var title = ""; //TODO  //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
+
+                if (string.IsNullOrEmpty(title))
+                {
+                    title = name;
+                }
+
+                foreach (var type in propertyTypes)
+                {
+                    titleItems.Add(type, title);
+
+                    if (alias == "ekmProduct" || alias == "ekmCategory")
+                    {
+                        var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
+
+                        if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
+                        {
+                            slug = title;
+                        }
+
+                        slug = slug.ToLowerInvariant();
+
+                        slugItems.Add(type, slug.ToUrlSegment(_shortStringHelper));
+
+                    }
+
+                }
+
+                if (slugItems.Any())
+                {
+                    content.SetProperty("slug", slugItems, propertyType);
+                }
+
+                if (titleItems.Any())
+                {
+                    content.SetProperty("title", titleItems, propertyType);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
             //var stores = API.Store.Instance.GetAllStores();
 
             //var slugItems = new Dictionary<string, object>();
@@ -184,8 +259,6 @@ namespace Ekom.App_Start
             //foreach (var store in stores.OrderBy(x => x.SortOrder))
             //{
             //    var name = content.Name.Trim();
-
-            //    throw new NotSupportedException("Missing Vorto");
 
             //    var title = string.Empty; //NodeHelper.GetStoreProperty(content, "title", store.Alias).Trim();
 
@@ -198,7 +271,7 @@ namespace Ekom.App_Start
 
             //    if (alias == "ekmProduct" || alias == "ekmCategory")
             //    {
-                    
+
             //        var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
 
             //        if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
@@ -210,7 +283,7 @@ namespace Ekom.App_Start
 
             //        var parentCategory = API.Catalog.Instance.GetCategory(store.Alias, content.ParentId);
 
-            //        if (parentCategory !=null)
+            //        if (parentCategory != null)
             //        {
             //            var products = parentCategory.Products.Where(x => x.Id != content.Id);
             //            var categories = parentCategory.SubCategories.Where(x => x.Id != content.Id);

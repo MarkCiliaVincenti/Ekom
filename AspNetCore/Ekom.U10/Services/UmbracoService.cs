@@ -2,6 +2,7 @@ using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
 using Ekom.Utilities;
+using EkomCore.Models.Umbraco;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,9 +111,13 @@ class UmbracoService : IUmbracoService
         return FormatDataType(dtd);
     }
 
-    public IEnumerable<object> GetLanguages()
+    public IEnumerable<UmbracoLanguage> GetLanguages()
     {
-        var languages = _localizationService.GetAllLanguages();
+        var languages = _localizationService.GetAllLanguages().Select(x => new UmbracoLanguage() { 
+            Culture = x.CultureInfo,
+            CultureName = x.CultureName,
+            IsoCode  = x.IsoCode
+        });
 
         return languages;
     }

@@ -18,25 +18,24 @@ namespace Ekom.Models
         /// <para />
         /// In other cases this is simply a Guid
         /// </summary>
-        [StringLength(137)]
-        [PrimaryKey]
+        [PrimaryKey, Column(Length = 137), NotNull]
         public string UniqueId { get; set; }
 
         /// <summary>
         /// Unit count
         /// </summary>
-        [Column]
+        [Column, NotNull]
         public int Stock { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [Column]
+        [Column, NotNull]
         public DateTime CreateDate { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        [Column]
+        [Column, NotNull]
         public DateTime UpdateDate { get; set; }
     }
 }

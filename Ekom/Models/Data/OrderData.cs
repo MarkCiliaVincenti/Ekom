@@ -16,31 +16,31 @@ namespace Ekom.Models
         /// Install creates as Unique clustered which is not supported by
         /// umbraco database annotation attributes
         /// </summary>
-        [Column]
+        [Column, NotNull]
         public Guid UniqueId { get; set; }
 
         /// <summary>
         /// Required by some payment providers and bookkeeping software
         /// </summary>
-        [PrimaryKey, Identity]
+
+        //[PrimaryKey]
+        [Identity, NotNull]
         public int ReferenceId { get; set; }
 
         /// <summary>
         /// <see cref="Models.OrderInfo"/> Json
         /// </summary>
-        [StringLength(int.MaxValue, MinimumLength = 3)]
-        [Column]
+        [Column(Length = int.MaxValue)]
         public string OrderInfo { get; set; }
 
-        [StringLength(100)]
-        [Column]
+        [Column(Length = 100)]
         public string OrderNumber { get; set; }
 
         /// <summary>
         /// The database representation of the enum.
         /// This is necessary for the creation of the column.
         /// </summary>
-        [Column]
+        [Column, NotNull]
         public string OrderStatusCol { get; set; }
 
         /// <summary>
@@ -56,15 +56,15 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        [StringLength(200)]
-        [Column]
+        [Column(Length = 200)]
         public string CustomerEmail { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [StringLength(200)]
-        [Column]
+        /// </summary>
+        /// </summary>
+        [Column(Length = 200)]
         public string CustomerName { get; set; }
 
         /// <summary>
@@ -76,15 +76,15 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        [StringLength(200)]
-        [Column]
+        /// </summary>
+        [Column(Length = 200)]
         public string CustomerUsername { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [StringLength(50)]
-        [Column]
+        /// </summary>
+        [Column(Length = 50)]
         public string ShippingCountry { get; set; }
 
         /// <summary>
@@ -97,15 +97,15 @@ namespace Ekom.Models
         /// <summary>
         /// Contains the culture (e: "is-IS" or "is")
         /// </summary>
-        [StringLength(5)]
-        [Column]
+        /// </summary>
+        [Column(Length = 5)]
         public string Currency { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [StringLength(50)]
-        [Column]
+        /// </summary>
+        [Column(Length = 50)]
         public string StoreAlias { get; set; }
 
         /// <summary>

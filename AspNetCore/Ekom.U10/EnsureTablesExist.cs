@@ -33,9 +33,10 @@ namespace Ekom.App_Start
         }
     }
 
-
     class EkomMigrationPlan : MigrationPlan
     {
+        public const string OrderDataUniqueIndex = "IX_EkomOrders_UniqueId";
+
         public EkomMigrationPlan()
             : base("Ekom")
         {

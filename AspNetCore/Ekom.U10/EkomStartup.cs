@@ -3,6 +3,7 @@ using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.U10.Services;
+using EkomCore.U10;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ class EkomComposer : IComposer
     /// </summary>
     public void Compose(IUmbracoBuilder builder)
     {
+        
         builder.ContentFinders()
             .InsertBefore<ContentFinderByPageIdQuery, CatalogContentFinder>();
         builder.UrlProviders()
@@ -50,6 +52,7 @@ class EkomComposer : IComposer
             .Append<EkomStartup>()
             ;
 
+       
         // VirtualContent=true allows for configuration of content nodes to use for matching all requests
         // Use case: Ekom populated by adapter, used as in memory cache with no backing umbraco nodes
 

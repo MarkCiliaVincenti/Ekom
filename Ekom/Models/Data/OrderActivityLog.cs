@@ -9,17 +9,16 @@ namespace Ekom.Models
     [Table(Name = "EkomOrdersActivityLog")]
     public class OrderActivityLog
     {
-        [PrimaryKey]
+        [PrimaryKey, NotNull]
         public Guid UniqueID { get; set; }
-        [Column]
+        [Column, NotNull]
         public Guid Key { get; set; }
-        [Column]
+        [Column, NotNull]
         public string Log { get; set; }
-        [Column]
+        [Column, NotNull]
         public string UserName { get; set; }
-        [Column]
+        [Column, NotNull]
         public DateTime Date { get; set; }
-
         public string OrderNumber { get; set; }
     }
 }

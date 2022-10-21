@@ -4,6 +4,33 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <ItemGroup>
+      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
+      <Content Include="App_Plugins\Ekom\Extensions\ekmUtility.html" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
+      <None Include="App_Plugins\Ekom\Extensions\ekmUtility.js" />
+      <None Include="App_Plugins\Ekom\package.manifest" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Umbraco.Cms" Version="10.0.1" />

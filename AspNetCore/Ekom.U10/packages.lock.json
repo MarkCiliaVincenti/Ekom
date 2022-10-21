@@ -252,11 +252,8 @@
       },
       "linq2db": {
         "type": "Transitive",
-        "resolved": "3.6.0",
-        "contentHash": "ZgaxVkEbxbHparKQ8fCW13S1wp9m3vDQkmbbssIhaNmbFoWm9zV8K/tmX+cL0CEcqRAdIibSOsIdZp3QWNK0mg==",
-        "dependencies": {
-          "System.ComponentModel.Annotations": "4.7.0"
-        }
+        "resolved": "4.3.0",
+        "contentHash": "I/CbrqshgIQAuEpFvQZBFXTB1mquZzX9mGjwnIZjN7uh8sWI4+m6gTplNul9m2Zhb0M96m1iV5i7/vEKkellFw=="
       },
       "Lucene.Net": {
         "type": "Transitive",
@@ -2671,7 +2668,7 @@
           "Umbraco.Cms.PublishedCache.NuCache": "10.2.1"
         }
       },
-      "EkomCore": {
+      "ekomcore": {
         "type": "Project",
         "dependencies": {
           "CommonServiceLocator": "[2.0.6, )",
@@ -2684,10 +2681,10 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[2.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.0, )",
           "Newtonsoft.Json": "[12.0.3, )",
-          "linq2db": "[3.6.0, )"
+          "linq2db": "[4.3.0, )"
         }
       },
-      "EkomCore.AspNetCore": {
+      "ekomcore.aspnetcore": {
         "type": "Project",
         "dependencies": {
           "EkomCore": "[0.0.1, )"
