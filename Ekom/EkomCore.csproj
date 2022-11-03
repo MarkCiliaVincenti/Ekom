@@ -39,6 +39,29 @@
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
+    <ItemGroup>
+      <None Remove="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
+      <None Remove="App_Plugins\Ekom\Extensions\ekmUtility.js" />
+      <None Remove="App_Plugins\Ekom\package.manifest" />
+    </ItemGroup>
 
     <ItemGroup>
         <!-- Package icon -->
@@ -82,6 +105,72 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>EkomCore.U12</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\Extensions\ekmUtility.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Plugins\Ekom\package.manifest">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
