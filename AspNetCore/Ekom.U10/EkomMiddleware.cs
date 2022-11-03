@@ -69,7 +69,7 @@ class EkomMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Http module PostRequestHandlerExecute failed, make sure to have domain set on the store root node.");
+            _logger.LogDebug(ex, "Http module PostRequestHandlerExecute failed, make sure to have domain set on the store root node.");
         }
     }
 

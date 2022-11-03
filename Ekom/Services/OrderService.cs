@@ -1445,6 +1445,7 @@ namespace Ekom.Services
             {
                 var total = orderInfo.GrandTotal.Value;
                 var countryCode = orderInfo.CustomerInformation.Customer.Country;
+                var shippingCountry = orderInfo.CustomerInformation.Shipping.Country ?? countryCode;
 
                 var store = _storeSvc.GetStoreByAlias(orderInfo.StoreInfo.Alias);
 
@@ -1487,7 +1488,7 @@ namespace Ekom.Services
                             orderInfo.UniqueId);
                     }
                     if (shippingProvider == null
-                    || !shippingProvider.Constraints.IsValid(countryCode, total))
+                    || !shippingProvider.Constraints.IsValid(shippingCountry, total))
                     {
                         _logger.LogDebug(
                             "Removing invalid shipping provider {ShippingProviderKey} from Order {UniqueId}",

@@ -139,27 +139,29 @@ namespace Ekom.Cache
                 {
                     var ancestors = nodeService.NodeAncestors(r.Id.ToString());
 
-                    // Traverse up parent nodes, checking disabled status and published status
-                    if (!r.IsItemDisabled(store, ancestors))
+                    var isDisabled = r.IsItemDisabled(store, ancestors);
+
+                    if (isDisabled)
                     {
-                        var item = _objFac?.Create(r, store)
-                            ?? (TItem)Activator.CreateInstance(typeof(TItem), r, store);
-
-                        if (item != null)
-                        {
-                            count++;
-
-                            curStoreCache[r.Key] = item;
-                        }
+                        continue;
                     }
+
+                    var item = _objFac?.Create(r, store)
+                        ?? (TItem)Activator.CreateInstance(typeof(TItem), r, store);
+
+                    if (item != null)
+                    {
+                        count++;
+
+                        curStoreCache[r.Key] = item;
+                    }
+                    
                 }
                 catch (Exception ex) // Skip on fail
                 {
                     _logger.LogWarning(
                         ex,
-                        "Error on adding item with id: {Id} from Examine in Store: {Alias}",
-                        r.Id,
-                        store.Alias
+                        "Error on adding item with id: " + r.Id + " from Examine in Store: " + store.Alias
                     );
                 }
             }
@@ -188,25 +190,27 @@ namespace Ekom.Cache
                 {
                     var ancestors = nodeService.NodeAncestors(node.Id.ToString());
 
-                    if (!node.IsItemDisabled(store.Value, ancestors))
-                    {
-                        var item = _objFac?.Create(node, store.Value)
-                            ?? (TItem)Activator.CreateInstance(typeof(TItem), node, store.Value);
+                    var isDisabled = node.IsItemDisabled(store.Value, ancestors);
 
-                        if (item != null) Cache[store.Value.Alias][node.Key] = item;
-                    }
-                    else
+                    if (isDisabled)
                     {
                         Cache[store.Value.Alias].TryRemove(node.Key, out _);
+                        continue;
                     }
+
+           
+                    var item = _objFac?.Create(node, store.Value)
+                        ?? (TItem)Activator.CreateInstance(typeof(TItem), node, store.Value);
+
+                    if (item != null) Cache[store.Value.Alias][node.Key] = item;
+                    
+     
                 }
                 catch (Exception ex) // Skip on fail
                 {
                     _logger.LogWarning(
                         ex,
-                        "Error on Add/Replacing item with id: {Id} in store: {Store}",
-                        node.Id,
-                        store.Value.Alias
+                        "Error on adding item with id: " + node.Id + " from Examine in Store: " + store.Value.Alias
                     );
                 }
             }

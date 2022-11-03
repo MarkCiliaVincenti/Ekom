@@ -509,6 +509,47 @@ namespace Ekom.API
             return null;
         }
 
+        /// <summary>
+        /// Get variant by SKU using store from ekmRequest
+        /// </summary>
+        /// <returns></returns>
+        public IVariant GetVariant(string sku)
+        {
+            var store = _storeSvc.GetStoreFromCache();
+
+            if (store != null)
+            {
+                var variant = GetVariant(store.Alias, sku);
+
+                return variant;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get variant by SKU from specific store
+        /// </summary>
+        public IVariant GetVariant(string storeAlias, string sku)
+        {
+            if (string.IsNullOrEmpty(storeAlias))
+            {
+                throw new ArgumentException(nameof(storeAlias));
+            }
+
+            if (string.IsNullOrEmpty(sku))
+            {
+                throw new ArgumentException(nameof(sku));
+            }
+
+            if (_variantCache.Cache[storeAlias].Any(x => x.Value.SKU == sku))
+            {
+                return _variantCache.Cache[storeAlias].FirstOrDefault(x => x.Value.SKU == sku).Value;
+            }
+
+            return null;
+        }
+
         public IVariant GetVariant(string storeAlias, Guid key)
         {
             if (string.IsNullOrEmpty(storeAlias))

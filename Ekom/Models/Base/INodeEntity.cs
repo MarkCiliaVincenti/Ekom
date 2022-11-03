@@ -55,6 +55,13 @@ namespace Ekom.Models
         DateTime UpdateDate { get; }
 
         /// <summary>
+        /// Gets the parent ID
+        /// </summary>
+        /// <value>
+        /// The parent ID
+        /// </value>
+        int ParentId { get; }
+        /// <summary>
         /// SortOrder for the node
         /// </summary>
         /// <value>
@@ -98,11 +105,6 @@ namespace Ekom.Models
         /// Umbraco node properties
         /// </summary>
         IReadOnlyDictionary<string, string> Properties { get; }
-
-        /// <summary>
-        /// Parent umbraco node
-        /// </summary>
-        int ParentId { get; }
     }
 
     /// <summary>

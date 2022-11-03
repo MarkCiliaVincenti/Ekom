@@ -313,11 +313,11 @@ namespace Ekom.Models
             PopulateCategoryAncestors(item);
             PopulateCategories();
 
-            Urls = Configuration.Resolver.GetService<IUrlService>().BuildProductUrls(Slug, Categories, store);
+            Urls = Configuration.Resolver.GetService<IUrlService>().BuildProductUrls(Slug, Categories, store, item.Id);
 
             if (!Urls.Any() || string.IsNullOrEmpty(Title))
             {
-                throw new Exception("No url's or no title present in product." + Title + " - " + Urls.Any() + " - " + Categories.Any());
+                throw new Exception("No url's or no title present in product. Id: " + item.Id + " Title: " + Title + " HasUrls: " + Urls.Any() + " HasCategories: " + Categories.Any());
             }
         }
 
@@ -325,7 +325,7 @@ namespace Ekom.Models
         {
             int categoryId = ParentId;
 
-            var categoryField = Properties.Any(x => x.Key == "categories") ?
+            var categoryField = Properties.ContainsKey("categories") ?
                                 Properties.GetPropertyValue("categories") : "";
 
             var primaryCategory = API.Catalog.Instance.GetCategory(Store.Alias, categoryId);

@@ -126,9 +126,14 @@ namespace Ekom.U10.Services
             return urls.OrderBy(x => x.Length);
         }
 
-        public IEnumerable<string> BuildProductUrls(string slug, IEnumerable<ICategory> categories, IStore store)
+        public IEnumerable<string> BuildProductUrls(string slug, IEnumerable<ICategory> categories, IStore store, int nodeId)
         {
             var urls = new HashSet<string>();
+
+            if (string.IsNullOrWhiteSpace(slug))
+            {
+                throw new Exception("Slug is missing on product: " + nodeId + " Store: " + store.Alias);
+            }
 
             foreach (var category in categories)
             {
@@ -220,8 +225,12 @@ namespace Ekom.U10.Services
                         _logger.LogDebug(message);
                     }
                     else
-                    {
-                        _logger.LogError(message);
+                    {               
+                        // This was error, but on swapping in some projects the log got filled with it.
+                        // We dont know at the moment why the context is not available but it does not seem to affect the site.
+
+                        _logger.LogDebug(
+                            message);
                     }
 
                     return node.Urls.FirstOrDefault();

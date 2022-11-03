@@ -61,7 +61,10 @@ namespace Ekom.Utilities
 
                     if (!string.IsNullOrEmpty(disableField))
                     {
-                        return disableField.ConvertToBool();
+                        if (disableField.ConvertToBool())
+                        {
+                            return true;
+                        }
                     }
                 }
                 else

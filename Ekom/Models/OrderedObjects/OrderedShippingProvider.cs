@@ -2,6 +2,7 @@ using Ekom.JsonDotNet;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Ekom.Models
@@ -15,6 +16,11 @@ namespace Ekom.Models
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
+            var dictionary = provider.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Properties = new ReadOnlyDictionary<string, string>(
+                dictionary.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
+
             StoreInfo = storeInfo;
             Id = _provider.Id;
             Key = _provider.Key;
@@ -25,6 +31,13 @@ namespace Ekom.Models
         public OrderedShippingProvider(JObject shippingProviderObject, StoreInfo storeInfo)
         {
             StoreInfo = storeInfo;
+
+            if (shippingProviderObject.ContainsKey(nameof(Properties)))
+            {
+                Properties = new ReadOnlyDictionary<string, string>(
+                shippingProviderObject[nameof(Properties)].ToObject<Dictionary<string, string>>());
+            }
+
             Id = shippingProviderObject["Id"].Value<int>();
             Key = Guid.Parse(shippingProviderObject.GetValue("Key").ToString());
             Title = shippingProviderObject["Title"].Value<string>();
@@ -63,7 +76,7 @@ namespace Ekom.Models
                 //Log.Error("Failed to construct price. ID: " + Id + " Price Object: " + (priceObj != null ? priceObj.ToString() : "Null") + " Prices Object: " + (pricesObj != null ? pricesObj.ToString() : "Null"), ex);
             }
         }
-
+        public IReadOnlyDictionary<string, string> Properties;
         private StoreInfo StoreInfo { get; set; }
         public virtual int Id { get; set; }
         public virtual Guid Key { get; set; }
