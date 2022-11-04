@@ -39,29 +39,6 @@
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
-    <ItemGroup>
-      <None Remove="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
-      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
-      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
-      <None Remove="App_Plugins\Ekom\Extensions\ekmUtility.js" />
-      <None Remove="App_Plugins\Ekom\package.manifest" />
-    </ItemGroup>
 
     <ItemGroup>
         <!-- Package icon -->
@@ -108,27 +85,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js"/>
-      <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html"/>
-      <Content Include="App_Plugins\Ekom\Extensions\ekmUtility.js"/>
-      <Content Include="App_Plugins\Ekom\package.manifest"/>
+        <Content Include="App_Plugins\**\*">
+        <Pack>true</Pack>
+        <PackagePath>App_Plugins\</PackagePath>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
