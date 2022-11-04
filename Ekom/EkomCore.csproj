@@ -85,11 +85,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="App_Plugins\**\*">
-        <Pack>true</Pack>
-        <PackagePath>App_Plugins\</PackagePath>
+        <Content Include="App_Plugins/**/*" Pack="true" PackagePath="App_Plugins/">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
         </Content>
     </ItemGroup>
+
 
     <ItemGroup>
         <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
