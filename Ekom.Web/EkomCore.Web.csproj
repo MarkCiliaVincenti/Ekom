@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net461;net6.0</TargetFrameworks>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+
+      <!-- Package properties -->
+      <PackageId>EkomCore.Web</PackageId>
+      <Version>0.0.1</Version>
+      <Title>EkomCore.Web</Title>
+      <Authors>Vettvangur</Authors>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
+      <Description>EkomCore Web. This Package has all the web files that EkomCore requires.</Description>
+      <PackageReleaseNotes>Create nuget package</PackageReleaseNotes>
+      <Copyright>Copyright 2022</Copyright>
+      <PackageTags></PackageTags>
+
+      <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+      <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+      <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+      <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+      <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+      <!-- Enable NuGet package caching -->
+      <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+ <ItemGroup>
+        <!-- Package icon -->
+        <None Include="..\VV_Logo.png" Pack="true" PackagePath="images\" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
+        <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
+        <Content Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
+        <Content Include="App_Plugins\Ekom\Extensions\ekmUtility.js" />
+        <Content Include="App_Plugins\Ekom\package.manifest" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditorPicker.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.html" />
+      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
+      <None Remove="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.html" />
+      <None Remove="App_Plugins\Ekom\Extensions\ekmUtility.js" />
+      <None Remove="App_Plugins\Ekom\package.manifest" />
+    </ItemGroup> 
+</Project>

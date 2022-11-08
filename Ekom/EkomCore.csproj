@@ -85,19 +85,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="App_Plugins/**/*" Pack="true" PackagePath="App_Plugins/">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup Label="FilesToCopy">
-        <Content Include="EkomCore.targets" PackagePath="build/EkomCore.targets" />
-        <Content Include="App_Plugins/**/*" Pack="true" PackagePath="App_Plugins/">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
         <PackageReference Include="Hangfire" Version="1.6.0" />
         <PackageReference Include="linq2db" Version="4.3.0" />
