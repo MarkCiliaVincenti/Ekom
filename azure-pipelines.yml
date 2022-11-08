@@ -38,7 +38,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/EkomCore.csproj;**/EkomCore.AspNetCore.csproj;**/EkomCore.U10.csproj'
+    packagesToPack: '**/EkomCore.csproj;**/EkomCore.AspNetCore.csproj;**/EkomCore.U10.csproj;**/EkomCore.Web.csproj'
     includesymbols: true
     versioningScheme: 'byBuildNumber'
 
