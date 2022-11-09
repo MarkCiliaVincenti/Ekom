@@ -2672,7 +2672,6 @@
         "type": "Project",
         "dependencies": {
           "CommonServiceLocator": "[2.0.6, )",
-          "EkomCore.Web": "[0.0.1, )",
           "Hangfire": "[1.6.0, )",
           "Microsoft.AspNetCore.Http.Extensions": "[2.2.0, )",
           "Microsoft.AspNetCore.Mvc.Abstractions": "[2.2.0, )",
@@ -2690,9 +2689,6 @@
         "dependencies": {
           "EkomCore": "[0.0.1, )"
         }
-      },
-      "ekomcore.web": {
-        "type": "Project"
       }
     }
   }

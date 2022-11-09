@@ -1,4 +1,7 @@
 {
+    "name": "Ekom",
+    //"version": "",
+    "allowPackageTelemetry": true,
     "javascript": [
         "~/App_Plugins/Ekom/Extensions/ekmUtility.js"
     ]
