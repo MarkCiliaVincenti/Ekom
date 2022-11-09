@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net461;net6.0</TargetFrameworks>
@@ -121,9 +121,5 @@
         <Reference Include="System.Web.Extensions">
             <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Web.Extensions.dll</HintPath>
         </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Ekom.Web\EkomCore.Web.csproj" />
     </ItemGroup>
 </Project>
