@@ -6,7 +6,13 @@
 name: $(majorMinorVersion).$(semanticVersion) # $(rev:r) # NOTE: rev resets when the default retention period expires
 
 trigger:
-- EkomCore
+  branches:
+    include:
+      - EkomCore
+  paths:
+    exclude:
+      - README.md
+pr: none
 
 pool: HAWKEYE
 
