@@ -13,7 +13,7 @@ namespace Ekom.Utilities
         /// <param name="field">Umbraco Alias</param>
         /// <param name="storeAlias"></param>
         /// <returns>Property Value</returns>
-        public static string GetStoreProperty(this UmbracoContent item, string field, string storeAlias)
+        public static string GetValue(this UmbracoContent item, string field, string storeAlias)
         {
             if (item.Properties.ContainsKey(field))
             {
@@ -25,6 +25,28 @@ namespace Ekom.Utilities
             return string.Empty;
         }
 
+        /// <summary>
+        /// Retrieve a price specific property <para/>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="storeAlias"></param>
+        /// <param name="currency"></param>
+        /// <returns>Property Value</returns>
+        public static decimal GetPrice(this UmbracoContent item, string storeAlias, string currency = null)
+        {
+            var fieldValue = item.GetValue("price", storeAlias);
+
+            if (!string.IsNullOrEmpty(fieldValue))
+            {
+                var currencyValues = fieldValue.GetCurrencyValues();
+
+                var value = string.IsNullOrEmpty(currency) ? currencyValues.FirstOrDefault() : currencyValues.FirstOrDefault(x => x.Currency == currency);
+
+                return value != null ? value.Value : 0;
+            }
+
+            return 0;
+        }
 
         /// <summary>
         /// Determine if an examine item is disabled/unpublished <para />
@@ -41,7 +63,7 @@ namespace Ekom.Utilities
             IEnumerable<UmbracoContent> ancestors
             )
         {
-            var selfDisableField = GetStoreProperty(item, "disable", store.Alias);
+            var selfDisableField = item.GetValue("disable", store.Alias);
 
             if (!string.IsNullOrEmpty(selfDisableField))
             {
@@ -57,7 +79,7 @@ namespace Ekom.Utilities
             {
                 if (ancestor != null)
                 {
-                    var disableField = GetStoreProperty(ancestor, "disable", store.Alias);
+                    var disableField = ancestor.GetValue("disable", store.Alias);
 
                     if (!string.IsNullOrEmpty(disableField))
                     {

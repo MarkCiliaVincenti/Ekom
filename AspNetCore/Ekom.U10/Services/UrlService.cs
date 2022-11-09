@@ -49,7 +49,7 @@ namespace Ekom.U10.Services
                     
                     foreach (var item in items)
                     {
-                        var categorySlug = item.GetStoreProperty("slug", store.Alias);
+                        var categorySlug = item.GetValue("slug", store.Alias);
                         if (!string.IsNullOrWhiteSpace(categorySlug))
                             builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
                     }
@@ -65,7 +65,7 @@ namespace Ekom.U10.Services
 
                 foreach (var item in items)
                 {
-                    var categorySlug = item.GetStoreProperty("slug", store.Alias);
+                    var categorySlug = item.GetValue("slug", store.Alias);
                     if (!string.IsNullOrWhiteSpace(categorySlug))
                     {
                         builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
