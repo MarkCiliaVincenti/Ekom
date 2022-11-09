@@ -676,6 +676,10 @@ namespace Ekom.App_Start
                                         {
                                             Name = "Slug",
                                         },
+                                        new PropertyType(_shortStringHelper, textstringDt, "sku")
+                                        {
+                                            Name = "SKU",
+                                        },
                                         new PropertyType(_shortStringHelper, propertyTextareaDt, "description")
                                         {
                                             Name = "Description",
