@@ -79,7 +79,7 @@ namespace Ekom
             }
         }
         // Maybe this should return T and not force String
-        public static string GetEkomPropertyEditorValue(this string value, string alias)
+        internal static string GetEkomPropertyEditorValue(this string value, string alias)
         {
 
             if (!string.IsNullOrEmpty(value))
@@ -139,9 +139,7 @@ namespace Ekom
 
             return string.Empty;
         }
-
-
-        public static List<IPrice> GetPriceValuesConstructed(this string priceJson, decimal vat, bool vatIncludedInPrice, CurrencyModel fallbackCurrency = null)
+        internal static List<IPrice> GetPriceValuesConstructed(this string priceJson, decimal vat, bool vatIncludedInPrice, CurrencyModel fallbackCurrency = null)
         {
             var prices = new List<IPrice>();
 
@@ -251,8 +249,7 @@ namespace Ekom
 
             return prices;
         }
-
-        public static List<CurrencyValue> GetCurrencyValues(this string priceJson)
+        internal static List<CurrencyValue> GetCurrencyValues(this string priceJson)
         {
             var values = new List<CurrencyValue>();
 
@@ -283,7 +280,7 @@ namespace Ekom
 
             return values;
         }
-        public static List<CurrencyPrice> GetCurrencyPrices(this string priceJson)
+        internal static List<CurrencyPrice> GetCurrencyPrices(this string priceJson)
         {
             var values = new List<CurrencyPrice>();
 
