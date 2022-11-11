@@ -25,7 +25,13 @@ namespace Ekom
         }
 
         public static IServiceProvider Resolver { get; internal set; }
-       
+
+        /// <summary>
+        /// This IServiceProvider is a root scope provider,
+        /// that means any services and their dependencies can only be singletons/transients.
+        /// If any services resolved with this root scope provider require scoped lifetime services,
+        /// get yourself an HttpContext (with an accessor) and RequestServices.GetService them.
+        /// </summary>
         public static Configuration Instance => Resolver.GetService<Configuration>();
 
         internal const string Cookie_UmbracoDomain = "EkomUmbracoDomain";

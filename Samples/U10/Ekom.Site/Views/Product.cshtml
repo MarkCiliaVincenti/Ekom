@@ -1,6 +1,8 @@
-@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
-@using Ekom.API;
+@using Ekom
+@using Ekom.API
+@using Ekom.U10.Utilities
 @{
 	Layout = "Master.cshtml";
 
@@ -9,6 +11,7 @@
 <h1>@product.Title</h1>
 
 <p>@product.Price.WithVat.CurrencyString</p>
+
 
 @using (Html.BeginEkomForm(FormType.AddToOrderProduct, "product__add-form"))
 {
@@ -21,4 +24,3 @@
         <span class="button__text">Bæta við körfu</span>
     </button>
 }
-

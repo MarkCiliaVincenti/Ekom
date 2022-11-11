@@ -31,7 +31,11 @@ namespace Ekom.U10.Utilities
         ///     <button type = "submit" class="button">Submit</button>            
         /// }
         /// </example>
+#if NETFRAMEWORK
         public static MvcForm BeginEkomForm(this HtmlHelper htmlHelper, FormType formType, string className = null, string Id = null)
+#else
+        public static MvcForm BeginEkomForm(this IHtmlHelper htmlHelper, FormType formType, string className = null, string Id = null)
+#endif
         {
             var actionName = formType.ToString();
             var defaultClassName = "";

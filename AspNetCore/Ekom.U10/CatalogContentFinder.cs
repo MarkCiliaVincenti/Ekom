@@ -77,7 +77,7 @@ namespace Ekom.U10
                 var contentId = 0;
                 ICategory category;
 
-                if (product != null && !string.IsNullOrEmpty(product.Slug))
+                if (product != null && !string.IsNullOrEmpty(product.GetValue("slug")))
                 {
                     //contentId = virtualContent ? int.Parse(umbHelper.GetDictionaryValue("virtualProductNode")) : product.Id;
                     contentId = product.Id;
