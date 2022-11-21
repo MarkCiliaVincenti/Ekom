@@ -10,6 +10,7 @@ namespace EkomCore.U10.Utilities
 {
     public static class ContentExtensions
     {
+        // Set Ekom Property Value
         public static void SetProperty(this IContent content, string alias, Dictionary<string, object> items, PropertyEditorType type)
         {
 
@@ -51,6 +52,7 @@ namespace EkomCore.U10.Utilities
                 throw new InvalidOperationException("Unable to get data type for property.");
             }
         }
+        // Set Ekom Property Value
         public static void SetProperty(this IContent content, string alias, Dictionary<string, object> items)
         {
             if (content == null)
@@ -93,7 +95,7 @@ namespace EkomCore.U10.Utilities
 
             throw new InvalidOperationException("Unable to find matching property on IContent.");
         }
-        public static void SetProperty(this IContent content, string alias, string storeAlias, object value)
+        private static void SetProperty(this IContent content, string alias, string storeAlias, object value)
         {
             if (content == null)
             {
@@ -137,6 +139,8 @@ namespace EkomCore.U10.Utilities
 
             throw new InvalidOperationException("Unable to find matching property on IContent.");
         }
+        
+        // Set Normal Umbraco value
         public static void SetProperty(this IContent content, string alias, object value, string culture = null)
         {
             content.SetValue(alias, value, culture);
