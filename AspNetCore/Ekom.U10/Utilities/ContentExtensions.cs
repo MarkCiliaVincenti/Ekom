@@ -233,5 +233,21 @@ namespace EkomCore.U10.Utilities
             return "";
             
         }
+
+        public static decimal GetPrice(this IContent content, string storeAlias, string currency)
+        {
+            var fieldValue = content.GetProperty("price", storeAlias);
+
+            if (!string.IsNullOrEmpty(fieldValue))
+            {
+                var currencyValues = fieldValue.GetCurrencyValues();
+
+                var value = string.IsNullOrEmpty(currency) ? currencyValues.FirstOrDefault() : currencyValues.FirstOrDefault(x => x.Currency == currency);
+
+                return value != null ? value.Value : 0;
+            }
+
+            return 0;
+        }
     }
 }
