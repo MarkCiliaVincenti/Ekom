@@ -84,7 +84,15 @@ namespace EkomCore.U10.Utilities
                 {
                     var dataType = editor.FirstOrDefault();
 
-                    var prevalues = (EkomPropertyEditorConfiguration)dataType.Configuration;
+                    var prevalues = new EkomPropertyEditorConfiguration() { useLanguages = true };
+
+                    try
+                    {
+                        prevalues = (EkomPropertyEditorConfiguration)dataType.Configuration;
+                    } catch
+                    {
+
+                    }
 
                     string value = JsonConvert.SerializeObject(new PropertyValue
                     {
