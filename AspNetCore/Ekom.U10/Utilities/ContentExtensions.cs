@@ -228,9 +228,9 @@ namespace EkomCore.U10.Utilities
 
             var property = GetEkomProperty(content, alias);
 
-            if (property.Values.ContainsKey(propertyAlias))
+            if (property != null && property.Values != null && property.Values.ContainsKey(propertyAlias))
             {
-                return property?.Values.FirstOrDefault(x => x.Key == propertyAlias).Value.ToString();
+                return property.Values.FirstOrDefault(x => x.Key == propertyAlias).Value.ToString();
             }
 
             return "";
