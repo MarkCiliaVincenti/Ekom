@@ -53,7 +53,7 @@ namespace EkomCore.U10.Utilities
             }
         }
         // Set Ekom Property Value
-        public static void SetProperty(this IContent content, string alias, Dictionary<string, object> items)
+        public static void SetProperty(this IContent content, string alias, Dictionary<string, object> values)
         {
             if (content == null)
             {
@@ -65,9 +65,9 @@ namespace EkomCore.U10.Utilities
                 throw new ArgumentNullException("alias");
             }
 
-            if (content == items)
+            if (values == null)
             {
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException("values");
             }
 
             var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
@@ -76,17 +76,20 @@ namespace EkomCore.U10.Utilities
             {
                 var dts = Configuration.Resolver.GetService<IDataTypeService>();
 
-                IEnumerable<IDataType> byEditorAlias = dts.GetByEditorAlias(property.PropertyType.PropertyEditorAlias);
+                var editor = dts.GetByEditorAlias(property.PropertyType.PropertyEditorAlias);
 
-                if (byEditorAlias.Any())
+                if (editor.Any())
                 {
-                    IDataType dataType = byEditorAlias.FirstOrDefault();
+                    var dataType = editor.FirstOrDefault();
+
                     string value = JsonConvert.SerializeObject(new PropertyValue
                     {
                         DtdGuid = dataType.Key,
-                        Values = items
+                        Values = values
                     });
+
                     content.SetValue(alias, value);
+
                     return;
                 }
 
@@ -118,7 +121,7 @@ namespace EkomCore.U10.Utilities
             {
                 var ekomProperty = content.GetEkomProperty(alias);
 
-                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                var dictionary = new Dictionary<string, object>();
                 if (ekomProperty != null && ekomProperty.Values != null && ekomProperty.Values.Any())
                 {
                     foreach (KeyValuePair<string, object> value3 in ekomProperty.Values)
