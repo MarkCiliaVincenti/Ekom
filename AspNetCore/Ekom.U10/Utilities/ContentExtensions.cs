@@ -1,9 +1,11 @@
 using Ekom;
 using Ekom.Models;
+using Ekom.U10.DataEditors;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 
 namespace EkomCore.U10.Utilities
@@ -82,10 +84,13 @@ namespace EkomCore.U10.Utilities
                 {
                     var dataType = editor.FirstOrDefault();
 
+                    var prevalues = (EkomPropertyEditorConfiguration)dataType.Configuration;
+
                     string value = JsonConvert.SerializeObject(new PropertyValue
                     {
                         DtdGuid = dataType.Key,
-                        Values = values
+                        Values = values,
+                        Type = prevalues.useLanguages ? "Language" : "Store"
                     });
 
                     content.SetValue(alias, value);

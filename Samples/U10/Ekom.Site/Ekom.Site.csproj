@@ -4,6 +4,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    <ItemGroup>
+      <Content Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.html" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="App_Plugins\Ekom\DataTypes\CacheEditor\ekmCache.controller.js" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="EkomCore.Web" Version="0.0.9" />
