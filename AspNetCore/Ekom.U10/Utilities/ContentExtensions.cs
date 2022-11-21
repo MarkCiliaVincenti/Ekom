@@ -215,5 +215,23 @@ namespace EkomCore.U10.Utilities
             return null;
         }
 
+        // Get Ekom Property Value
+        public static string GetProperty(this IContent content, string alias, string propertyAlias)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            var property = GetEkomProperty(content, alias);
+
+            if (property.Values.ContainsKey(propertyAlias))
+            {
+                return property?.Values.FirstOrDefault(x => x.Key == propertyAlias).Value.ToString();
+            }
+
+            return "";
+            
+        }
     }
 }
