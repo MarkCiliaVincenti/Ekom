@@ -579,11 +579,17 @@ namespace Ekom.App_Start
                                     {
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
-                                            Name = "Title"
+                                            Name = "Title",
+                                            Mandatory  = true
+                                        },
+                                        new PropertyType(_shortStringHelper, booleanDt, "updateSlug")
+                                        {
+                                            Name = "Update Slug",
                                         },
                                         new PropertyType(_shortStringHelper, propertyTextDt, "slug")
                                         {
                                             Name = "Slug",
+                                            Mandatory  = true
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {
@@ -671,10 +677,16 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
+                                            Mandatory = true 
+                                        },
+                                        new PropertyType(_shortStringHelper, booleanDt, "updateSlug")
+                                        {
+                                            Name = "Update Slug",
                                         },
                                         new PropertyType(_shortStringHelper, propertyTextDt, "slug")
                                         {
                                             Name = "Slug",
+                                            Mandatory = true
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {

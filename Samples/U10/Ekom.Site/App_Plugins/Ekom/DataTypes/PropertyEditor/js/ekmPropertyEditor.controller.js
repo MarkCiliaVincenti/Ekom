@@ -41,6 +41,7 @@
         view: ""
       };
 
+
       $scope.tabs = [];
       $scope.currentTab = undefined;
 
@@ -87,6 +88,7 @@
             ekmResources.getLanguages().then(function (languages) {
 
               $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
+
 
               setValues();
 
@@ -281,7 +283,7 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
 
 /* Directives */
 angular.module("umbraco.directives").directive('ekomProperty',
-  function (eventsService) {
+  function (eventsService, $timeout) {
 
     var link = function (scope, ctrl) {
       scope[ctrl.$name] = ctrl;
@@ -314,18 +316,91 @@ angular.module("umbraco.directives").directive('ekomProperty',
       var eventsServiceUnsubscribe = eventsService.on('ekmInputChange', function (event, data) {
 
 
-        if (scope.model.alias.indexOf('title') > -1) {
-          scope.$apply(function () {
-            scope.model.value = data.value.title;
-          });
+        if (data.value.all) {
+
+          if (scope.model.alias.indexOf('title') > -1) {
+            scope.$apply(function () {
+              scope.model.value = data.value.title;
+            });
+          }
+
+          if (scope.model.alias.indexOf('slug') > -1) {
+            scope.$apply(function () {
+              scope.model.value = data.value.slug;
+            });
+          }
+        } else {
+
+          if (scope.model.alias === data.value.alias) {
+            scope.$apply(function () {
+              scope.model.value = data.value.slug;
+            });
+          }
+
         }
 
-        if (scope.model.alias.indexOf('slug') > -1) {
-          scope.$apply(function () {
-            scope.model.value = data.value.slug;
-          });
-        }
 
+      });
+
+      $timeout(function () {
+
+
+        const params = new Proxy(new URLSearchParams(window.location.href), {
+          get: (searchParams, prop) => searchParams.get(prop),
+        });
+
+        if (scope.model.alias.startsWith('title.') && params != null && params.create && params.create == 'true') {
+
+          let titleInput = document.getElementById(scope.model.alias);
+
+          if (titleInput) {
+
+            titleInput.addEventListener("keyup", function () {
+
+              var slugInput = document.getElementById('slug.' + scope.tab);
+
+              if (slugInput) {
+
+                var model = {
+                  title: titleInput.value,
+                  slug: "",
+                  alias: scope.model.alias.replace('title','slug')
+                };
+
+                const slugify =
+                  titleInput.value
+                    .toString()                           // Cast to string (optional)
+                    .replace('ð', 'd')
+                    .replace('Ð', 'd')
+                    .replace('þ', 'th')
+                    .replace('Þ', 'th')
+                    .replace('ó', 'o')
+                    .replace('Ó', 'o')
+                    .replace('í', 'i')
+                    .replace('Í', 'i')
+                    .replace('æ', 'ae')
+                    .replace('Æ', 'ae')
+                    .replace('ú', 'u')
+                    .replace('Ú', 'u')
+                    .replace('ö', 'oe')
+                    .replace('Ö', 'oe')
+                    .normalize('NFKD')            // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
+                    .toLowerCase()                  // Convert the string to lowercase letters
+                    .trim()                                  // Remove whitespace from both sides of a string (optional)
+                    .replace(/\s+/g, '-')            // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
+                    .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+
+                model.slug = slugify;
+
+                eventsService.emit("ekmInputChange", { value: model });
+
+              }
+
+            });
+          }
+
+        }
 
       });
 

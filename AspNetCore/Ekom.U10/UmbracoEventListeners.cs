@@ -17,7 +17,7 @@ using Umbraco.Extensions;
 
 namespace Ekom.App_Start
 {
-    class UmbracoEventListeners : 
+    class UmbracoEventListeners :
         //INotificationHandler<ContentPublishingNotification>,
         INotificationHandler<ContentPublishedNotification>,
         INotificationHandler<ContentUnpublishedNotification>,
@@ -166,7 +166,7 @@ namespace Ekom.App_Start
                     => !string.IsNullOrEmpty(x.NodeAlias)
                     && contentTypeAlias.StartsWith(x.NodeAlias, StringComparison.InvariantCulture)
                 );
-            } 
+            }
             else
             {
                 return _config.CacheList.Value.FirstOrDefault(x
@@ -181,6 +181,61 @@ namespace Ekom.App_Start
             string alias,
             ContentSavingNotification e)
         {
+
+            if (content.HasProperty("updateSlug") && content.GetValue<bool>("updateSlug"))
+            {
+                var propertyType = PropertyEditorType.Language;
+                var propertyTypes = new List<string>();
+                var slugItems = new Dictionary<string, object>();
+
+                content.SetValue("updateSlug", false);
+
+                var titlePropertyValue = JsonConvert.DeserializeObject<PropertyValue>(content.GetValue<string>("title"));
+
+
+                if (titlePropertyValue.Type == "Language")
+                {
+                    var languages = _umbracoService.GetLanguages();
+
+                    propertyTypes.AddRange(languages.Select(x => x.IsoCode));
+                }
+                else if (titlePropertyValue.Type == "Store")
+                {
+                    propertyType = PropertyEditorType.Store;
+                    var stores = API.Store.Instance.GetAllStores().OrderBy(x => x.SortOrder);
+
+                    propertyTypes.AddRange(stores.Select(x => x.Alias));
+
+                }
+
+                foreach (var type in propertyTypes)
+                {
+                    if (alias == "ekmProduct" || alias == "ekmCategory")
+                    {
+                        var title = content.GetProperty("title", type);
+
+                        var slug = string.Empty; // NodeHelper.GetStoreProperty(content, "slug", store.Alias).Trim();
+
+                        if (string.IsNullOrEmpty(slug) && !string.IsNullOrEmpty(title))
+                        {
+                            slug = title;
+                        }
+
+                        slug = slug.ToLowerInvariant();
+
+                        slugItems.Add(type, slug.ToUrlSegment(_shortStringHelper));
+
+                    }
+
+
+                }
+
+                if (slugItems.Any())
+                {
+                    content.SetProperty("slug", slugItems, propertyType);
+                }
+            }
+
             //var propertyType = PropertyEditorType.Language;
             //var propertyTypes = new List<string>();
             //var slugItems = new Dictionary<string, object>();
@@ -359,7 +414,7 @@ namespace Ekom.App_Start
             }
         }
 
-        public void Handle (DomainDeletedNotification n)
+        public void Handle(DomainDeletedNotification n)
         {
             foreach (var d in n.DeletedEntities)
             {
@@ -397,7 +452,7 @@ namespace Ekom.App_Start
 
                 //    // Update cached IStore
                 //    _storeCache.AddReplace(ekmStoreContent);
-                
+
             }
         }
 
@@ -429,11 +484,12 @@ namespace Ekom.App_Start
                         if (remove)
                         {
                             cacheEntryForDesc?.Remove(descendant.Key);
-                        } else
+                        }
+                        else
                         {
                             cacheEntryForDesc?.AddReplace(new Umbraco10Content(descendant));
                         }
-                        
+
                     }
                 }
 

@@ -13,12 +13,14 @@
     </ul>
 
     <div class="ekom-property" ng-repeat="tab in tabs" ng-show="currentTab.value == tab.value">
-      <ekom-property view="property.viewPath"
-                     config="property.config"
-                     tab="tab.value"
-                     property-alias="model.alias"
-                     value="model.value">
-      </ekom-property>
+      <div id="ekom-property__{{model.alias}}.{{tab.value}}">
+        <ekom-property view="property.viewPath"
+                       config="property.config"
+                       tab="tab.value"
+                       property-alias="model.alias"
+                       value="model.value">
+        </ekom-property>
+      </div>
     </div>
 
   </div>
