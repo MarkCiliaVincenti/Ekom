@@ -1,11 +1,10 @@
 using Ekom.Models;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.Common.UmbracoContext;
 
 namespace Ekom.U10;
 
@@ -32,14 +31,16 @@ class EkomMiddleware
         HttpContext context,
         ILogger<EkomMiddleware> logger,
         IUmbracoContextFactory umbracoContextFac,
-        IMemberService memberService
+        IMemberService memberService,
+        AppCaches appCaches,
+        IMemberManager memberManager
     )
     {
         _logger = logger;
         _context = context;
 
-        Application_BeginRequest(umbracoContextFac);
-        Application_AuthenticateRequest(memberService);
+        Application_BeginRequest(umbracoContextFac, appCaches);
+        await Application_AuthenticateRequestAsync(appCaches, memberService, memberManager).ConfigureAwait(false);
 
         Context_PostRequestHandlerExecute(umbracoContextFac);
 
@@ -60,7 +61,7 @@ class EkomMiddleware
         try
         {
             using var umbCtx = umbracoContextFac.EnsureUmbracoContext();
-            if (umbCtx?.UmbracoContext.PublishedRequest?.Domain.Uri != null)
+            if (umbCtx?.UmbracoContext.PublishedRequest?.Domain?.Uri != null)
             {
                 CookieHelper.SetUmbracoDomain(
                     _context.Response.Cookies,
@@ -73,17 +74,21 @@ class EkomMiddleware
         }
     }
 
-    private void Application_BeginRequest(IUmbracoContextFactory umbracoContextFac)
+    private void Application_BeginRequest(IUmbracoContextFactory umbracoContextFac, AppCaches appCaches)
     {
         try
         {
             using (var umbCtx = umbracoContextFac.EnsureUmbracoContext())
             {
-                _context.Items["ekmRequest"] =
-                    new ContentRequest(_context)
-                    {
-                        User = new User(),
-                    };
+                // No umbraco context exists for static file requests
+                if (umbCtx?.UmbracoContext != null)
+                {
+                    appCaches.RequestCache.Get("ekmRequest", () =>
+                        new ContentRequest(_context)
+                        {
+                            User = new User(),
+                        });
+                }
             }
         }
         catch (Exception ex)
@@ -92,41 +97,40 @@ class EkomMiddleware
         }
     }
 
-    private void Application_AuthenticateRequest(
-        IMemberService memberService)
+    private async Task Application_AuthenticateRequestAsync(
+        AppCaches appCaches,
+        IMemberService memberService,
+        IMemberManager memberManager)
     {
         try
         {
-            if (_context.User?.Identity.IsAuthenticated == true)
-            {
-                if (_context.Items.TryGetValue("ekmRequest", out var r) 
-                && r is ContentRequest ekmRequest)
-                {
-                    // This is always firing!, ekmRequest.User.Username is always empty
-                    // ..makes sense, new request with new cache each time this is run
-                    if (ekmRequest.User.Username != _context.User.Identity.Name)
-                    {
-                        var member = memberService.GetByUsername(_context.User.Identity.Name);
+            var user = await memberManager.GetCurrentMemberAsync().ConfigureAwait(false);
 
-                        if (member != null)
+            var ekmRequest = appCaches.RequestCache.Get("ekmRequest", () => new ContentRequest(_context)) as ContentRequest;
+            if (ekmRequest is not null)
+            {
+                // This is always firing!, ekmRequest.User.Username is always empty
+                // ..makes sense, new request with new cache each time this is run
+                if (user != null && ekmRequest.User.Username != user.Name)
+                {
+                    var member = memberService.GetByUsername(user.Name);
+                    if (member != null)
+                    {
+                        ekmRequest.User = new User
                         {
-                            ekmRequest.User = new User
-                            {
-                                Email = member.GetValue<string>("Email"),
-                                Username = member.GetValue<string>("UserName"),
-                                UserId = member.Id,
-                                Name = member.Name,
-                            };
-                            var orderid = member.GetValue<string>("orderId");
-                            if (!string.IsNullOrEmpty(orderid))
-                            {
-                                ekmRequest.User.OrderId = Guid.Parse(orderid);
-                            }
+                            Email = member.Email,
+                            Username = member.Username,
+                            UserId = member.Id,
+                            Name = member.Name,
+                        };
+                        var orderid = member.GetValue<string>("orderId");
+                        if (!string.IsNullOrEmpty(orderid))
+                        {
+                            ekmRequest.User.OrderId = Guid.Parse(orderid);
                         }
                     }
                 }
             }
-
         }
         catch (Exception ex)
         {

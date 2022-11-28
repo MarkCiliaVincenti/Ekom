@@ -22,6 +22,7 @@ namespace Ekom.Controllers
     public partial class EkomOrderController : ApiController
     {
 #else
+    [Route("ekom/order/discounts")]
     public partial class EkomOrderController : ControllerBase
     {
 #endif
@@ -34,6 +35,8 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
+        [Route("coupon/{coupon}/storealias/{storeAlias}")]
         public async Task ApplyCouponToOrder(string coupon, string storeAlias)
         {
             try
@@ -75,6 +78,8 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [HttpDelete]
+        [Route("coupon/storealias/{storeAlias}")]
         public async Task RemoveCouponFromOrder(string storeAlias)
         {
             try
@@ -98,6 +103,8 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [HttpDelete]
+        [Route("productkey/{productKey}/coupon/{coupon}/storealias/{storeAlias}")]
         public async Task ApplyCouponToOrderLine(Guid productKey, string coupon, string storeAlias)
         {
             try
@@ -131,6 +138,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <exception cref="OrderLineNotFoundException"></exception>
         /// <exception cref="ArgumentException"></exception>
+        [HttpDelete]
+        [Route("productkey/{productKey}/storealias/{storeAlias}")]
         public async Task RemoveCouponFromOrderLine(Guid productKey, string storeAlias)
         {
             try

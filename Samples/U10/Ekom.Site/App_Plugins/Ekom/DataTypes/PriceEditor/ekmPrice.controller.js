@@ -9,7 +9,7 @@ angular.module("umbraco").controller("Ekom.Price", function ($scope, $http, $rou
   //$scope.currencies = [];
   $scope.stores = [];
 
-  $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
+  $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'Stores').then(function (results) {
 
 
     $scope.stores = results.data;

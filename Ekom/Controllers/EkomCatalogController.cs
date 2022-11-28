@@ -26,7 +26,7 @@ namespace Ekom.Controllers
     public class EkomCatalogController : ApiController
     {
 #else
-    [Route("/api/[controller]/[action]")]
+    [Route("ekom/catalog")]
     public class EkomCatalogController : ControllerBase
     {
 
@@ -44,6 +44,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="Id">Guid Key of product</param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("product/{id:Guid}")]
         public IProduct GetProduct(Guid Id)
         {
             try

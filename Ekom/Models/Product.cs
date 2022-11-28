@@ -103,7 +103,7 @@ namespace Ekom.Models
                 }
             }
             var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
-            
+
             return _images.GetImages();
         }
 
@@ -313,9 +313,9 @@ namespace Ekom.Models
             PopulateCategoryAncestors(item);
             PopulateCategories();
 
-            Urls = Configuration.Resolver.GetService<IUrlService>().BuildProductUrls(Slug, Categories, store, item.Id);
+            Urls = Configuration.Resolver.GetService<IUrlService>().BuildProductUrls(GetValue("slug"), Categories, store, item.Id);
 
-            if (!Urls.Any() || string.IsNullOrEmpty(Title))
+            if (!Urls.Any() || string.IsNullOrEmpty(GetValue("title")))
             {
                 throw new Exception("No url's or no title present in product. Id: " + item.Id + " Title: " + Title + " HasUrls: " + Urls.Any() + " HasCategories: " + Categories.Any());
             }

@@ -37,7 +37,7 @@ namespace Ekom.Controllers
             _countriesRepo = Ekom.Configuration.Resolver.GetService<CountriesRepository>();
         }
 #else
-    [Route("/api/[controller]/[action]")]
+    [Route("ekom/api")]
     public class EkomApiController : ControllerBase
     {
         /// <summary>
@@ -57,6 +57,8 @@ namespace Ekom.Controllers
         /// <summary>
         /// 
         /// </summary>
+        [HttpGet]
+        [Route("countries")]
         public List<Country> GetCountries()
         {
             return _countriesRepo.GetAllCountries();
@@ -66,6 +68,8 @@ namespace Ekom.Controllers
         /// List of all stores
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
+        [Route("stores")]
         public IEnumerable<IStore> GetAllStores()
         {
             return API.Store.Instance.GetAllStores();

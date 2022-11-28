@@ -5,7 +5,7 @@ angular.module("umbraco").controller("Ekom.Range", function ($scope, $http) {
   //$scope.currencies = [];
   $scope.stores = [];
 
-  $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
+  $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'Stores').then(function (results) {
 
     $scope.stores = results.data;
 

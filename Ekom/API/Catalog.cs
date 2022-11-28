@@ -2,12 +2,9 @@
 using System.Web;
 using System.Web.Http;
 #else
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 #endif
 using Ekom.Cache;
-using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,18 +75,18 @@ namespace Ekom.API
         /// <returns></returns>
         public IProduct GetProduct()
         {
-            ContentRequest r = null;
+            ContentRequest contentRequest = null;
 #if NETFRAMEWORK
             if (_httpContext.Items.Contains("ekmRequest"))
 #else
-            if (_httpContext.Items.ContainsKey("ekmRequest"))
+            if (_httpContext.Items.ContainsKey("umbrtmche-ekmRequest"))
 #endif
             {
-                r = _httpContext.Items["ekmRequest"] as ContentRequest;
-                return r?.Product;
+                var r = _httpContext.Items["umbrtmche-ekmRequest"] as Lazy<object>;
+                contentRequest = r.Value as ContentRequest;
+                return contentRequest?.Product;
             }
-
-            return r?.Product;
+            return null;
         }
 
         /// <summary>
@@ -338,13 +335,13 @@ namespace Ekom.API
 #if NETFRAMEWORK
             if (_httpContext.Items.Contains("ekmRequest"))
 #else
-            if (_httpContext.Items.ContainsKey("ekmRequest"))
+            if (_httpContext.Items.ContainsKey("umbrtmche-ekmRequest"))
 #endif
             {
-                var r = _httpContext.Items["ekmRequest"] as ContentRequest;
-                return r?.Category;
+                var r = _httpContext.Items["umbrtmche-ekmRequest"] as Lazy<object>;
+                var contentRequest = r.Value as ContentRequest;
+                return contentRequest?.Category;
             }
-
             return null;
         }
 

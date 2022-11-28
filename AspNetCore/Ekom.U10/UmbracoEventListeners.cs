@@ -457,8 +457,8 @@ namespace Ekom.App_Start
         {
             notification.ServerVariables.Add("ekom", new
             { 
-                backofficeApiEndpoint = "/api/ekombackofficeapi/",
-                apiEndpoint = "/api/ekomapi/",
+                backofficeApiEndpoint = "/ekom/backoffice/",
+                apiEndpoint = "/ekom/api/",
                 charCollections = _config.CharCollections
             });
         }
