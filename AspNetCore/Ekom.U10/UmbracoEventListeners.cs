@@ -5,6 +5,7 @@ using Ekom.U10.Models;
 using EkomCore.U10.Utilities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Entities;
@@ -12,7 +13,6 @@ using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
 
 namespace Ekom.App_Start
@@ -27,7 +27,8 @@ namespace Ekom.App_Start
         INotificationHandler<ContentMovedNotification>,
         INotificationHandler<DomainSavedNotification>,
         INotificationHandler<DomainDeletedNotification>,
-        INotificationHandler<ServerVariablesParsingNotification>
+        INotificationHandler<ServerVariablesParsingNotification>,
+        INotificationHandler<LanguageCacheRefresherNotification>
     {
         readonly ILogger _logger;
         readonly IShortStringHelper _shortStringHelper;
@@ -35,11 +36,9 @@ namespace Ekom.App_Start
         readonly IBaseCache<IStore> _storeCache;
         readonly IStoreDomainCache _storeDomainCache;
         readonly IContentService _cs;
-        readonly IScopeProvider _scopeProvider;
         readonly IUmbracoContextFactory _context;
-        readonly IServiceProvider _serviceProvider;
         readonly IUmbracoService _umbracoService;
-
+        readonly IAppPolicyCache _runtimeCache;
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoEventListeners"/> class.
         /// </summary>
@@ -49,22 +48,20 @@ namespace Ekom.App_Start
             IBaseCache<IStore> storeCache,
             IStoreDomainCache storeDomainCache,
             IContentService cs,
-            IScopeProvider scopeProvider,
             IUmbracoContextFactory context,
             IShortStringHelper shortStringHelper,
-            IServiceProvider serviceProvider,
-            IUmbracoService umbracoService)
+            IUmbracoService umbracoService,
+            AppCaches appCaches)
         {
             _logger = logger;
             _config = config;
             _storeCache = storeCache;
             _storeDomainCache = storeDomainCache;
             _cs = cs;
-            _scopeProvider = scopeProvider;
             _context = context;
             _shortStringHelper = shortStringHelper;
-            _serviceProvider = serviceProvider;
             _umbracoService = umbracoService;
+            _runtimeCache = appCaches.RuntimeCache;
         }
 
         public void Handle(ContentSavingNotification e)
@@ -459,10 +456,15 @@ namespace Ekom.App_Start
         public void Handle(ServerVariablesParsingNotification notification)
         {
             notification.ServerVariables.Add("ekom", new
-            {
+            { 
                 backofficeApiEndpoint = "/api/ekombackofficeapi/",
-                apiEndpoint = "/api/ekomapi/"
+                apiEndpoint = "/api/ekomapi/",
+                charCollections = _config.CharCollections
             });
+        }
+        public void Handle(LanguageCacheRefresherNotification notification)
+        {
+            _runtimeCache.Clear("ekmLanguages");
         }
 
         private void RefreshCacheForDescendants(int Id, bool remove = false)

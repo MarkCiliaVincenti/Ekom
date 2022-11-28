@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -25,13 +27,16 @@ class UmbracoService : IUmbracoService
     private readonly ILocalizationService _localizationService;
     private readonly PropertyEditorCollection _propertyEditorCollection;
     private readonly IContentTypeService _contentTypeService;
+    private readonly IAppPolicyCache _runtimeCache;
+
     public UmbracoService(
         IDomainService domainService,
         IDataTypeService dataTypeService,
         IUmbracoHelperAccessor umbracoHelperAccessor,
         ILocalizationService localizationService,
         PropertyEditorCollection propertyEditorCollection,
-        IContentTypeService contentTypeService)
+        IContentTypeService contentTypeService,
+        AppCaches appCaches)
     {
         _domainService = domainService;
         _dataTypeService = dataTypeService;
@@ -39,6 +44,7 @@ class UmbracoService : IUmbracoService
         _localizationService = localizationService;
         _propertyEditorCollection = propertyEditorCollection;
         _contentTypeService = contentTypeService;
+        _runtimeCache = appCaches.RuntimeCache;
     }
 
     public string GetDictionaryValue(string key)
@@ -113,13 +119,14 @@ class UmbracoService : IUmbracoService
 
     public IEnumerable<UmbracoLanguage> GetLanguages()
     {
-        var languages = _localizationService.GetAllLanguages().Select(x => new UmbracoLanguage() { 
-            Culture = x.CultureInfo,
-            CultureName = x.CultureName,
-            IsoCode  = x.IsoCode
-        });
-
-        return languages;
+        return _runtimeCache.GetCacheItem("ekmLanguages", () => {
+            return _localizationService.GetAllLanguages().Select(x => new UmbracoLanguage()
+            {
+                Culture = x.CultureInfo,
+                CultureName = x.CultureName,
+                IsoCode = x.IsoCode
+            });
+        }, TimeSpan.FromMinutes(60));
     }
 
     private object FormatDataType(IDataType dtd)
