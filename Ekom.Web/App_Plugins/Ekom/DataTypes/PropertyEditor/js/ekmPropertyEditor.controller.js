@@ -34,6 +34,9 @@
 
       if ($routeParams.section !== 'content') { return; }
 
+      $scope.loading = true;
+      $scope.failed = false;
+
       $scope.model.hideLabel = $scope.model.config.hideLabel == 1;
 
       $scope.property = {
@@ -54,7 +57,6 @@
         type: "Language"
       };
 
-      var currentSection = appState.getSectionState("currentSection");
       var parentScope = $scope;
       var nodeContext = undefined;
 
@@ -77,7 +79,7 @@
         // Get the property alias
         let propAlias = $scope.model.propertyAlias || $scope.model.alias;
 
-        ekmResources.getDataTypeByAlias(currentSection, nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
+        ekmResources.getDataTypeByAlias(nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
 
           $scope.model.value.dtdGuid = dataType2.guid;
 
@@ -89,6 +91,7 @@
 
               $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
 
+              $scope.loading = false;
 
               setValues();
 
@@ -100,13 +103,17 @@
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
 
-            });
+            }).catch(function () {
+              $scope.failed = true;
+            });;
 
           } else {
 
             $scope.model.value.type = "Store";
 
             ekmResources.getStores().then(function (stores) {
+
+              $scope.loading = false;
 
               $scope.tabs = stores.map(x => ({ value: x.Alias, text: x.Title }));
 
@@ -120,12 +127,20 @@
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
 
-            });
+            }).catch(function () {
+
+            }).catch(function () {
+              $scope.failed = true;
+            });;
 
           }
 
-        });
+        }).catch(function () {
+          $scope.failed = true;
+        });;
 
+      }).catch(function () {
+        $scope.failed = true;
       });
 
       $scope.setCurrentTab = function (tab, broadcast) {
@@ -258,7 +273,7 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
           'Failed to retrieve datatype'
         );
       },
-      getDataTypeByAlias: function (contentType, contentTypeAlias, propertyAlias) {
+      getDataTypeByAlias: function (contentTypeAlias, propertyAlias) {
         return umbRequestHelper.resourcePromise(
           $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "DataType/" + contentTypeAlias + "/propertyAlias/" + propertyAlias),
           'Failed to retrieve datatype'
