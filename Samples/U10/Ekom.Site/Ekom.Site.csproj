@@ -31,6 +31,7 @@
       <Content Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.html" />
+      <Content Include="App_Plugins\Ekom\DataTypes\MetaFieldPicker\ekmMetafield.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.html" />
       <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\css\ekomProperty.css" />
       <Content Include="App_Plugins\Ekom\DataTypes\PropertyEditor\views\ekmPropertyEditor.html" />
@@ -44,6 +45,7 @@
       <None Include="App_Plugins\Ekom\DataTypes\CountryPicker\ekmCountry.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\CouponEditor\ekomCoupon.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\CurrencyPicker\ekmCurrency.controller.js" />
+      <None Include="App_Plugins\Ekom\DataTypes\MetaFieldPicker\ekmMetafield.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\PriceEditor\ekmPrice.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\PropertyEditor\js\ekmPropertyEditor.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
@@ -54,7 +56,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Umbraco.Cms" Version="10.0.1" />
+        <PackageReference Include="Umbraco.Cms" Version="10.3.2" />
     </ItemGroup>
 
     <!-- Force Windows to use ICU. Otherwise Windows 10 2019H1+ will do it, but older Windows 10 and most, if not all, Windows Server editions will run NLS -->

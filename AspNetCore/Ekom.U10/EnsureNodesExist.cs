@@ -123,6 +123,11 @@ namespace Ekom.App_Start
                         throw new EnsureNodesException(
                             "Unable to find Umbraco.DropDown.Flexible property editor, failed creating Ekom nodes.");
                     }
+                    if (!_propertyEditorCollection.TryGet("Ekom.Metafield", out IDataEditor metafieldPicker))
+                    {
+                        throw new EnsureNodesException(
+                            "Unable to find Umbraco.Metafield property picker, failed creating Ekom nodes.");
+                    }
 
                     #endregion
 
@@ -257,6 +262,10 @@ namespace Ekom.App_Start
                     var rangeDt = EnsureDataTypeExists(new DataType(rangeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Range Editor",
+                    });
+                    var metafieldDt = EnsureDataTypeExists(new DataType(metafieldPicker, _configurationEditorJsonSerializer, ekmDtContainer.Id)
+                    {
+                        Name = "Ekom Metafield Picker",
                     });
 
                     var multinodeCatalogDt = EnsureDataTypeExists(new DataType(multiNodeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
@@ -589,7 +598,7 @@ namespace Ekom.App_Start
                                         },
                                         new PropertyType(_shortStringHelper, booleanDt, "updateSlug")
                                         {
-                                            Name = "Update slug",
+                                            Name = "Update Slug",
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {
@@ -628,7 +637,7 @@ namespace Ekom.App_Start
                                         },
                                         new PropertyType(_shortStringHelper, multinodeProductDt, "relatedProducts")
                                         {
-                                            Name = "Related products",
+                                            Name = "Related Products",
                                         },
                                         new PropertyType(_shortStringHelper, variantGroupDt, "primaryVariantGroup")
                                         {
@@ -686,7 +695,7 @@ namespace Ekom.App_Start
                                         },
                                         new PropertyType(_shortStringHelper, booleanDt, "updateSlug")
                                         {
-                                            Name = "Update slug",
+                                            Name = "Update Slug",
                                         },
                                         new PropertyType(_shortStringHelper, textstringDt, "sku")
                                         {
@@ -698,7 +707,7 @@ namespace Ekom.App_Start
                                         },
                                         new PropertyType(_shortStringHelper, mediaPickerDt, "categoryImage")
                                         {
-                                            Name = "Category image",
+                                            Name = "Category Image",
                                         }
                                     }))
                                     {

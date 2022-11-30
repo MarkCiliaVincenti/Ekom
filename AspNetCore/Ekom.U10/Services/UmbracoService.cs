@@ -2,6 +2,7 @@ using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
 using Ekom.Utilities;
+using EkomCore.Models;
 using EkomCore.Models.Umbraco;
 using Newtonsoft.Json;
 using System.Collections;
@@ -130,7 +131,7 @@ class UmbracoService : IUmbracoService
     public IEnumerable<UmbracoLanguage> GetLanguages()
     {
         return _runtimeCache.GetCacheItem("ekmLanguages", () => {
-            return _localizationService.GetAllLanguages().Select(x => new UmbracoLanguage()
+            return _localizationService.GetAllLanguages().OrderByDescending(x => x.IsDefault).ThenBy(x => x.CultureName).Select(x => new UmbracoLanguage()
             {
                 Culture = x.CultureInfo,
                 CultureName = x.CultureName,

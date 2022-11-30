@@ -14,6 +14,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Ekom.Services;
 using Ekom.Authorization;
+using EkomCore.Services;
 
 namespace Ekom.Controllers
 {
@@ -35,7 +36,7 @@ namespace Ekom.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService, IMetafieldService metafieldService)
         {
         }
 #else
@@ -45,15 +46,17 @@ namespace Ekom.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService, IMetafieldService metafieldService)
         {
             _config = config;
             _umbracoService = umbracoService;
+            _metafieldService = metafieldService;
         }
 #endif
 
         readonly Configuration _config;
         readonly IUmbracoService _umbracoService;
+        readonly IMetafieldService _metafieldService;
 
         [HttpGet]
         [Route("DataType")]
@@ -75,6 +78,12 @@ namespace Ekom.Controllers
             string contentTypeAlias,
             string propertyAlias)
             => _umbracoService.GetDataTypeByAlias(contentTypeAlias, propertyAlias);
+
+        [HttpGet]
+        [Route("Metafields")]
+        [UmbracoUserAuthorize]
+        public object GetMetafields()
+    => _metafieldService.GetMetafields();
 
         [HttpGet]
         [Route("Languages")]
