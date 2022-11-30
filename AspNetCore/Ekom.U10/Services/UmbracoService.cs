@@ -106,7 +106,14 @@ class UmbracoService : IUmbracoService
         string contentTypeAlias,
         string propertyAlias)
     {
+        return _runtimeCache.GetCacheItem("ekmDataTypeAlias" + contentTypeAlias + propertyAlias, () => {
+            return GetDataTypeAliasValue(contentTypeAlias, propertyAlias);
+        }, TimeSpan.FromMinutes(60));
+    }
 
+    private object GetDataTypeAliasValue(string contentTypeAlias,
+        string propertyAlias)
+    {
         var ct = _contentTypeService.Get(contentTypeAlias);
 
         var prop = ct?.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
