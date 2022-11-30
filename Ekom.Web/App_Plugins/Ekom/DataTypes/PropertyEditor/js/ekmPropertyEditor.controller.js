@@ -75,7 +75,7 @@
         $scope.property.viewPath = umbPropEditorHelper.getViewPath(dataType.view);
 
         // Get the property alias
-        var propAlias = $scope.model.propertyAlias || $scope.model.alias;
+        let propAlias = $scope.model.propertyAlias || $scope.model.alias;
 
         ekmResources.getDataTypeByAlias(currentSection, nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
 
@@ -92,7 +92,7 @@
 
               setValues();
 
-              var eventModel = {
+              let eventModel = {
                 model: $scope.model,
                 tabs: $scope.tabs,
                 alias: $scope.model.alias
@@ -112,7 +112,7 @@
 
               setValues();
 
-              var eventModel = {
+              let eventModel = {
                 model: $scope.model,
                 tabs: $scope.tabs,
                 alias: $scope.model.alias
@@ -372,8 +372,8 @@ angular.module("umbraco.directives").directive('ekomProperty',
                 Umbraco.Sys.ServerVariables.ekom.charCollections.forEach((char) => {
                   inputValue = inputValue.replace(char.Char, char.Replacement);
                 });
-                const slugif
-y =
+
+                const slugify =
                   inputValue
                     .normalize('NFKD')            // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
                     .toLowerCase()                  // Convert the string to lowercase letters
