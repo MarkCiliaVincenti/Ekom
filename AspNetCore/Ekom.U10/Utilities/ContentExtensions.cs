@@ -86,24 +86,23 @@ namespace EkomCore.U10.Utilities
         /// Set Slug on ekom product or category
         /// </summary>
         /// <param name="content">IContent</param>
-        /// <param name="alias">Property alias</param>
         /// <param name="values">Values to insert</param>
         /// <param name="type">Type of property, Language or Store</param>
-        public static void SetSlug(this IContent content, string alias, Dictionary<string, object> values, PropertyEditorType type = PropertyEditorType.Empty)
+        public static void SetSlug(this IContent content, Dictionary<string, object> values, PropertyEditorType type = PropertyEditorType.Empty)
         {
             if (content == null)
             {
                 throw new ArgumentNullException("content");
             }
 
-            if (string.IsNullOrEmpty(alias))
-            {
-                throw new ArgumentNullException("alias");
-            }
-
             if (values == null)
             {
                 throw new ArgumentNullException("values");
+            }
+
+            if (content.ContentType.Alias != "ekmProduct" && content.ContentType.Alias != "ekmCategory")
+            {
+                throw new ArgumentNullException("Slug can only be set on ekom product or category");
             }
 
             var dict = new Dictionary<string, object>();
@@ -116,7 +115,7 @@ namespace EkomCore.U10.Utilities
                 dict.Add(value.Key, _umbService.UrlSegment(value.Value.ToString()));
             }
 
-            SetProperty(content, alias, dict, type);
+            SetProperty(content, "slug", dict, type);
         }
 
         internal static void SetProperty(this IContent content, string alias, string key, object value)
