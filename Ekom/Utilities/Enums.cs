@@ -162,6 +162,7 @@ namespace Ekom
     /// </summary>
     public enum PropertyEditorType
     {
+        Empty,
         Store,
         Language
     }
