@@ -260,7 +260,7 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
       },
       getDataTypeByAlias: function (contentType, contentTypeAlias, propertyAlias) {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeByAlias?contentType=" + contentType + "&contentTypeAlias=" + contentTypeAlias + "&propertyAlias=" + propertyAlias),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "DataType/" + contentTypeAlias + "/propertyAlias/" + propertyAlias),
           'Failed to retrieve datatype'
         );
       },
@@ -367,23 +367,14 @@ angular.module("umbraco.directives").directive('ekomProperty',
                   alias: scope.model.alias.replace('title','slug')
                 };
 
-                const slugify =
-                  titleInput.value
-                    .toString()                           // Cast to string (optional)
-                    .replace('ð', 'd')
-                    .replace('Ð', 'd')
-                    .replace('þ', 'th')
-                    .replace('Þ', 'th')
-                    .replace('ó', 'o')
-                    .replace('Ó', 'o')
-                    .replace('í', 'i')
-                    .replace('Í', 'i')
-                    .replace('æ', 'ae')
-                    .replace('Æ', 'ae')
-                    .replace('ú', 'u')
-                    .replace('Ú', 'u')
-                    .replace('ö', 'oe')
-                    .replace('Ö', 'oe')
+                let inputValue = titleInput.value;
+
+                Umbraco.Sys.ServerVariables.ekom.charCollections.forEach((char) => {
+                  inputValue = inputValue.replace(char.Char, char.Replacement);
+                });
+                const slugif
+y =
+                  inputValue
                     .normalize('NFKD')            // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
                     .toLowerCase()                  // Convert the string to lowercase letters
                     .trim()                                  // Remove whitespace from both sides of a string (optional)
@@ -402,7 +393,7 @@ angular.module("umbraco.directives").directive('ekomProperty',
 
         }
 
-      });
+      },500);
 
       scope.$on('$destroy', function () {
         unsubscribe();
