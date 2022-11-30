@@ -1,12 +1,12 @@
 using Ekom;
 using Ekom.Models;
 using Ekom.U10.DataEditors;
+using Ekom.U10.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System.Linq;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
 namespace EkomCore.U10.Utilities
 {
@@ -81,6 +81,44 @@ namespace EkomCore.U10.Utilities
 
             throw new InvalidOperationException("Unable to find matching property on IContent.");
         }
+
+        /// <summary>
+        /// Set Slug on ekom product or category
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="alias">Property alias</param>
+        /// <param name="values">Values to insert</param>
+        /// <param name="type">Type of property, Language or Store</param>
+        public static void SetSlug(this IContent content, string alias, Dictionary<string, object> values, PropertyEditorType type = PropertyEditorType.Empty)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            if (string.IsNullOrEmpty(alias))
+            {
+                throw new ArgumentNullException("alias");
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException("values");
+            }
+
+            var dict = new Dictionary<string, object>();
+
+
+            var _umbService = Configuration.Resolver.GetService<UmbracoService>();
+
+            foreach (var value in values)
+            {
+                dict.Add(value.Key, _umbService.UrlSegment(value.Value.ToString()));
+            }
+
+            SetProperty(content, alias, dict, type);
+        }
+
         internal static void SetProperty(this IContent content, string alias, string key, object value)
         {
             if (content == null)

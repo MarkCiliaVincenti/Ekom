@@ -16,7 +16,7 @@ namespace Ekom.U10.Services
         readonly ILogger _logger;
         readonly IUmbracoContextFactory _context;
         readonly IHttpContextAccessor _httpContextAccessor;
-        readonly IShortStringHelper shortStringHelper;
+        readonly IShortStringHelper _shortStringHelper;
 
         public UrlService(
             ILogger<CatalogSearchService> logger,
@@ -27,7 +27,7 @@ namespace Ekom.U10.Services
             _logger = logger;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            this.shortStringHelper = shortStringHelper;
+            _shortStringHelper = shortStringHelper;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Ekom.U10.Services
                         var slugValueByCulture = itemSlugValue.GetEkomPropertyEditorValue("values").GetEkomPropertyEditorValue(store.Culture.ToString());
 
                         if (!string.IsNullOrWhiteSpace(slugValueByCulture))
-                            builder.Append(slugValueByCulture.ToUrlSegment(shortStringHelper).AddTrailing());
+                            builder.Append(slugValueByCulture.ToUrlSegment(_shortStringHelper).AddTrailing());
                     }
 
                     var url = builder.ToString().AddTrailing().ToLower();
@@ -72,7 +72,7 @@ namespace Ekom.U10.Services
                     var slugValueByCulture = categorySlug.GetEkomPropertyEditorValue("values").GetEkomPropertyEditorValue(store.Culture.ToString());
                     if (!string.IsNullOrWhiteSpace(slugValueByCulture))
                     {
-                        builder.Append(slugValueByCulture.ToUrlSegment(shortStringHelper).AddTrailing());
+                        builder.Append(slugValueByCulture.ToUrlSegment(_shortStringHelper).AddTrailing());
                     }
                 }
 
@@ -109,7 +109,7 @@ namespace Ekom.U10.Services
                         builder.Append(item + "/");
                     }
 
-                    var slugSafeAlias = slug.ToUrlSegment(shortStringHelper);
+                    var slugSafeAlias = slug.ToUrlSegment(_shortStringHelper);
                     if (!string.IsNullOrEmpty(slugSafeAlias))
                     {
                         builder.Append(slugSafeAlias);
@@ -145,7 +145,7 @@ namespace Ekom.U10.Services
             {
                 foreach (var categoryUrl in category.Urls)
                 {
-                    var url = categoryUrl + test2.ToUrlSegment(shortStringHelper).AddTrailing().ToLower();
+                    var url = categoryUrl + test2.ToUrlSegment(_shortStringHelper).AddTrailing().ToLower();
 
                     urls.Add(url);
                 }

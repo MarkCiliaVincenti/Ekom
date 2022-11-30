@@ -14,6 +14,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
@@ -28,7 +29,7 @@ class UmbracoService : IUmbracoService
     private readonly PropertyEditorCollection _propertyEditorCollection;
     private readonly IContentTypeService _contentTypeService;
     private readonly IAppPolicyCache _runtimeCache;
-
+    private readonly IShortStringHelper _shortStringHelper;
     public UmbracoService(
         IDomainService domainService,
         IDataTypeService dataTypeService,
@@ -36,7 +37,8 @@ class UmbracoService : IUmbracoService
         ILocalizationService localizationService,
         PropertyEditorCollection propertyEditorCollection,
         IContentTypeService contentTypeService,
-        AppCaches appCaches)
+        AppCaches appCaches,
+        IShortStringHelper shortStringHelper)
     {
         _domainService = domainService;
         _dataTypeService = dataTypeService;
@@ -45,6 +47,7 @@ class UmbracoService : IUmbracoService
         _propertyEditorCollection = propertyEditorCollection;
         _contentTypeService = contentTypeService;
         _runtimeCache = appCaches.RuntimeCache;
+        _shortStringHelper = shortStringHelper;
     }
 
     public string GetDictionaryValue(string key)
@@ -145,5 +148,10 @@ class UmbracoService : IUmbracoService
             preValues = preValues,
             view = propertyEditor.GetValueEditor(null).View
         };
+    }
+
+    internal string UrlSegment(string value)
+    {
+        return value.ToUrlSegment(_shortStringHelper);
     }
 }
