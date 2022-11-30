@@ -254,7 +254,7 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
       },
       getDataTypeById: function (id) {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeById?id=" + id),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "DataType/" + id),
           'Failed to retrieve datatype'
         );
       },
@@ -266,13 +266,13 @@ angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
       },
       getLanguages: function () {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetLanguages"),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "Languages"),
           'Failed to retrieve languages'
         );
       },
       getStores: function () {
         return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetStores"),
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "Stores"),
           'Failed to retrieve stores'
         );
       }

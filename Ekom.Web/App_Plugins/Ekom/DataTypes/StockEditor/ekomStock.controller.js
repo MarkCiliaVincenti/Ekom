@@ -8,7 +8,7 @@ angular.module('umbraco').controller('Ekom.Stock', function ($scope, assetsServi
   $scope.model.hideLabel = false;
 
   $scope.GetStores = function () {
-    $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'getAllStores').then(function (results) {
+    $http.get(Umbraco.Sys.ServerVariables.ekom.apiEndpoint + 'Stores').then(function (results) {
 
       $scope.storeList = results.data;
 

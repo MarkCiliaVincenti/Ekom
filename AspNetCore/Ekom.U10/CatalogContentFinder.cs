@@ -3,7 +3,6 @@ using Ekom.Models;
 using Ekom.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Configuration;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
@@ -97,7 +96,7 @@ namespace Ekom.U10
                                                                  x.Value.Urls.Contains(path))
                                             .Value;
 
-                    if (category != null && !string.IsNullOrEmpty(category.Slug))
+                    if (category != null && !string.IsNullOrEmpty(category.GetValue("slug")))
                     {
                         //contentId = virtualContent.InvariantEquals("true")
                         //    ? int.Parse(umbHelper.GetDictionaryValue("virtualCategoryNode"))
@@ -110,8 +109,8 @@ namespace Ekom.U10
                 #endregion
 
                 var httpCtx = _httpContextAccessor.HttpContext;
-                if (httpCtx.Items.TryGetValue("ekmRequest", out var r) 
-                && r is ContentRequest ekmRequest)
+                var requestCache = _appCaches.RequestCache.Get("ekmRequest", () => new ContentRequest(httpCtx));
+                if (requestCache != null && requestCache is ContentRequest ekmRequest)
                 {
                     ekmRequest.Store = store;
                     ekmRequest.Product = product;
@@ -133,8 +132,8 @@ namespace Ekom.U10
                         return Task.FromResult(false);
                     }
                 }
-
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to find Ekom content.");
             }
