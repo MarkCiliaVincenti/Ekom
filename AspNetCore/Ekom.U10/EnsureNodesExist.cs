@@ -128,6 +128,11 @@ namespace Ekom.App_Start
                         throw new EnsureNodesException(
                             "Unable to find Umbraco.Metafield property picker, failed creating Ekom nodes.");
                     }
+                    if (!_propertyEditorCollection.TryGet("Ekom.Metavalue", out IDataEditor metavalueEditor))
+                    {
+                        throw new EnsureNodesException(
+                            "Unable to find Umbraco.Metavalue property picker, failed creating Ekom nodes.");
+                    }
 
                     #endregion
 
@@ -266,6 +271,10 @@ namespace Ekom.App_Start
                     var metafieldDt = EnsureDataTypeExists(new DataType(metafieldPicker, _configurationEditorJsonSerializer, ekmDtContainer.Id)
                     {
                         Name = "Ekom Metafield Picker",
+                    });
+                    var metavalueDt = EnsureDataTypeExists(new DataType(metavalueEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)
+                    {
+                        Name = "Ekom Metavalue Editor",
                     });
 
                     var multinodeCatalogDt = EnsureDataTypeExists(new DataType(multiNodeEditor, _configurationEditorJsonSerializer, ekmDtContainer.Id)

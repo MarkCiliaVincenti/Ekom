@@ -59,7 +59,7 @@ namespace Ekom.Controllers
         readonly IMetafieldService _metafieldService;
 
         [HttpGet]
-        [Route("DataType")]
+        [Route("GetNonEkomDataTypes")]
         [UmbracoUserAuthorize]
         public IEnumerable<object> GetNonEkomDataTypes()
             => _umbracoService.GetNonEkomDataTypes();
