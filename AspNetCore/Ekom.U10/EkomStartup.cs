@@ -3,7 +3,6 @@ using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.U10.Services;
-using EkomCore.U10;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

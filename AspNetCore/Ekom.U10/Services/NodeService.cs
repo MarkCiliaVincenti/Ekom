@@ -139,7 +139,7 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetNodeById(int id)
+        public IPublishedContent GetNodeById(int id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
@@ -156,7 +156,7 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetNodeById(string id)
+        public IPublishedContent GetNodeById(string id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
@@ -373,7 +373,7 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetMediaById(string id)
+        public IPublishedContent GetMediaById(string id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {

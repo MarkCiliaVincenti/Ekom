@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace EkomCore.U10.Utilities
+namespace Ekom.U10.Utilities
 {
     public static class ContentExtensions
     {

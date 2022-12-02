@@ -1,5 +1,6 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @using Ekom.API;
+
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Master.cshtml";
@@ -42,7 +43,7 @@
         <ul>
             @foreach (var product in cat.ProductsRecursive)
             {
-                var testContent = product.GetContent(Umbraco, "test");
+                var testContent = product.GetValue<IPublishedContent>("test");
 
                 <li>
                     <a href="@product.Url">
@@ -52,7 +53,7 @@
                         <p>Price: @product.Price.WithVat.CurrencyString</p>
                     </a>
                     <p>
-                        <strong>Test - @product.GetValue("test")</strong>
+                        <strong>Test - @(product.GetValue<string>("test"))</strong>
                         <ul>
                             <li>@(testContent != null ? testContent.Name : "")</li>
                         </ul>
@@ -60,11 +61,14 @@
                     <p>
                         <strong>Test2 - @product.GetValue("test2")</strong>
                         <ul>
-                            @foreach (var item in product.GetContents(Umbraco, "test2"))
+                            @foreach (var item in product.GetValue<IEnumerable<IPublishedContent>>("test2"))
                             {
                                 <li>@item.Name</li>
                             }
                         </ul>
+                    </p>
+                    <p>
+                        <strong>Test3 - @(product.GetValue<bool>("test3"))</strong>
                     </p>
 
                     <ul>

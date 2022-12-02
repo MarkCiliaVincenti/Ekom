@@ -18,14 +18,14 @@ namespace Ekom.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Title => Properties.GetPropertyValue("title", Store.Alias);
+        public override string Title => GetValue("title", Store.Alias);
 
         /// <summary>
         /// Get value in properties by store
         /// </summary>
         /// <param name="propertyAlias"></param>
         /// <param name="storeAlias"></param>
-        public virtual string GetPropertyValue(string propertyAlias, string storeAlias)
+        public virtual string GetValue(string propertyAlias, string storeAlias)
         {
             return Properties.GetPropertyValue(propertyAlias, storeAlias);
         }
