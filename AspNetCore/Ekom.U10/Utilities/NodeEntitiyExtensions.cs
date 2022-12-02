@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Utilities
+namespace Ekom
 {
     public static class NodeEntitiyExtensions
     {
