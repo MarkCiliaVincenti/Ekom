@@ -1,13 +1,10 @@
 using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
 namespace Ekom.U10.Services

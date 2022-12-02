@@ -42,19 +42,30 @@
         <ul>
             @foreach (var product in cat.ProductsRecursive)
             {
+                var testContent = product.GetContent(Umbraco, "test");
+
                 <li>
                     <a href="@product.Url">
 
                         <p>Title: @product.Title</p>
                         <p>SKU: @product.SKU</p>
                         <p>Price: @product.Price.WithVat.CurrencyString</p>
-                        <p>
-                            Test: @product.GetValue("test", Model.GetCultureFromDomains())
-                        </p>
-                        <p>
-                            Test2: @product.GetValue("test2")
-                        </p>
                     </a>
+                    <p>
+                        <strong>Test - @product.GetValue("test")</strong>
+                        <ul>
+                            <li>@(testContent != null ? testContent.Name : "")</li>
+                        </ul>
+                    </p>
+                    <p>
+                        <strong>Test2 - @product.GetValue("test2")</strong>
+                        <ul>
+                            @foreach (var item in product.GetContents(Umbraco, "test2"))
+                            {
+                                <li>@item.Name</li>
+                            }
+                        </ul>
+                    </p>
 
                     <ul>
                         @foreach (var prop in product.Properties)
