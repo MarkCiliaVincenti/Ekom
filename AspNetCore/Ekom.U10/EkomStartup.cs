@@ -33,7 +33,7 @@ class StartupFilter : IStartupFilter
 /// Hooks into the umbraco application startup lifecycle 
 /// </summary>
 // Public allows consumers to target type with ComposeAfter / ComposeBefore
-class EkomComposer : IComposer
+public class EkomComposer : IComposer
 {
     /// <summary>
     /// Umbraco lifecycle method
