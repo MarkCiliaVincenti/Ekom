@@ -8,7 +8,7 @@
       </div>
     </div>
 
-    <ul ui-sortable="sortableOptions" style="margin:0;">
+    <ul ui-sortable="sortableOptions" style="margin:0;" ng-model="model.value">
       <li ng-repeat="value in model.value track by $index" style="display:flex; position:relative; margin-bottom: 10px;">
 
         <div ng-repeat="language in languages" style="flex:0 0 200px; margin-right: 10px;">

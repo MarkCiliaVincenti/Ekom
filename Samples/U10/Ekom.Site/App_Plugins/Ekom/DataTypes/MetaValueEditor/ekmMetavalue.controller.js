@@ -28,10 +28,9 @@
         items: '> li',
         tolerance: 'pointer',
         disabled: false,
+        handle: '.handle ',
         update: function (e, f) {
-          console.log(f);
 
-          console.log($scope.model.value);
         }
       };
 
