@@ -3,6 +3,7 @@
     //"version": "",
     "allowPackageTelemetry": true,
     "javascript": [
-        "~/App_Plugins/Ekom/Extensions/ekmUtility.js"
+        "~/App_Plugins/Ekom/Shared/ekmUtility.js",
+        "~/App_Plugins/Ekom/Shared/ekmResources.js"
     ]
 }

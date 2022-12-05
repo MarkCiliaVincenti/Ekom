@@ -6,7 +6,7 @@ angular.module("umbraco").controller("Ekom.Cache", function ($scope, assetsServi
     $scope.loading = true;
 
     $http({
-      url: Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "PopulateCache",
+      url: Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "Cache",
       method: 'POST',
       dataType: 'json'
     }).then(function (data) {
