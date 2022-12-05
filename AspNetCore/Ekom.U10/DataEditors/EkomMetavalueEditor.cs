@@ -14,7 +14,7 @@ namespace Ekom.DataEditors
     "Ekom Metavalue Editor",
     "/App_Plugins/Ekom/DataTypes/MetaValueEditor/ekmMetavalue.html",
     ValueType = ValueTypes.Json,
-    HideLabel = true)]
+    HideLabel = false)]
     [PropertyEditorAsset(AssetType.Javascript, "/App_Plugins/Ekom/DataTypes/MetaValueEditor/ekmMetavalue.controller.js")]
     public class EkomMetavaluePicker : DataEditor
     {

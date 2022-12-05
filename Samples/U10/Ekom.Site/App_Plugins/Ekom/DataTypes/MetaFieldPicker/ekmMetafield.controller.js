@@ -1,6 +1,3 @@
-angular.module("umbraco").controller("Ekom.Metafield", function ($scope, assetsService, $http) {
-
-  $scope.currencies = $scope.model.value;
-  $scope.model.hideLabel = false;
-
+angular.module("umbraco").controller("Ekom.Metafield", function ($scope, $http, $routeParams) {
+  console.log('asdasd');
 });

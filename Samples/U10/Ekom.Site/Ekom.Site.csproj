@@ -53,8 +53,9 @@
       <None Include="App_Plugins\Ekom\DataTypes\RangeEditor\ekmRange.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\StockEditor\ekomStock.controller.js" />
       <None Include="App_Plugins\Ekom\DataTypes\ZonePicker\ekmZone.controller.js" />
-      <None Include="App_Plugins\Ekom\Extensions\ekmUtility.js" />
+      <None Include="App_Plugins\Ekom\Shared\ekmUtility.js" />
       <None Include="App_Plugins\Ekom\package.manifest" />
+      <None Include="App_Plugins\Ekom\Shared\ekmResources.js" />
     </ItemGroup>
 
     <ItemGroup>
