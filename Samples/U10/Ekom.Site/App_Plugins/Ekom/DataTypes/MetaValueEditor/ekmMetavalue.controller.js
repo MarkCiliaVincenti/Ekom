@@ -16,6 +16,8 @@
 
       $scope.model.value = $scope.model.value || [];
 
+      console.log($scope.model.value);
+
       ekmResources.getLanguages().then(function (languages) {
 
         $scope.languages = languages;

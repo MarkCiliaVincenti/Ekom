@@ -2,7 +2,7 @@
 
   <div class="ekmMetaValues" style="max-width:800px;">
 
-    <div class="ekmMetaValues__header" style="display:flex; margin-bottom: 15px;">
+    <div class="ekmMetaValues__header" style="display:flex; margin-bottom: 15px;" ng-if="model.value.length > 0">
       <div ng-repeat="lang in languages" style="flex:0 0 220px;">
         {{ lang.CultureName}}
       </div>
