@@ -1,5 +1,5 @@
 using Ekom.Models;
-using Ekom.U10.Services;
+using Ekom.Umb.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;

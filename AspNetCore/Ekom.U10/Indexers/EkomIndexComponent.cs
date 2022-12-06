@@ -2,7 +2,7 @@ using Examine;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Infrastructure.Examine;
 
-namespace Ekom.U10.Indexers
+namespace Ekom.Umb.Indexers
 {
     public class EkomIndexComponent : IComponent
     {

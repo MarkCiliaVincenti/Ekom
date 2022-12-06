@@ -10,7 +10,7 @@ using System.Text;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Services
+namespace Ekom.Umb.Services
 {
     /// <inheritDoc/>
     public class ExamineService

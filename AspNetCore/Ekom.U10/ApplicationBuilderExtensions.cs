@@ -1,13 +1,13 @@
 using Ekom.AspNetCore;
 using Ekom.Services;
-using Ekom.U10.Services;
+using Ekom.Umb.Services;
 using EkomCore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 
-namespace Ekom.U10;
+namespace Ekom.Umb;
 
 static class ApplicationBuilderExtensions
 {

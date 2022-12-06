@@ -1,5 +1,5 @@
 using Ekom.Models;
-using Ekom.U10.Models;
+using Ekom.Umb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Infrastructure.Scoping;
 
-namespace Ekom.U10.Services
+namespace Ekom.Umb.Services
 {
     class MemberService : Ekom.Services.IMemberService
     {

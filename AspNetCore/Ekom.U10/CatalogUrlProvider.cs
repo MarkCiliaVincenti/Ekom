@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 using Umbraco.Extensions;
 
-namespace Ekom.U10
+namespace Ekom.Umb
 {
     class CatalogUrlProvider : IUrlProvider
     {

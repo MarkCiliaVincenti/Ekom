@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Models;
 
-namespace Ekom.U10.Models
+namespace Ekom.Umb.Models
 {
     class Umbraco10Domain : Ekom.Models.UmbracoDomain
     {

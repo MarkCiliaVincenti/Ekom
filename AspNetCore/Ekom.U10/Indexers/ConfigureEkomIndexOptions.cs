@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Examine;
 
-namespace Ekom.U10.Indexers
+namespace Ekom.Umb.Indexers
 {
     internal class ConfigureEkomIndexOptions : IConfigureNamedOptions<LuceneDirectoryIndexOptions>
     {

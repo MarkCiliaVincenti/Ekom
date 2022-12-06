@@ -2,7 +2,7 @@ using Ekom.App_Start;
 using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
-using Ekom.U10.Services;
+using Ekom.Umb.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.WebAssets;
 using Umbraco.Cms.Web.BackOffice.Trees;
 
-namespace Ekom.U10;
+namespace Ekom.Umb;
 
 class StartupFilter : IStartupFilter
 {

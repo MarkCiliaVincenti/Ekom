@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 
-namespace Ekom.U9
+namespace Ekom.Umb
 {
     /// <summary>
     /// Ekom middleware, ensures an ekmRequest object exists in the runtime cache for all

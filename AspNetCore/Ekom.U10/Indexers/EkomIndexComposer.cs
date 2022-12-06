@@ -1,4 +1,4 @@
-using Ekom.U10.Indexers;
+using Ekom.Umb.Indexers;
 using Umbraco.Cms.Core;
 using Examine;
 using Microsoft.Extensions.DependencyInjection;

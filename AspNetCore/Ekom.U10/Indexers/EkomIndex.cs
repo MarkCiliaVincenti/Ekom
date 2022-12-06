@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Examine;
 using IHostingEnvironment = Umbraco.Cms.Core.Hosting.IHostingEnvironment;
 
-namespace Ekom.U10.Indexers
+namespace Ekom.Umb.Indexers
 {
     public class EkomIndex : UmbracoExamineIndex
     {
