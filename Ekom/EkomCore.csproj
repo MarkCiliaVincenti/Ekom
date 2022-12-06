@@ -31,6 +31,8 @@
       <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+      <RootNamespace>Ekom</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
