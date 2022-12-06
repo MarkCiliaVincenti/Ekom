@@ -3,7 +3,6 @@ using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.U10.Services;
-using EkomCore.U10;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,7 +32,7 @@ class StartupFilter : IStartupFilter
 /// Hooks into the umbraco application startup lifecycle 
 /// </summary>
 // Public allows consumers to target type with ComposeAfter / ComposeBefore
-class EkomComposer : IComposer
+public class EkomComposer : IComposer
 {
     /// <summary>
     /// Umbraco lifecycle method
@@ -69,7 +68,8 @@ class EkomComposer : IComposer
                 .AddNotificationHandler<ContentMovedNotification, UmbracoEventListeners>()
                 .AddNotificationHandler<DomainSavedNotification, UmbracoEventListeners>()
                 .AddNotificationHandler<ServerVariablesParsingNotification, UmbracoEventListeners>()
-                .AddNotificationHandler<DomainDeletedNotification, UmbracoEventListeners>();
+                .AddNotificationHandler<DomainDeletedNotification, UmbracoEventListeners>()
+                .AddNotificationHandler<LanguageCacheRefresherNotification, UmbracoEventListeners>();
         }
 
         builder.Services.AddEkom();

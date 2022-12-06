@@ -140,7 +140,8 @@ namespace Ekom.Services
 #else
             _httpCtx = httpCtx;
 #endif
-            _ekmRequest = memoryCache.Get<ContentRequest>("ekmRequest");
+            var r = _httpCtx.Items["umbrtmche-ekmRequest"] as Lazy<object>;
+            _ekmRequest = r.Value as ContentRequest;
         }
 
         public Task<OrderInfo> GetOrderAsync(string storeAlias)
@@ -1136,13 +1137,16 @@ namespace Ekom.Services
                 Currency = store.Currency.ISOCurrencySymbol,
                 UpdateDate = DateTime.Now
             };
-
-            if (_ekmRequest.User != null && !string.IsNullOrEmpty(_ekmRequest.User.Username))
+            
+            if (_ekmRequest != null)
             {
-                orderData.CustomerEmail = _ekmRequest.User.Email;
-                orderData.CustomerUsername = _ekmRequest.User.Username;
-                orderData.CustomerId = _ekmRequest.User.UserId;
-                orderData.CustomerName = _ekmRequest.User.Name?.Trim();
+                if(_ekmRequest.User != null && !string.IsNullOrEmpty(_ekmRequest.User.Username))
+                {
+                    orderData.CustomerEmail = _ekmRequest.User.Email;
+                    orderData.CustomerUsername = _ekmRequest.User.Username;
+                    orderData.CustomerId = _ekmRequest.User.UserId;
+                    orderData.CustomerName = _ekmRequest.User.Name?.Trim();
+                }
             }
 
             await _orderRepository.InsertOrderAsync(orderData)

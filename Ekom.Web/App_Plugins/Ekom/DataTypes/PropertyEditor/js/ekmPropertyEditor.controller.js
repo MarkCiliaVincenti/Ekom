@@ -3,7 +3,7 @@
 
   angular.module("umbraco").controller("Ekom.PropertyEditorPicker", [
     '$scope',
-    'Ekom.PropertyEditorResources',
+    'Ekom.Resources',
     function ($scope, ekmResources) {
 
       $scope.model.dataTypes = [];
@@ -24,7 +24,7 @@
     '$scope',
     '$rootScope',
     'editorState',
-    'Ekom.PropertyEditorResources',
+    'Ekom.Resources',
     'umbPropEditorHelper',
     'appState',
     '$routeParams',
@@ -34,12 +34,16 @@
 
       if ($routeParams.section !== 'content') { return; }
 
+      $scope.loading = true;
+      $scope.failed = false;
+
       $scope.model.hideLabel = $scope.model.config.hideLabel == 1;
 
       $scope.property = {
         config: {},
         view: ""
       };
+
 
       $scope.tabs = [];
       $scope.currentTab = undefined;
@@ -53,7 +57,6 @@
         type: "Language"
       };
 
-      var currentSection = appState.getSectionState("currentSection");
       var parentScope = $scope;
       var nodeContext = undefined;
 
@@ -74,9 +77,9 @@
         $scope.property.viewPath = umbPropEditorHelper.getViewPath(dataType.view);
 
         // Get the property alias
-        var propAlias = $scope.model.propertyAlias || $scope.model.alias;
+        let propAlias = $scope.model.propertyAlias || $scope.model.alias;
 
-        ekmResources.getDataTypeByAlias(currentSection, nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
+        ekmResources.getDataTypeByAlias(nodeContext.contentTypeAlias, propAlias).then(function (dataType2) {
 
           $scope.model.value.dtdGuid = dataType2.guid;
 
@@ -88,9 +91,11 @@
 
               $scope.tabs = languages.map(x => ({ value: x.IsoCode, text: x.CultureName }));
 
+              $scope.loading = false;
+
               setValues();
 
-              var eventModel = {
+              let eventModel = {
                 model: $scope.model,
                 tabs: $scope.tabs,
                 alias: $scope.model.alias
@@ -98,7 +103,9 @@
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
 
-            });
+            }).catch(function () {
+              $scope.failed = true;
+            });;
 
           } else {
 
@@ -106,11 +113,13 @@
 
             ekmResources.getStores().then(function (stores) {
 
+              $scope.loading = false;
+
               $scope.tabs = stores.map(x => ({ value: x.Alias, text: x.Title }));
 
               setValues();
 
-              var eventModel = {
+              let eventModel = {
                 model: $scope.model,
                 tabs: $scope.tabs,
                 alias: $scope.model.alias
@@ -118,12 +127,20 @@
 
               eventsService.emit("ekmPropertyLoaded", { value: eventModel });
 
-            });
+            }).catch(function () {
+
+            }).catch(function () {
+              $scope.failed = true;
+            });;
 
           }
 
-        });
+        }).catch(function () {
+          $scope.failed = true;
+        });;
 
+      }).catch(function () {
+        $scope.failed = true;
       });
 
       $scope.setCurrentTab = function (tab, broadcast) {
@@ -239,49 +256,9 @@
 
 })();
 
-
-/* Resources */
-angular.module('umbraco.resources').factory('Ekom.PropertyEditorResources',
-  function ($q, $http, umbRequestHelper) {
-    return {
-      getNonEkomDataTypes: function () {
-        return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetNonEkomDataTypes"),
-          'Failed to retrieve datatypes'
-        );
-      },
-      getDataTypeById: function (id) {
-        return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeById?id=" + id),
-          'Failed to retrieve datatype'
-        );
-      },
-      getDataTypeByAlias: function (contentType, contentTypeAlias, propertyAlias) {
-        return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetDataTypeByAlias?contentType=" + contentType + "&contentTypeAlias=" + contentTypeAlias + "&propertyAlias=" + propertyAlias),
-          'Failed to retrieve datatype'
-        );
-      },
-      getLanguages: function () {
-        return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetLanguages"),
-          'Failed to retrieve languages'
-        );
-      },
-      getStores: function () {
-        return umbRequestHelper.resourcePromise(
-          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "GetStores"),
-          'Failed to retrieve stores'
-        );
-      }
-    };
-  }
-);
-
-
 /* Directives */
 angular.module("umbraco.directives").directive('ekomProperty',
-  function (eventsService) {
+  function (eventsService, $timeout) {
 
     var link = function (scope, ctrl) {
       scope[ctrl.$name] = ctrl;
@@ -314,20 +291,84 @@ angular.module("umbraco.directives").directive('ekomProperty',
       var eventsServiceUnsubscribe = eventsService.on('ekmInputChange', function (event, data) {
 
 
-        if (scope.model.alias.indexOf('title') > -1) {
-          scope.$apply(function () {
-            scope.model.value = data.value.title;
-          });
-        }
+        if (data.value.all) {
 
-        if (scope.model.alias.indexOf('slug') > -1) {
-          scope.$apply(function () {
-            scope.model.value = data.value.slug;
-          });
+          if (scope.model.alias.indexOf('title') > -1) {
+            scope.$apply(function () {
+              scope.model.value = data.value.title;
+            });
+          }
+
+          if (scope.model.alias.indexOf('slug') > -1) {
+            scope.$apply(function () {
+              scope.model.value = data.value.slug;
+            });
+          }
+        } else {
+
+          if (scope.model.alias === data.value.alias) {
+            scope.$apply(function () {
+              scope.model.value = data.value.slug;
+            });
+          }
+
         }
 
 
       });
+
+      $timeout(function () {
+
+
+        const params = new Proxy(new URLSearchParams(window.location.href), {
+          get: (searchParams, prop) => searchParams.get(prop),
+        });
+
+        if (scope.model.alias.startsWith('title.') && params != null && params.create && params.create == 'true') {
+
+          let titleInput = document.getElementById(scope.model.alias);
+
+          if (titleInput) {
+
+            titleInput.addEventListener("keyup", function () {
+
+              var slugInput = document.getElementById('slug.' + scope.tab);
+
+              if (slugInput) {
+
+                var model = {
+                  title: titleInput.value,
+                  slug: "",
+                  alias: scope.model.alias.replace('title','slug')
+                };
+
+                let inputValue = titleInput.value;
+
+                Umbraco.Sys.ServerVariables.ekom.charCollections.forEach((char) => {
+                  inputValue = inputValue.replace(char.Char, char.Replacement);
+                });
+
+                const slugify =
+                  inputValue
+                    .normalize('NFKD')            // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
+                    .toLowerCase()                  // Convert the string to lowercase letters
+                    .trim()                                  // Remove whitespace from both sides of a string (optional)
+                    .replace(/\s+/g, '-')            // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
+                    .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+
+                model.slug = slugify;
+
+                eventsService.emit("ekmInputChange", { value: model });
+
+              }
+
+            });
+          }
+
+        }
+
+      },500);
 
       scope.$on('$destroy', function () {
         unsubscribe();

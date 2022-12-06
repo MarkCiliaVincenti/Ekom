@@ -14,6 +14,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Ekom.Services;
 using Ekom.Authorization;
+using EkomCore.Services;
 
 namespace Ekom.Controllers
 {
@@ -35,44 +36,63 @@ namespace Ekom.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService, IMetafieldService metafieldService)
         {
         }
 #else
-    [Route("/api/[controller]/[action]")]
+    [Route("ekom/backoffice")]
     public class EkomBackofficeApiController : ControllerBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService)
+        public EkomBackofficeApiController(Configuration config, IUmbracoService umbracoService, IMetafieldService metafieldService)
         {
             _config = config;
             _umbracoService = umbracoService;
+            _metafieldService = metafieldService;
         }
 #endif
 
         readonly Configuration _config;
         readonly IUmbracoService _umbracoService;
+        readonly IMetafieldService _metafieldService;
 
+        [HttpGet]
+        [Route("GetNonEkomDataTypes")]
         [UmbracoUserAuthorize]
         public IEnumerable<object> GetNonEkomDataTypes()
             => _umbracoService.GetNonEkomDataTypes();
 
+        [HttpGet]
+        [Route("DataType/{id:guid}")]
         [UmbracoUserAuthorize]
         public object GetDataTypeById(Guid id)
             => _umbracoService.GetDataTypeById(id);
 
+
+        [HttpGet]
+        [Route("DataType/{contentTypeAlias}/propertyAlias/{propertyAlias}")]
         [UmbracoUserAuthorize]
         public object GetDataTypeByAlias(
             string contentTypeAlias,
             string propertyAlias)
             => _umbracoService.GetDataTypeByAlias(contentTypeAlias, propertyAlias);
 
+        [HttpGet]
+        [Route("Metafields")]
+        [UmbracoUserAuthorize]
+        public object GetMetafields()
+    => _metafieldService.GetMetafields();
+
+        [HttpGet]
+        [Route("Languages")]
         [UmbracoUserAuthorize]
         public IEnumerable<object> GetLanguages()
             => _umbracoService.GetLanguages();
 
+        [HttpGet]
+        [Route("Stores")]
         [UmbracoUserAuthorize]
         public IEnumerable<object> GetStores()
         {
@@ -85,6 +105,8 @@ namespace Ekom.Controllers
         /// Repopulates all Ekom cache
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
+        [Route("Cache")]
         [UmbracoUserAuthorize]
         public bool PopulateCache()
         {
@@ -99,6 +121,8 @@ namespace Ekom.Controllers
         /// <summary>
         /// Get Config
         /// </summary>
+        [HttpGet]
+        [Route("Config")]
         [UmbracoUserAuthorize]
         public Configuration GetConfig()
         {
@@ -109,6 +133,8 @@ namespace Ekom.Controllers
         /// Get Stock By Store
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
+        [Route("Stock/{id:Guid}/StoreAlias/{storeAlias}")]
         [UmbracoUserAuthorize]
         public int GetStockByStore(Guid id, string storeAlias)
         {
@@ -119,6 +145,8 @@ namespace Ekom.Controllers
         /// Get Stock 
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
+        [Route("Stock/{id:Guid}")]
         [UmbracoUserAuthorize]
         public int GetStock(Guid id)
         {
@@ -130,7 +158,8 @@ namespace Ekom.Controllers
         /// If PerStoreStock is configured, gets store from cache and updates relevant item.
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost]
+        [HttpPatch]
+        [Route("stock/{id:Guid}/value/{stock}")]
         [UmbracoUserAuthorize]
         public async Task<HttpResponseException> IncrementStock(Guid id, int stock)
         {
@@ -153,7 +182,8 @@ namespace Ekom.Controllers
         /// Increment stock count of store item. 
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost]
+        [HttpPatch]
+        [Route("stock/{id:Guid}/StoreAlias/{storeAlias}/value/{stock}")]
         [UmbracoUserAuthorize]
         public async Task IncrementStock(Guid id, string storeAlias, int stock)
         {
@@ -176,7 +206,8 @@ namespace Ekom.Controllers
         /// If PerStoreStock is configured, gets store from cache and updates relevant item.
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost]
+        [HttpPut]
+        [Route("stock/{id:Guid}/value/{stock}")]
         [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, int stock)
         {
@@ -198,7 +229,8 @@ namespace Ekom.Controllers
         /// Sets stock count of store item. 
         /// If no stock entry exists, creates a new one, then attempts to update.
         /// </summary>
-        [HttpPost]
+        [HttpPut]
+        [Route("stock/{id:Guid}/StoreAlias/{storeAlias}/value/{stock}")]
         [UmbracoUserAuthorize]
         public async Task SetStock(Guid id, string storeAlias, int stock)
         {
@@ -220,6 +252,7 @@ namespace Ekom.Controllers
         /// Insert Coupon
         /// </summary>
         [HttpPost]
+        [Route("coupon/{couponCode}/NumberAvailable/{numberAvailable}/discountId/{id:Guid}")]
         [UmbracoUserAuthorize]
         public async Task InsertCoupon(string couponCode, int numberAvailable, Guid discountId)
         {
@@ -238,7 +271,8 @@ namespace Ekom.Controllers
         /// <summary>
         /// Remove Coupon
         /// </summary>
-        [HttpPost]
+        [HttpDelete]
+        [Route("coupon/{couponCode}/discountId/{id:Guid}")]
         [UmbracoUserAuthorize]
         public async Task RemoveCoupon(string couponCode, Guid discountId)
         {
@@ -257,7 +291,8 @@ namespace Ekom.Controllers
         /// <summary>
         /// Get Coupons for Discount
         /// </summary>
-        [HttpPost]
+        [HttpGet]
+        [Route("coupon/discountId/{id:Guid}")]
         [UmbracoUserAuthorize]
         public async Task<object> GetCouponsForDiscount(Guid discountId)
         {

@@ -36,7 +36,7 @@ namespace Ekom.Models
 
         public int Id { get; set; }
         public Guid Key { get; set; }
-        // Used for MEdia Url. Think we should remove this for simplicity and get the url specificly. Used in the Image class
+        // Used for Media Url. Think we should remove this for simplicity and get the url specificly. Used in the Image class
         public string Url { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
@@ -50,9 +50,9 @@ namespace Ekom.Models
             return true;
         }
 
-        public string GetValue(string alias)
+        public string GetValue(string propertyAlias, string key = null)
         {
-            return Properties.GetPropertyValue(alias);
+            return Properties.GetPropertyValue(propertyAlias, key);
         }
     }
 }

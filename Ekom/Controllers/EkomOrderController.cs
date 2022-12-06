@@ -46,7 +46,7 @@ namespace Ekom.Controllers
             _logger = Ekom.Configuration.Resolver.GetService<ILogger<EkomOrderController>>();
         }
 #else
-    [Route("/api/[controller]/[action]")]
+    [Route("ekom/order")]
     public partial class EkomOrderController : ControllerBase
     {
         /// <summary>
@@ -65,6 +65,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="request">Guid Key of product</param>
         /// <returns></returns>
+        [HttpPost]
+        [Route("add")]
         public async Task<IOrderInfo> AddToOrder(OrderRequest request)
         {
             if (request == null)
@@ -120,6 +122,8 @@ namespace Ekom.Controllers
         /// Get order by store
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
+        [Route("storeAlias/{storeAlias}")]
         public async Task<IOrderInfo> GetOrder(string storeAlias)
         {
             if (string.IsNullOrEmpty(storeAlias))
@@ -212,6 +216,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="form">FormData</param>
         /// <returns></returns>
+        [HttpPatch]
+        [Route("updatecustomer")]
         public async Task<IOrderInfo> UpdateCustomerInformation()
         {
             try
@@ -252,6 +258,8 @@ namespace Ekom.Controllers
         /// Update Shipping Information
         /// </summary>
         /// <returns></returns>
+        [HttpPatch]
+        [Route("update/shippingprovider/{shippingProvider:Guid}/storealias/{storeAlias}")]
         public async Task<IOrderInfo> UpdateShippingProvider(Guid ShippingProvider, string storeAlias)
         {
             try
@@ -276,6 +284,8 @@ namespace Ekom.Controllers
         /// Update Payment Information
         /// </summary>
         /// <returns></returns>
+        [HttpPatch]
+        [Route("update/paymentprovider/{PaymentProvider:Guid}/storealias/{storeAlias}")]
         public async Task<IOrderInfo> UpdatePaymentProvider(Guid PaymentProvider, string storeAlias)
         {
             try
@@ -303,6 +313,8 @@ namespace Ekom.Controllers
         /// <param name="storeAlias"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
+        [HttpPut]
+        [Route("line/Id/{lineId:Guid}/storealias/{storeAlias}/quantity/{quantity}")]
         [Obsolete("Deprecated, use AddToOrder and specify OrderAction")]
         public async Task<IOrderInfo> UpdateOrder(Guid lineId, string storeAlias, int quantity)
         {
@@ -342,6 +354,8 @@ namespace Ekom.Controllers
         /// <param name="lineId">Guid Key of product/line</param>
         /// <param name="storeAlias"></param>
         /// <returns></returns>
+        [HttpDelete]
+        [Route("line/Id/{lineId:Guid}/storealias/{storeAlias}")]
         public async Task<IOrderInfo> RemoveOrderLine(Guid lineId, string storeAlias)
         {
             if (string.IsNullOrEmpty(storeAlias))
@@ -372,6 +386,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="currency">Currency value</param>
         /// <returns></returns>
+        [HttpPatch]
+        [Route("currency/{currency}")]
         public async Task<object> ChangeCurrency(string currency)
         {
             var store = API.Store.Instance.GetStore();

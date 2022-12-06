@@ -1,30 +1,11 @@
-using Ekom.API;
 using Ekom.AspNetCore;
-using Ekom.AspNetCore.Services;
-using Ekom.Authorization;
-using Ekom.Cache;
-using Ekom.Domain.Repositories;
-using Ekom.Exceptions;
-using Ekom.Interfaces;
-using Ekom.Models;
-using Ekom.Repositories;
 using Ekom.Services;
-using Ekom.U10;
 using Ekom.U10.Services;
+using EkomCore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Cms.Core.Cache;
 
 namespace Ekom.U10;
 
@@ -41,6 +22,8 @@ static class ApplicationBuilderExtensions
 
         services.AddTransient<IMemberService, MemberService>();
         services.AddTransient<INodeService, NodeService>();
+        services.AddTransient<NodeService>();
+        services.AddTransient<IMetafieldService, MetafieldService>();
         services.AddTransient<CatalogSearchService>();
         services.AddTransient<IUmbracoService, UmbracoService>();
         services.AddTransient<IUrlService, UrlService>();

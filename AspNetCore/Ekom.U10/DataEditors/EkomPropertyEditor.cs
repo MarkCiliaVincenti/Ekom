@@ -12,7 +12,7 @@ namespace Ekom.U10.DataEditors
     "Ekom Property Editor",
     "/App_Plugins/Ekom/DataTypes/PropertyEditor/views/ekmPropertyEditor.html",
     ValueType = ValueTypes.Json,
-    HideLabel = true)]
+    HideLabel = false)]
     [PropertyEditorAsset(AssetType.Javascript, "/App_Plugins/Ekom/DataTypes/PropertyEditor/js/ekmPropertyEditor.controller.js")]
     [PropertyEditorAsset(AssetType.Css, "/App_Plugins/Ekom/DataTypes/PropertyEditor/css/ekomProperty.css")]
     public class EkomPropertyEditor : DataEditor

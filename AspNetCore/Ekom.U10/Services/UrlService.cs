@@ -4,6 +4,7 @@ using Ekom.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
@@ -15,7 +16,7 @@ namespace Ekom.U10.Services
         readonly ILogger _logger;
         readonly IUmbracoContextFactory _context;
         readonly IHttpContextAccessor _httpContextAccessor;
-        readonly IShortStringHelper shortStringHelper;
+        readonly IShortStringHelper _shortStringHelper;
 
         public UrlService(
             ILogger<CatalogSearchService> logger,
@@ -26,7 +27,7 @@ namespace Ekom.U10.Services
             _logger = logger;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            this.shortStringHelper = shortStringHelper;
+            _shortStringHelper = shortStringHelper;
         }
 
         /// <summary>
@@ -49,9 +50,11 @@ namespace Ekom.U10.Services
                     
                     foreach (var item in items)
                     {
-                        var categorySlug = item.GetValue("slug", store.Alias);
-                        if (!string.IsNullOrWhiteSpace(categorySlug))
-                            builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
+                        var itemSlugValue = item.GetValue("slug");
+                        var slugValueByCulture = itemSlugValue.GetEkomPropertyEditorValue("values").GetEkomPropertyEditorValue(store.Culture.ToString());
+
+                        if (!string.IsNullOrWhiteSpace(slugValueByCulture))
+                            builder.Append(slugValueByCulture.ToUrlSegment(_shortStringHelper).AddTrailing());
                     }
 
                     var url = builder.ToString().AddTrailing().ToLower();
@@ -65,10 +68,11 @@ namespace Ekom.U10.Services
 
                 foreach (var item in items)
                 {
-                    var categorySlug = item.GetValue("slug", store.Alias);
-                    if (!string.IsNullOrWhiteSpace(categorySlug))
+                    var categorySlug = item.GetValue("slug");//, store.Alias);
+                    var slugValueByCulture = categorySlug.GetEkomPropertyEditorValue("values").GetEkomPropertyEditorValue(store.Culture.ToString());
+                    if (!string.IsNullOrWhiteSpace(slugValueByCulture))
                     {
-                        builder.Append(categorySlug.ToUrlSegment(shortStringHelper).AddTrailing());
+                        builder.Append(slugValueByCulture.ToUrlSegment(_shortStringHelper).AddTrailing());
                     }
                 }
 
@@ -105,7 +109,7 @@ namespace Ekom.U10.Services
                         builder.Append(item + "/");
                     }
 
-                    var slugSafeAlias = slug.ToUrlSegment(shortStringHelper);
+                    var slugSafeAlias = slug.ToUrlSegment(_shortStringHelper);
                     if (!string.IsNullOrEmpty(slugSafeAlias))
                     {
                         builder.Append(slugSafeAlias);
@@ -135,11 +139,13 @@ namespace Ekom.U10.Services
                 throw new Exception("Slug is missing on product: " + nodeId + " Store: " + store.Alias);
             }
 
+            //TODO: prettify...
+            var test2 = slug.GetEkomPropertyEditorValue("values").GetEkomPropertyEditorValue(store.Culture.ToString());
             foreach (var category in categories)
             {
                 foreach (var categoryUrl in category.Urls)
                 {
-                    var url = categoryUrl + slug.ToUrlSegment(shortStringHelper).AddTrailing().ToLower();
+                    var url = categoryUrl + test2.ToUrlSegment(_shortStringHelper).AddTrailing().ToLower();
 
                     urls.Add(url);
                 }

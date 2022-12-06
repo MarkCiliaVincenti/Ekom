@@ -87,17 +87,18 @@ namespace Ekom.Services
 
         public IStore GetStoreFromCache()
         {
-            ContentRequest r = null;
+            ContentRequest contentRequest = null;
 #if NETFRAMEWORK
             if (_httpContext.Items.Contains("ekmRequest"))
 #else
-            if (_httpContext.Items.ContainsKey("ekmRequest"))
+            if (_httpContext.Items.ContainsKey("umbrtmche-ekmRequest"))
 #endif
             {
-                r = _httpContext.Items["ekmRequest"] as ContentRequest;
+                var r = _httpContext.Items["umbrtmche-ekmRequest"] as Lazy<object>;
+                contentRequest = r.Value as ContentRequest;
             }
 
-            return r?.Store ?? GetAllStores().FirstOrDefault();
+            return contentRequest?.Store ?? GetAllStores().FirstOrDefault();
         }
 
         public IEnumerable<IStore> GetAllStores()

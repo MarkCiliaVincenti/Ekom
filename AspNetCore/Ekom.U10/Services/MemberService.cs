@@ -1,26 +1,30 @@
 using Ekom.Models;
 using Ekom.U10.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Membership;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Security;
+using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace Ekom.U10.Services
 {
     class MemberService : Ekom.Services.IMemberService
     {
-        private readonly Umbraco.Cms.Core.Services.IMemberService _ms;
-        private readonly IMemberManager _memberManager;
-        public MemberService(Umbraco.Cms.Core.Services.IMemberService ms, IMemberManager memberManager)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MemberService(IHttpContextAccessor httpContextAccessor)
         {
-            _ms = ms;
-            _memberManager = memberManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public UmbracoMember GetByUsername(string userName)
         {
-            var m = _ms.GetByUsername(userName);
+            var serviceContext = _httpContextAccessor.HttpContext?.RequestServices.GetService<Umbraco.Cms.Core.Services.IMemberService>();
+            var m = serviceContext?.GetByUsername(userName);
 
             if (m == null)
             {
@@ -30,10 +34,12 @@ namespace Ekom.U10.Services
             return new Umbraco10Member(m);
         }
 
-        public async Task<UmbracoMember> GetCurrentMemberAsync()
+        public UmbracoMember GetCurrentMember()
         {
-            var m = await _memberManager.GetCurrentMemberAsync().ConfigureAwait(false);
-            IMember? member = _ms.GetById(Convert.ToInt32(m.Id));
+            var serviceContext = _httpContextAccessor.HttpContext?.RequestServices.GetService<Umbraco.Cms.Core.Services.IMemberService>();
+            var managerContext = _httpContextAccessor.HttpContext?.RequestServices.GetService<IMemberManager>();
+            var m = managerContext?.GetCurrentMemberAsync();
+            IMember? member = serviceContext?.GetById(Convert.ToInt32(m?.Id));
             if (member == null)
             {
                 return null;
@@ -48,7 +54,8 @@ namespace Ekom.U10.Services
 
         public void Save(Dictionary<string, object> data, string userName)
         {
-            var m = _ms.GetByUsername(userName);
+            var serviceContext = _httpContextAccessor.HttpContext?.RequestServices.GetService<Umbraco.Cms.Core.Services.IMemberService>();
+            var m = serviceContext?.GetByUsername(userName);
 
             if (m == null)
             {
@@ -64,7 +71,7 @@ namespace Ekom.U10.Services
                 
             }
 
-            _ms.Save(m);
+            serviceContext?.Save(m);
            
         }
     }

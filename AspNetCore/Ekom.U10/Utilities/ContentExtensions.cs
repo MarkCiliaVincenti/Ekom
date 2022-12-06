@@ -1,18 +1,26 @@
 using Ekom;
 using Ekom.Models;
+using Ekom.U10.DataEditors;
+using Ekom.U10.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
-namespace EkomCore.U10.Utilities
+namespace Ekom.U10.Utilities
 {
     public static class ContentExtensions
     {
-        public static void SetProperty(this IContent content, string alias, Dictionary<string, object> items, PropertyEditorType type)
+        /// <summary>
+        /// Set Property on ekom content
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="alias">Property alias</param>
+        /// <param name="values">Values to insert</param>
+        /// <param name="type">Type of property, Language or Store</param>
+        public static void SetProperty(this IContent content, string alias, Dictionary<string, object> values, PropertyEditorType type = PropertyEditorType.Empty)
         {
-
             if (content == null)
             {
                 throw new ArgumentNullException("content");
@@ -23,9 +31,9 @@ namespace EkomCore.U10.Utilities
                 throw new ArgumentNullException("alias");
             }
 
-            if (content == items)
+            if (values == null)
             {
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException("values");
             }
 
             var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
@@ -34,57 +42,37 @@ namespace EkomCore.U10.Utilities
             {
                 var dts = Configuration.Resolver.GetService<IDataTypeService>();
 
-                IEnumerable<IDataType> byEditorAlias = dts.GetByEditorAlias(property.PropertyType.PropertyEditorAlias);
-                if (byEditorAlias.Any())
+                var editor = dts.GetByEditorAlias(property.PropertyType.PropertyEditorAlias);
+
+                if (editor.Any())
                 {
-                    IDataType dataType = byEditorAlias.FirstOrDefault();
+                    var dataType = editor.FirstOrDefault();
+
+                    if (type == PropertyEditorType.Empty)
+                    {
+                        var prevalues = new EkomPropertyEditorConfiguration() { useLanguages = true };
+
+                        try
+                        {
+                            prevalues = (EkomPropertyEditorConfiguration)dataType.Configuration;
+
+                            type = prevalues.useLanguages ? PropertyEditorType.Language : PropertyEditorType.Store;
+                        }
+                        catch
+                        {
+                           
+                        }
+                    }
+
                     string value = JsonConvert.SerializeObject(new PropertyValue
                     {
                         DtdGuid = dataType.Key,
-                        Values = items,
+                        Values = values,
                         Type = type.ToString()
                     });
+
                     content.SetValue(alias, value);
-                    return;
-                }
 
-                throw new InvalidOperationException("Unable to get data type for property.");
-            }
-        }
-        public static void SetProperty(this IContent content, string alias, Dictionary<string, object> items)
-        {
-            if (content == null)
-            {
-                throw new ArgumentNullException("content");
-            }
-
-            if (string.IsNullOrEmpty(alias))
-            {
-                throw new ArgumentNullException("alias");
-            }
-
-            if (content == items)
-            {
-                throw new ArgumentNullException("items");
-            }
-
-            var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
-
-            if (property != null)
-            {
-                var dts = Configuration.Resolver.GetService<IDataTypeService>();
-
-                IEnumerable<IDataType> byEditorAlias = dts.GetByEditorAlias(property.PropertyType.PropertyEditorAlias);
-
-                if (byEditorAlias.Any())
-                {
-                    IDataType dataType = byEditorAlias.FirstOrDefault();
-                    string value = JsonConvert.SerializeObject(new PropertyValue
-                    {
-                        DtdGuid = dataType.Key,
-                        Values = items
-                    });
-                    content.SetValue(alias, value);
                     return;
                 }
 
@@ -93,7 +81,44 @@ namespace EkomCore.U10.Utilities
 
             throw new InvalidOperationException("Unable to find matching property on IContent.");
         }
-        public static void SetProperty(this IContent content, string alias, string storeAlias, object value)
+
+        /// <summary>
+        /// Set Slug on ekom product or category
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="values">Values to insert</param>
+        /// <param name="type">Type of property, Language or Store</param>
+        public static void SetSlug(this IContent content, Dictionary<string, object> values, PropertyEditorType type = PropertyEditorType.Empty)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException("values");
+            }
+
+            if (content.ContentType.Alias != "ekmProduct" && content.ContentType.Alias != "ekmCategory")
+            {
+                throw new ArgumentNullException("Slug can only be set on ekom product or category");
+            }
+
+            var dict = new Dictionary<string, object>();
+
+
+            var _umbService = Configuration.Resolver.GetService<UmbracoService>();
+
+            foreach (var value in values)
+            {
+                dict.Add(value.Key, _umbService.UrlSegment(value.Value.ToString()));
+            }
+
+            SetProperty(content, "slug", dict, type);
+        }
+
+        internal static void SetProperty(this IContent content, string alias, string key, object value)
         {
             if (content == null)
             {
@@ -105,9 +130,9 @@ namespace EkomCore.U10.Utilities
                 throw new ArgumentNullException("alias");
             }
 
-            if (string.IsNullOrEmpty(storeAlias))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException("storeAlias");
+                throw new ArgumentNullException("key");
             }
 
             var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
@@ -116,18 +141,18 @@ namespace EkomCore.U10.Utilities
             {
                 var ekomProperty = content.GetEkomProperty(alias);
 
-                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                var dictionary = new Dictionary<string, object>();
                 if (ekomProperty != null && ekomProperty.Values != null && ekomProperty.Values.Any())
                 {
                     foreach (KeyValuePair<string, object> value3 in ekomProperty.Values)
                     {
-                        object value2 = ((value3.Key.ToUpperInvariant() == storeAlias.ToUpperInvariant()) ? value : value3.Value);
+                        object value2 = ((value3.Key.ToUpperInvariant() == key.ToUpperInvariant()) ? value : value3.Value);
                         dictionary.Add(value3.Key, value2);
                     }
                 }
                 else
                 {
-                    dictionary.Add(storeAlias, value);
+                    dictionary.Add(key, value);
                 }
 
                 content.SetProperty(alias, dictionary);
@@ -137,25 +162,78 @@ namespace EkomCore.U10.Utilities
 
             throw new InvalidOperationException("Unable to find matching property on IContent.");
         }
-        public static void SetProperty(this IContent content, string alias, object value, string culture = null)
+
+        /// <summary>
+        /// Set Property on content with default SetValue for ekom nodes
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="alias">Property alias</param>
+        /// <param name="value">Value to insert</param>
+        public static void SetProperty(this IContent content, string alias, object value)
         {
-            content.SetValue(alias, value, culture);
+            content.SetValue(alias, value, null);
+        }
+
+        internal static PropertyValue GetEkomProperty(this IContent content, string alias)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
+
+            if (property == null)
+            {
+                throw new InvalidOperationException("Unable to find matching property on IContent.");
+            }
+
+            if (property.GetValue() != null)
+            {
+                return JsonConvert.DeserializeObject<PropertyValue>(property.GetValue().ToString());
+            }
+
+            return null;
         }
 
         /// <summary>
-        /// Set a price value<para/>
+        /// Get Ekom Property
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="storeAlias"></param>
-        /// <param name="currency"></param>
-        /// <param name="price"></param>
-        /// <returns>Property Value</returns>
-        public static void SetPrice(this IContent item, string storeAlias, string currency, decimal price)
+        /// <param name="content">IContent</param>
+        /// <param name="alias">Property alias</param>
+        /// <param name="key">Language or store key</param>
+        /// <returns>Ekom property string value</returns>
+        public static string GetProperty(this IContent content, string alias, string key)
         {
-            if (item.HasProperty("price"))
+            if (content == null)
+            {
+                throw new ArgumentNullException("content");
+            }
+
+            var property = GetEkomProperty(content, alias);
+
+            if (property != null && property.Values != null && property.Values.ContainsKey(key))
+            {
+                return property.Values.FirstOrDefault(x => x.Key == key).Value.ToString();
+            }
+
+            return "";
+            
+        }
+
+        /// <summary>
+        /// Set price on ekom product or variant
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="storeAlias">Store alias</param>
+        /// <param name="currency">Currency (is-IS, en-US)</param>
+        /// <param name="price">Price as decimal</param>
+        public static void SetPrice(this IContent content, string storeAlias, string currency, decimal price)
+        {
+            if (content.HasProperty("price"))
             {
 
-                var fieldValue = item.GetValue<string>("price");
+                var fieldValue = content.GetValue<string>("price");
 
                 var currencyPrices = new List<CurrencyPrice>();
 
@@ -184,32 +262,32 @@ namespace EkomCore.U10.Utilities
                     currencyPrices.Add(new CurrencyPrice(price, currency));
                 }
 
-                item.SetProperty("price", storeAlias, currencyPrices);
+                content.SetProperty("price", storeAlias, currencyPrices);
             }
 
         }
 
-        public static PropertyValue GetEkomProperty(this IContent content, string alias)
+        /// <summary>
+        /// Get Price from product or variant
+        /// </summary>
+        /// <param name="content">IContent</param>
+        /// <param name="storeAlias">Store alias</param>
+        /// <param name="currency">Currency (is-IS, en-US)</param>
+        /// <returns>Ekom Price as decimal</returns>
+        public static decimal GetPrice(this IContent content, string storeAlias, string currency)
         {
-            if (content == null)
+            var fieldValue = content.GetProperty("price", storeAlias);
+
+            if (!string.IsNullOrEmpty(fieldValue))
             {
-                throw new ArgumentNullException("content");
+                var currencyValues = fieldValue.GetCurrencyValues();
+
+                var value = string.IsNullOrEmpty(currency) ? currencyValues.FirstOrDefault() : currencyValues.FirstOrDefault(x => x.Currency == currency);
+
+                return value != null ? value.Value : 0;
             }
 
-            var property = content.Properties.FirstOrDefault(x => x.Alias.ToUpperInvariant() == alias.ToUpperInvariant());
-
-            if (property == null)
-            {
-                throw new InvalidOperationException("Unable to find matching property on IContent.");
-            }
-
-            if (property.GetValue() != null)
-            {
-                return JsonConvert.DeserializeObject<PropertyValue>(property.GetValue().ToString());
-            }
-
-            return null;
+            return 0;
         }
-
     }
 }

@@ -1,15 +1,12 @@
 using Ekom.Cache;
-using Ekom.Interfaces;
 using Ekom.Models;
-using Ekom.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
-
 namespace Ekom
 {
     /// <summary>
@@ -25,76 +22,105 @@ namespace Ekom
         }
 
         public static IServiceProvider Resolver { get; internal set; }
-       
+
+        /// <summary>
+        /// This IServiceProvider is a root scope provider,
+        /// that means any services and their dependencies can only be singletons/transients.
+        /// If any services resolved with this root scope provider require scoped lifetime services,
+        /// get yourself an HttpContext (with an accessor) and RequestServices.GetService them.
+        /// </summary>
         public static Configuration Instance => Resolver.GetService<Configuration>();
 
         internal const string Cookie_UmbracoDomain = "EkomUmbracoDomain";
 
         /// <summary>
-        /// Ekom.PerStoreStock
+        /// Ekom:PerStoreStock
         /// Controls which stock cache to will be used. Per store or per Product/Variant.
         /// </summary>
         public virtual bool PerStoreStock
         {
             get
             {
-                var value = _configuration["Ekom.PerStoreStock"];
+                var value = _configuration["Ekom:PerStoreStock"];
 
                 return value.ConvertToBool();
             }
         }
 
         /// <summary>
-        /// Ekom.ExamineIndex
+        /// Ekom:ExamineIndex
         /// Overrides the default of ExternalSearcher
         /// </summary>
         public virtual string ExamineIndex
         {
             get
             {
-                var value = _configuration["Ekom.ExamineIndex"];
+                var value = _configuration["Ekom:ExamineIndex"];
 
                 return value ?? "ExternalIndex";
             }
         }
 
         /// <summary>
-        /// Ekom.CustomIndex
+        /// Umbraco:CMS:RequestHandler:CharCollection
+        /// Gets the Umbraco CharCollection
+        /// </summary>
+        public virtual List<CharCollection> CharCollections
+        {
+            get
+            {
+#if NETCOREAPP
+                var value = _configuration.GetSection("Umbraco:CMS:RequestHandler:CharCollection").Get<List<CharCollection>>();
+#else
+                var value =  new List<CharCollection>();
+#endif
+                return value;
+            }
+        }
+
+        public class CharCollection
+        {
+            public string Char { get; set; }
+            public string Replacement { get; set; }
+        }
+
+        /// <summary>
+        /// Ekom:CustomIndex
         /// This will create an custom examine index that can be used for faster lookup or search named EkomIndex
         /// </summary>
         public virtual bool CustomIndex
         {
             get
             {
-                var value = _configuration["Ekom.CustomIndex"];
+                var value = _configuration["Ekom:CustomIndex"];
 
                 return value.ConvertToBool();
             }
         }
 
         /// <summary>
-        /// Ekom.ShareBasket
+        /// Ekom:ShareBasket
         /// This will allow baskets to be shared between stores but we aware that it requires the same currencies to be available cross stores or it will break down.
         /// </summary>
         public virtual bool ShareBasketBetweenStores
         {
             get
             {
-                var value = _configuration["Ekom.ShareBasket"];
+                var value = _configuration["Ekom:ShareBasket"];
 
                 return value.ConvertToBool();
             }
         }
 
         /// <summary>
-        /// Ekom.BasketCookieLifetime
+        /// Ekom:BasketCookieLifetime
         /// Set how many days the order cookie should live, Default 1 day
         /// </summary>
         public virtual double BasketCookieLifetime
         {
             get
             {
-                var value = _configuration["Ekom.BasketCookieLifetime"];
+                var value = _configuration["Ekom:BasketCookieLifetime"];
 
                 double _value = 1;
 
@@ -108,35 +134,35 @@ namespace Ekom
         }
 
         /// <summary>
-        /// Ekom.CustomImage
+        /// Ekom:CustomImage
         /// Overrides the default of images
         /// </summary>
         public virtual string CustomImage
         {
             get
             {
-                var value = _configuration["Ekom.CustomImage"];
+                var value = _configuration["Ekom:CustomImage"];
 
                 return value ?? "images";
             }
         }
 
         /// <summary>
-        /// Ekom.ExamineRebuild
+        /// Ekom:ExamineRebuild
         /// Default is false, if true on startup we will check if examine is empty and rebuild if so.
         /// </summary>
         public virtual bool ExamineRebuild
         {
             get
             {
-                var value = _configuration["Ekom.ExamineRebuild"];
+                var value = _configuration["Ekom:ExamineRebuild"];
 
                 return value.ConvertToBool();
             }
         }
 
         /// <summary>
-        /// Ekom.VirtualContent
+        /// Ekom:VirtualContent
         /// Allows for configuration of content nodes to use for matching all requests
         /// Use case: Data populated from Navision, Ekom used as in memory cache with no backing umbraco nodes.
         /// </summary>
@@ -144,21 +170,21 @@ namespace Ekom
         {
             get
             {
-                var value = _configuration["Ekom.VirtualContent"];
+                var value = _configuration["Ekom:VirtualContent"];
 
                 return value.ConvertToBool();
             }
         }
 
         /// <summary>
-        /// Ekom.CategoryRootLevel
+        /// Ekom:CategoryRootLevel
         /// Umbraco level value. Minimum level value for categories in umbraco hierarchy.
         /// </summary>
         public virtual int CategoryRootLevel
         {
             get
             {
-                return int.Parse(_configuration["Ekom.CategoryRootLevel"] ?? "3");
+                return int.Parse(_configuration["Ekom:CategoryRootLevel"] ?? "3");
             }
         }
 
@@ -167,14 +193,14 @@ namespace Ekom
         /// Give value in minutes when overriding default
         /// </summary>
         public virtual TimeSpan ReservationTimeout
-            => TimeSpan.FromMinutes(double.Parse(_configuration["Ekom.ReservationTimeout"] ?? "30"));
+            => TimeSpan.FromMinutes(double.Parse(_configuration["Ekom:ReservationTimeout"] ?? "30"));
 
         /// <summary>
         /// Should Ekom create a ekmCustomerData table and use it to store customer + order data 
         /// submitted to the checkout controller?
         /// </summary>
         public virtual bool StoreCustomerData
-            => _configuration["Ekom.CustomerData"].ConvertToBool();
+            => _configuration["Ekom:CustomerData"].ConvertToBool();
 
         /// <summary>
         /// </summary>
@@ -182,7 +208,7 @@ namespace Ekom
         {
             get
             {
-                var configVal = _configuration["Ekom.VatCalcRounding"];
+                var configVal = _configuration["Ekom:VatCalcRounding"];
 
                 if (!Enum.TryParse(configVal, out Rounding preferredRounding))
                 {
@@ -201,7 +227,7 @@ namespace Ekom
         {
             get
             {
-                var configVal = _configuration["Ekom.Order.VatCalcRounding"];
+                var configVal = _configuration["Ekom:OrderVatCalcRounding"];
 
                 if (!Enum.TryParse(configVal, out Rounding preferredRounding))
                 {
@@ -214,14 +240,14 @@ namespace Ekom
         }
 
         /// <summary>
-        /// Ekom.UserBasket
+        /// Ekom:UserBasket
         /// Single basket per user, not saved in session or cookie, only on the member under "orderId".
         /// </summary>
         public virtual bool UserBasket
         {
             get
             {
-                var value = _configuration["Ekom.UserBasket"];
+                var value = _configuration["Ekom:UserBasket"];
 
                 return value.ConvertToBool();
             }
@@ -231,12 +257,12 @@ namespace Ekom
         /// Used by MailService, defaults to umbracoSettings.config configured email
         /// </summary>
         public virtual string EmailNotifications
-            => _configuration["Ekom.EmailNotifications"];
+            => _configuration["Ekom:EmailNotifications"];
 
         /// <summary>
         /// </summary>
         public virtual bool DisableStock
-            => _configuration["Ekom.DisableStock"].ConvertToBool();
+            => _configuration["Ekom:DisableStock"].ConvertToBool();
 
         /// <summary>
         /// Lists in initialization order all caches and the document type alias of

@@ -2,16 +2,20 @@ using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
 using Ekom.Utilities;
+using EkomCore.Models;
 using EkomCore.Models.Umbraco;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
@@ -25,13 +29,17 @@ class UmbracoService : IUmbracoService
     private readonly ILocalizationService _localizationService;
     private readonly PropertyEditorCollection _propertyEditorCollection;
     private readonly IContentTypeService _contentTypeService;
+    private readonly IAppPolicyCache _runtimeCache;
+    private readonly IShortStringHelper _shortStringHelper;
     public UmbracoService(
         IDomainService domainService,
         IDataTypeService dataTypeService,
         IUmbracoHelperAccessor umbracoHelperAccessor,
         ILocalizationService localizationService,
         PropertyEditorCollection propertyEditorCollection,
-        IContentTypeService contentTypeService)
+        IContentTypeService contentTypeService,
+        AppCaches appCaches,
+        IShortStringHelper shortStringHelper)
     {
         _domainService = domainService;
         _dataTypeService = dataTypeService;
@@ -39,6 +47,8 @@ class UmbracoService : IUmbracoService
         _localizationService = localizationService;
         _propertyEditorCollection = propertyEditorCollection;
         _contentTypeService = contentTypeService;
+        _runtimeCache = appCaches.RuntimeCache;
+        _shortStringHelper = shortStringHelper;
     }
 
     public string GetDictionaryValue(string key)
@@ -97,7 +107,14 @@ class UmbracoService : IUmbracoService
         string contentTypeAlias,
         string propertyAlias)
     {
+        return _runtimeCache.GetCacheItem("ekmDataTypeAlias" + contentTypeAlias + propertyAlias, () => {
+            return GetDataTypeAliasValue(contentTypeAlias, propertyAlias);
+        }, TimeSpan.FromMinutes(60));
+    }
 
+    private object GetDataTypeAliasValue(string contentTypeAlias,
+        string propertyAlias)
+    {
         var ct = _contentTypeService.Get(contentTypeAlias);
 
         var prop = ct?.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
@@ -113,13 +130,14 @@ class UmbracoService : IUmbracoService
 
     public IEnumerable<UmbracoLanguage> GetLanguages()
     {
-        var languages = _localizationService.GetAllLanguages().Select(x => new UmbracoLanguage() { 
-            Culture = x.CultureInfo,
-            CultureName = x.CultureName,
-            IsoCode  = x.IsoCode
-        });
-
-        return languages;
+        return _runtimeCache.GetCacheItem("ekmLanguages", () => {
+            return _localizationService.GetAllLanguages().OrderByDescending(x => x.IsDefault).ThenBy(x => x.CultureName).Select(x => new UmbracoLanguage()
+            {
+                Culture = x.CultureInfo,
+                CultureName = x.CultureName,
+                IsoCode = x.IsoCode
+            });
+        }, TimeSpan.FromMinutes(60));
     }
 
     private object FormatDataType(IDataType dtd)
@@ -138,5 +156,10 @@ class UmbracoService : IUmbracoService
             preValues = preValues,
             view = propertyEditor.GetValueEditor(null).View
         };
+    }
+
+    internal string UrlSegment(string value)
+    {
+        return value.ToUrlSegment(_shortStringHelper);
     }
 }

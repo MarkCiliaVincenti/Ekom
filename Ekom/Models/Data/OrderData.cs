@@ -23,7 +23,7 @@ namespace Ekom.Models
         /// Required by some payment providers and bookkeeping software
         /// </summary>
 
-        //[PrimaryKey]
+        [PrimaryKey]
         [Identity, NotNull]
         public int ReferenceId { get; set; }
 

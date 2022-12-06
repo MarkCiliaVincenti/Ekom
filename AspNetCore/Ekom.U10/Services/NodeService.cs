@@ -1,13 +1,10 @@
 using Ekom.Models;
 using Ekom.Services;
 using Ekom.U10.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
 namespace Ekom.U10.Services
@@ -56,6 +53,11 @@ namespace Ekom.U10.Services
             {
                 var node = GetNodeById(id);
 
+                if (node == null)
+                {
+                    throw new ArgumentNullException(nameof(node));
+                }
+
                 var ancestors = node.Ancestors().Select(x => new Umbraco10Content(x)).ToList();
 
                 return ancestors;
@@ -66,6 +68,11 @@ namespace Ekom.U10.Services
             using (var cref = _context.EnsureUmbracoContext())
             {
                 var node = GetNodeById(id);
+
+                if (node == null)
+                {
+                    throw new ArgumentNullException(nameof(node));
+                }
 
                 var ancestors = node.AncestorsOrSelf().Where(x => x.IsDocumentType("ekmCategory") || x.IsDocumentType("ekmProduct")).Select(x => new Umbraco10Content(x));
 
@@ -79,6 +86,11 @@ namespace Ekom.U10.Services
             using (var cref = _context.EnsureUmbracoContext())
             {
                 var node = GetNodeById(id);
+
+                if (node == null)
+                {
+                    throw new ArgumentNullException(nameof(node));
+                }
 
                 var ancestors = node.Children.Select(x => new Umbraco10Content(x)).ToList();
 
@@ -127,13 +139,15 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetNodeById(int id)
+        public IPublishedContent GetNodeById(int id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
                 var cache = cref.UmbracoContext.Content;
 
-                return cache.GetById(id);
+                var node = cache.GetById(id);
+
+                return node != null && node.IsPublished() ? node : null;
             }
         }
 
@@ -142,7 +156,7 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetNodeById(string id)
+        public IPublishedContent GetNodeById(string id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
@@ -181,7 +195,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 }
@@ -203,7 +217,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 }
@@ -227,7 +241,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 } 
@@ -275,7 +289,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 }
@@ -296,7 +310,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 }
@@ -319,7 +333,7 @@ namespace Ekom.U10.Services
 
                 var node = cache.GetById(id);
 
-                if (node != null)
+                if (node != null && node.IsPublished())
                 {
                     return new Umbraco10Content(node);
                 }
@@ -359,7 +373,7 @@ namespace Ekom.U10.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Property Value</returns>
-        private IPublishedContent GetMediaById(string id)
+        public IPublishedContent GetMediaById(string id)
         {
             using (var cref = _context.EnsureUmbracoContext())
             {
@@ -393,9 +407,14 @@ namespace Ekom.U10.Services
             {
                 var node = GetNodeById(id);
 
-                var url = node.Url();
+                if (node != null)
+                {
+                    var url = node.Url();
 
-                return url;
+                    return url;
+                }
+
+                return "#";
             }
    
         }

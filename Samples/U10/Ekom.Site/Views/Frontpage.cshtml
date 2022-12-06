@@ -1,5 +1,6 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @using Ekom.API;
+
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Master.cshtml";
@@ -8,6 +9,8 @@
     var store = Store.Instance.GetStore();
     var allStores = Store.Instance.GetAllStores();
     var allProducts = Catalog.Instance.GetAllProducts();
+
+    var o = Order.Instance.GetOrder();
 }
 
 <h2>Total Categories (@categories.Count())</h2>
@@ -40,19 +43,33 @@
         <ul>
             @foreach (var product in cat.ProductsRecursive)
             {
+                var testContent = product.GetValue<IPublishedContent>("test");
+
                 <li>
                     <a href="@product.Url">
 
                         <p>Title: @product.Title</p>
                         <p>SKU: @product.SKU</p>
                         <p>Price: @product.Price.WithVat.CurrencyString</p>
-                        <p>
-                            Test: @product.GetValue("test", Model.GetCultureFromDomains())
-                        </p>
-                        <p>
-                            Test2: @product.GetValue("test2")
-                        </p>
                     </a>
+                    <p>
+                        <strong>Test - @(product.GetValue<string>("test"))</strong>
+                        <ul>
+                            <li>@(testContent != null ? testContent.Name : "")</li>
+                        </ul>
+                    </p>
+                    <p>
+                        <strong>Test2 - @product.GetValue("test2")</strong>
+                        <ul>
+                            @foreach (var item in product.GetValue<IEnumerable<IPublishedContent>>("test2"))
+                            {
+                                <li>@item.Name</li>
+                            }
+                        </ul>
+                    </p>
+                    <p>
+                        <strong>Test3 - @(product.GetValue<bool>("test3"))</strong>
+                    </p>
 
                     <ul>
                         @foreach (var prop in product.Properties)

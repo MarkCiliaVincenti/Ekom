@@ -1,6 +1,6 @@
 var bind = function (data, eventsService) {
 
-  var nameInput = document.getElementsByClassName('umb-editor-header__name-input')[0];
+  let nameInput = document.getElementsByClassName('umb-editor-header__name-input')[0];
 
   if (nameInput) {
 
@@ -9,12 +9,13 @@ var bind = function (data, eventsService) {
       var model = {
         title: "",
         slug: "",
-        alias: data.alias
+        alias: data.alias,
+        all: true
       };
 
       data.tabs.forEach((tab) => {
 
-        var titleInput = document.getElementById('title.' + tab.value);
+        let titleInput = document.getElementById('title.' + tab.value);
 
         if (titleInput) {
           model.title = nameInput.value;
@@ -24,9 +25,14 @@ var bind = function (data, eventsService) {
 
         if (slugInput) {
 
+          let inputValue = nameInput.value;
+
+          Umbraco.Sys.ServerVariables.ekom.charCollections.forEach((char) => {
+            inputValue = inputValue.replace(char.Char, char.Replacement);
+          });
+
           const slugify =
-            nameInput.value
-              .toString()                           // Cast to string (optional)
+            inputValue
               .normalize('NFKD')            // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
               .toLowerCase()                  // Convert the string to lowercase letters
               .trim()                                  // Remove whitespace from both sides of a string (optional)
@@ -38,7 +44,7 @@ var bind = function (data, eventsService) {
         }
 
       });
-  
+
       eventsService.emit("ekmInputChange", { value: model });
 
     });
