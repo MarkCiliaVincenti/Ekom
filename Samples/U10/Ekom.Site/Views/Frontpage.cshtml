@@ -43,6 +43,7 @@
         <ul>
             @foreach (var product in cat.ProductsRecursive)
             {
+
                 var testContent = product.GetValue<IPublishedContent>("test");
 
                 <li>
@@ -80,6 +81,15 @@
                         }
                     </ul>
 
+                    <h4>Metafields</h4>
+
+                    @if (product.Metafields != null)  {
+                        foreach (var field in product.Metafields("is-IS")) {
+                            <p>
+                                @field.Field.Title.GetValue("is-IS") - @(string.Join(",", field.Values))
+                            </p>
+                        }
+                    }
                 </li>
             }
         </ul>

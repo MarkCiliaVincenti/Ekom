@@ -1,3 +1,4 @@
+using EkomCore.Models;
 using System;
 using System.Collections.Generic;
 
@@ -31,6 +32,8 @@ namespace Ekom.Models
         /// The stock.
         /// </value>
         decimal Vat { get; }
+
+        List<Metavalue> Metafields(string culture);
 
         /// <summary>
         /// Gets the stock.

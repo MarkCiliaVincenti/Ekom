@@ -8,6 +8,7 @@ using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
+using EkomCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -86,6 +87,7 @@ namespace Ekom.AspNetCore
                 new Catalog(
                     f.GetService<ILogger<Catalog>>(),
                     f.GetService<Configuration>(),
+                    f.GetService<IMetafieldService>(),
                     f.GetService<IPerStoreCache<IProduct>>(),
                     f.GetService<IPerStoreCache<ICategory>>(),
                     f.GetService<IPerStoreCache<IProductDiscount>>(),

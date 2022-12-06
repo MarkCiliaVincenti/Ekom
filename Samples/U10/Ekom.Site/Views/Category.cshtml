@@ -1,10 +1,57 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Ekom.API;
 @{
     Layout = "Master.cshtml";
 
     var category = Catalog.Instance.GetCategory();
+
+    var products = category.ProductsRecursive;
+
+    var productMetaFields = products.SelectMany(x => x.Metafields("is-IS")).Where(x => x.Field.Filterable);
+
+    var filters = productMetaFields.GroupBy(x => x.Field.Key);
 }
 
 <h1>@category.Title</h1>
+
+<h2>Products</h2>
+
+<ul>
+    @foreach (var prod in products)
+    {
+        <li>@prod.Title</li>
+    }
+</ul>
+
+<h2>Filters</h2>
+
+<form method="get" action="@Model.Url()">
+    <ol>
+        @foreach (var filterGroup in filters)
+        {
+            var values = filterGroup.SelectMany(x => x.Values).DistinctBy(x => x).OrderBy(x => x);
+            var field = productMetaFields.FirstOrDefault(x => x.Field.Key == filterGroup.Key);
+
+            <li>
+                @field.Field.Title.GetValue("is-IS")
+
+                <ul>
+                    @foreach (var val in values)
+                    {
+                        var query = Context.Request.Query["filter_" + field.Field.Id];
+
+                        <li>
+                            <label>
+                                <input type="checkbox" value="@val" name="filter_@field.Field.Id" @(query.Contains(val) ? "checked" : "") /> @val
+                            </label>
+
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    </ol>
+    <button type="submit">Filter</button>
+</form>
+

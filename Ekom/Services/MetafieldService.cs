@@ -1,5 +1,7 @@
 using Ekom.Services;
 using EkomCore.Models;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,6 +20,107 @@ namespace EkomCore.Services
             var metafieldNodes = _nodeService.NodesByTypes("ekmMetaField");
 
             return metafieldNodes.Select(x => new Metafield(x));
+        }
+
+        public List<Metavalue> SerializeMetafields(string jsonValue, string culture)
+        {
+            if (string.IsNullOrEmpty(jsonValue))
+            {
+                return null;
+            }
+
+            var list = new List<Metavalue>();
+
+            var fields = GetMetafields();
+
+            var jArray = JArray.Parse(jsonValue);
+
+            foreach (JObject item in jArray)
+            {
+                if (item.ContainsKey("Key") && Guid.TryParse(item["Key"].ToString(), out Guid _metaFieldKey))
+                {
+                    var valuesList = new List<string>();
+
+                    var field = fields.FirstOrDefault(x => x.Key == _metaFieldKey);
+
+                    if (field != null)
+                    {
+                        var valuesToken = item.SelectToken("Values");
+
+                        if (valuesToken.Type == JTokenType.Array)
+                        {
+                            var valuesArray = valuesToken as JArray;
+
+                            foreach (var arrayItem in valuesArray)
+                            {
+                                var valueObject = arrayItem as JObject;
+
+                                if (valueObject != null && valueObject.ContainsKey("Id"))
+                                {
+                                    var valueId = valueObject["Id"].ToString();
+
+                                    var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId && x.Values.Any(z => z.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)));
+
+                                    if (fieldValues != null)
+                                    {
+                                        var val = fieldValues.Values.FirstOrDefault(x => x.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)).Value;
+
+                                        if (!string.IsNullOrEmpty(val))
+                                        {
+                                            valuesList.Add(val);
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        }
+                        else if (valuesToken.Type == JTokenType.Object)
+                        {
+                            var valueObject = valuesToken as JObject;
+
+                            if (valueObject != null && valueObject.ContainsKey("Id"))
+                            {
+                                var valueId = valueObject["Id"].ToString();
+
+                                var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId && x.Values.Any(z => z.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)));
+
+                                if (fieldValues != null)
+                                {
+                                    var val = fieldValues.Values.FirstOrDefault(x => x.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)).Value;
+
+                                    if (!string.IsNullOrEmpty(val))
+                                    {
+                                        valuesList.Add(val);
+                                    }
+                                    
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(valuesToken.ToString()))
+                            {
+                                valuesList.Add(valuesToken.ToString());
+                            }
+                        }
+
+                        if (valuesList.Any())
+                        {
+                            list.Add(new Metavalue()
+                            {
+                                Field = field,
+                                Values = valuesList
+                            });
+                        }
+
+                    }
+ 
+                }
+            }
+
+            return list;
         }
     }
 }

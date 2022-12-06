@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml.Serialization;
+using EkomCore.Models;
+using EkomCore.Services;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 #else
@@ -248,6 +250,21 @@ namespace Ekom.Models
                 return Store.Vat;
             }
         }
+
+        public virtual List<Metavalue> Metafields(string culture)
+        {
+            
+            if (Properties.HasPropertyValue("metafields"))
+            {
+                var value = GetValue("metafields");
+
+                return Configuration.Resolver.GetService<IMetafieldService>().SerializeMetafields(value, culture);
+            }
+
+            return new List<Metavalue>();
+            
+        }
+
 
         /// <summary>
         /// All child variant groups of this product

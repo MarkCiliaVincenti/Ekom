@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using EkomCore.Services;
+using EkomCore.Models;
 
 namespace Ekom.API
 {
@@ -31,6 +33,7 @@ namespace Ekom.API
         readonly ILogger<Catalog> _logger;
         readonly HttpContext _httpContext;
         readonly IStoreService _storeSvc;
+        readonly IMetafieldService _metafieldService;
         readonly IPerStoreCache<IProductDiscount> _productDiscountCache; // must be before product cache
         readonly IPerStoreCache<IProduct> _productCache;
         readonly IPerStoreCache<ICategory> _categoryCache;
@@ -42,6 +45,7 @@ namespace Ekom.API
         internal Catalog(
             ILogger<Catalog> logger,
             Configuration config,
+            IMetafieldService metafieldService,
             IPerStoreCache<IProduct> productCache,
             IPerStoreCache<ICategory> categoryCache,
             IPerStoreCache<IProductDiscount> productDiscountCache,
@@ -61,6 +65,7 @@ namespace Ekom.API
             _variantGroupCache = variantGroupCache;
             _productDiscountCache = productDiscountCache;
             _storeSvc = storeService;
+            _metafieldService = metafieldService;
 
 #if NETFRAMEWORK
             _httpContext = HttpContext.Current;
@@ -588,5 +593,11 @@ namespace Ekom.API
 
             return null;
         }
+
+        public IEnumerable<Metafield> GetMetafields()
+        {
+            return _metafieldService.GetMetafields();
+        }
+
     }
 }

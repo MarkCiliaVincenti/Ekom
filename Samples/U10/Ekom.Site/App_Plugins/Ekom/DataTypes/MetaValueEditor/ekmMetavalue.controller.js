@@ -17,7 +17,6 @@
       $scope.model.value = $scope.model.value || [];
 
       ekmResources.getLanguages().then(function (languages) {
-
         $scope.languages = languages;
       });
 
@@ -36,20 +35,26 @@
 
       $scope.Add = function () {
 
+        $scope.model.value = $scope.model.value || [];
+
+        var id = Math.random().toString(16).slice(2);
+
+        var jsonWrapper = {
+          id: id,
+          values: {}
+        };
+
         var jsonData = {};
 
         $scope.languages.forEach(function (lang) {
           jsonData[lang.IsoCode] = '';
         });
 
-        $scope.model.value.push(jsonData);
+        jsonWrapper.values = jsonData;
+
+        $scope.model.value.push(jsonWrapper);
+     
       };
-
-      $scope.$on("formSubmitting", function (ev, args) {
-
-        $scope.model.value = $scope.model.value
-
-      });
 
       $scope.hidePrompt = function () {
         $scope.promptIsVisible = "-1";
