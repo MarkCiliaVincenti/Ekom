@@ -31,6 +31,12 @@ angular.module('umbraco.resources').factory('Ekom.Resources',
           $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "Stores"),
           'Failed to retrieve stores'
         );
+      },
+      getMetafields: function () {
+        return umbRequestHelper.resourcePromise(
+          $http.get(Umbraco.Sys.ServerVariables.ekom.backofficeApiEndpoint + "Metafields"),
+          'Failed to retrieve stores'
+        );
       }
     };
   }

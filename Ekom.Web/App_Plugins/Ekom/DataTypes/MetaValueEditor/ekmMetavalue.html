@@ -11,13 +11,14 @@
     <ul ui-sortable="sortableOptions" style="margin:0;" ng-model="model.value">
       <li ng-repeat="value in model.value track by $index" style="display:flex; position:relative; margin-bottom: 10px;">
 
+
         <div ng-repeat="language in languages" style="flex:0 0 200px; margin-right: 10px;">
 
-          <input type="text" name="item_{{$index}}" ng-model="value[language.IsoCode]" />
+          <input type="text" name="item_{{$index}}" ng-model="value.values[language.IsoCode]" />
 
         </div>
 
-        <umb-icon icon="icon-navigation" class="icon handle" localize="title" title="@general_move"></umb-icon>
+        <umb-icon icon="icon-navigation" class="icon handle" style="margin-right: 10px; margin-top: 6px;" localize="title" title="@general_move"></umb-icon>
 
         <button type="button" class="umb-multiple-textbox__confirm-action" ng-click="showPrompt($index, value)" localize="title" title="@content_removeTextBox">
           <umb-icon icon="icon-trash"></umb-icon>
