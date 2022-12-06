@@ -3,7 +3,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Models
+namespace Ekom.Umb.Models
 {
     class Umbraco10Content : UmbracoContent
     {

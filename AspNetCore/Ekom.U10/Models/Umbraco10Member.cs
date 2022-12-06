@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 
-namespace Ekom.U10.Models
+namespace Ekom.Umb.Models
 {
     class Umbraco10Member : Ekom.Models.UmbracoMember
     {

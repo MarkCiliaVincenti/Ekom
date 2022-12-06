@@ -1,8 +1,8 @@
 using Ekom.Cache;
 using Ekom.Models;
 using Ekom.Services;
-using Ekom.U10.Models;
-using Ekom.U10.Utilities;
+using Ekom.Umb.Models;
+using Ekom.Umb.Utilities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Umbraco.Cms.Core.Cache;

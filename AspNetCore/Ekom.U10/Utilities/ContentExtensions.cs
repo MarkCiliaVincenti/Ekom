@@ -1,14 +1,14 @@
 using Ekom;
 using Ekom.Models;
-using Ekom.U10.DataEditors;
-using Ekom.U10.Services;
+using Ekom.Umb.DataEditors;
+using Ekom.Umb.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Utilities
+namespace Ekom.Umb.Utilities
 {
     public static class ContentExtensions
     {

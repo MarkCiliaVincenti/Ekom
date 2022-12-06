@@ -1,6 +1,6 @@
 using Ekom.Models;
 using Ekom.Services;
-using Ekom.U10.Models;
+using Ekom.Umb.Models;
 using Ekom.Utilities;
 using EkomCore.Models;
 using EkomCore.Models.Umbraco;
@@ -19,7 +19,7 @@ using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Services;
+namespace Ekom.Umb.Services;
 
 class UmbracoService : IUmbracoService
 {

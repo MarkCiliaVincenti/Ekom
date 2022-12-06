@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Services
+namespace Ekom.Umb.Services
 {
     class UrlService : IUrlService
     {

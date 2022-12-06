@@ -2,7 +2,7 @@ using Ekom.Services;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace Ekom.U10.Services;
+namespace Ekom.Umb.Services;
 
 class SecurityService : ISecurityService
 {

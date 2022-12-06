@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
-namespace Ekom.U10
+namespace Ekom.Umb
 {
     class CatalogContentFinder : IContentFinder
     {

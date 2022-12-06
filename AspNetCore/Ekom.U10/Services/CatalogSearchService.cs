@@ -1,5 +1,5 @@
 using Ekom.Models;
-using Ekom.U10.Models;
+using Ekom.Umb.Models;
 using Examine;
 using Examine.Lucene.Providers;
 using Examine.Lucene.Search;
@@ -12,7 +12,7 @@ using Umbraco.Cms.Infrastructure.Examine;
 using static Ekom.Utilities.SearchHelper;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace Ekom.U10.Services
+namespace Ekom.Umb.Services
 {
     class CatalogSearchService
     {

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
 
-namespace Ekom.U10;
+namespace Ekom.Umb;
 
 public class BackofficeUserAccessor
 {

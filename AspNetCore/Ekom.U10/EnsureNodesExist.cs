@@ -1,5 +1,5 @@
 using Ekom.Exceptions;
-using Ekom.U10.DataEditors;
+using Ekom.Umb.DataEditors;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models;

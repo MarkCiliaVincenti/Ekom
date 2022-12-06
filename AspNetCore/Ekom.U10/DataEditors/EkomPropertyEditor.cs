@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.WebAssets;
 using Umbraco.Cms.Infrastructure.WebAssets;
 
-namespace Ekom.U10.DataEditors
+namespace Ekom.Umb.DataEditors
 {
     [DataEditor(
     "Ekom.Property",
