@@ -158,7 +158,7 @@ class UmbracoService : IUmbracoService
         };
     }
 
-    internal string UrlSegment(string value)
+    public string UrlSegment(string value)
     {
         return value.ToUrlSegment(_shortStringHelper);
     }

@@ -16,5 +16,6 @@ namespace Ekom.Services
         object GetDataTypeByAlias(string contentTypeAlias, string propertyAlias);
         object GetDataTypeById(Guid id);
         IEnumerable<object> GetNonEkomDataTypes();
+        string UrlSegment(string value);
     }
 }

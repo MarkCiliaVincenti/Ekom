@@ -1,5 +1,6 @@
 using Ekom;
 using Ekom.Models;
+using Ekom.Services;
 using Ekom.Umb.DataEditors;
 using Ekom.Umb.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -108,7 +109,7 @@ namespace Ekom.Umb.Utilities
             var dict = new Dictionary<string, object>();
 
 
-            var _umbService = Configuration.Resolver.GetService<UmbracoService>();
+            var _umbService = Configuration.Resolver.GetService<IUmbracoService>();
 
             foreach (var value in values)
             {
