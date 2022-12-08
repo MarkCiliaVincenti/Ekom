@@ -361,6 +361,7 @@ namespace Ekom.App_Start
                     var spContainer = EnsureContainerExists("Shipping Providers", 2, ekmDocTypeContainer.Id);
                     var storeContainer = EnsureContainerExists("Store", 2, ekmDocTypeContainer.Id);
                     var zoneContainer = EnsureContainerExists("Zones", 2, ekmDocTypeContainer.Id);
+                    var metafieldContainer = EnsureContainerExists("Metafields", 2, ekmDocTypeContainer.Id);
 
                     #region Compositions
 
@@ -670,6 +671,21 @@ namespace Ekom.App_Start
                                 {
                                     Alias = "stores",
                                     Name = "Stores",
+                                    Type = PropertyGroupType.Tab
+                                },
+                                new PropertyGroup(new PropertyTypeCollection(
+                                    true,
+                                    new List<PropertyType>
+                                    {
+                                        new PropertyType(_shortStringHelper, metafieldDt, "disable")
+                                        {
+                                            Name = "Metafields",
+                                            Alias = "metafields"
+                                        },
+                                    }))
+                                {
+                                    Name = "Metafields",
+                                    Alias = "metafields",
                                     Type = PropertyGroupType.Tab
                                 }
                             })
@@ -1131,6 +1147,71 @@ namespace Ekom.App_Start
 
                     #endregion
 
+                    #region Metafields
+
+                    var metafieldCt = EnsureContentTypeExists(new ContentType(_shortStringHelper, metafieldContainer.Id)
+                    {
+                        Name = "Metafield",
+                        Alias = "ekmMetafield",
+                        Icon = "icon-ordered-list",
+                        PropertyGroups = new PropertyGroupCollection(
+                            new List<PropertyGroup>
+                            {
+                            new PropertyGroup(new PropertyTypeCollection(
+                                true,
+                                new List<PropertyType>
+                                {
+                                    new PropertyType(_shortStringHelper, propertyTextDt, "title")
+                                    {
+                                        Name = "Title",
+                                        Mandatory = true
+                                    },
+                                    new PropertyType(_shortStringHelper, textstringDt, "description")
+                                    {
+                                        Name = "Description",
+                                        Mandatory = true
+                                    },
+                                    new PropertyType(_shortStringHelper, booleanDt, "enableMultipleChoice")
+                                    {
+                                        Name = "Filterable"
+                                    },
+                                    new PropertyType(_shortStringHelper, booleanDt, "filterable")
+                                    {
+                                        Name = "Enable Multiple Choice",
+                                        Description  = "When checked, the dropdown will be a select multiple / combo box style dropdown."
+                                    },
+                                    new PropertyType(_shortStringHelper, metavalueDt, "values")
+                                    {
+                                        Name = "Values",
+                                        Description  = "If no values are set then an textstring input is used."
+                                    },
+                                    new PropertyType(_shortStringHelper, booleanDt, "enableMultipleChoice")
+                                    {
+                                        Name = "Required"
+                                    },
+                                })
+                            ){
+                                Alias = "metafield",
+                                Name = "Metafield",
+                                Type = PropertyGroupType.Tab
+                            }
+                            }
+                        )
+                    });
+
+                    var metafieldsCt = EnsureContentTypeExists(new ContentType(_shortStringHelper, metafieldContainer.Id)
+                    {
+                        Name = "Metafields",
+                        Alias = "ekmMetafields",
+                        Icon = "icon-ordered-list",
+                        AllowedContentTypes = new List<ContentTypeSort>
+                        {
+                            new ContentTypeSort(metafieldCt.Id, 1),
+                        },
+                    });
+
+                    #endregion
+
                     var ekmCt = EnsureContentTypeExists(new ContentType(_shortStringHelper, ekmDocTypeContainer.Id)
                     {
                         Name = "Ekom",
@@ -1177,6 +1258,7 @@ namespace Ekom.App_Start
                     EnsureContentExists("Order Discounts", "ekmOrderDiscounts", discounts.Id);
                     EnsureContentExists("Stores", "ekmStores", ekom.Id);
                     EnsureContentExists("Zones", "ekmZones", ekom.Id);
+                    EnsureContentExists("Metafields", "ekmMetafields", ekom.Id);
 
                     #endregion
                 }

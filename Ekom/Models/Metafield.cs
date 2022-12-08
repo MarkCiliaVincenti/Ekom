@@ -17,6 +17,7 @@ namespace EkomCore.Models
             Id = x.Id;
             Key = x.Key;
             Title = titleValues.Values.ToDictionary(z => z.Key, z => z.Value.ToString());
+            Description = x.GetValue("description");
             Name = x.Name;
             Required = x.Properties.GetPropertyValue("required").ConvertToBool();
             Filterable = x.Properties.GetPropertyValue("filterable").ConvertToBool();
@@ -33,6 +34,7 @@ namespace EkomCore.Models
         public Guid Key { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> Title { get; set; } = new Dictionary<string, string>();
+        public string Description { get; set; }
         public bool Filterable { get; set; }
         public bool EnableMultipleChoice { get; set; }
         public bool Required { get; set; }
