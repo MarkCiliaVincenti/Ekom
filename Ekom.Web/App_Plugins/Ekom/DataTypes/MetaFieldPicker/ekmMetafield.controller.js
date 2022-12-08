@@ -15,6 +15,8 @@
       $scope.values = [];
       $scope.fields = [];
       $scope.languages = [];
+      $scope.loading = true;
+
 
       ekmResources.getLanguages().then(function (languages) {
 
@@ -45,6 +47,8 @@
 
             });
           }
+
+          $scope.loading = false;
 
         });
 

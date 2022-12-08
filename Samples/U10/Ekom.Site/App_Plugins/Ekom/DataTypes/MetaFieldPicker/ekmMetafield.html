@@ -1,6 +1,10 @@
 <div ng-controller="Ekom.Metafield">
 
-  <div class="metafields" 
+  <div ng-if="loading">Loading...</div>
+
+  <div ng-if="fields.length <= 0">No metafields exist. You can create them under Metafields in Ekom</div>
+
+  <div class="metafields" ng-if="!loading"
        ng-repeat="field in fields track by $index" style="margin-bottom: 20px;">
     <label for="metafield_{{$index}}">
       {{ field.Name }}
@@ -27,8 +31,8 @@
 
 
         <!--<select ng-model="model.value[$index]" ng-options="option.Values[languages[0].IsoCode] for option in field.Values track by option.Id">
-    <option value="">Select value</option>
-  </select>-->
+          <option value="">Select value</option>
+        </select>-->
       </div>
       <div ng-if="field.Values.length <= 0">
         <input name="metafield_{{$index}}"
