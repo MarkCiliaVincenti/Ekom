@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace Ekom.AspNetCore.Services
 {
@@ -35,11 +36,23 @@ namespace Ekom.AspNetCore.Services
             //MailServer - Represents the SMTP Server
             _host = config["Smtp:Host"];
             //Port- Represents the port number
-            _port = int.Parse(config["Smtp:Port"]);
+            _port = 25; 
+
+            if (int.TryParse(config["Smtp:Port"], out int port))
+            {
+                _port = port;
+            }
+
             //MailAuthUser and MailAuthPass - Used for Authentication for sending email
             _user = config["Smtp:UserName"];
             _pass = config["Smtp:Password"];
-            _ssl = bool.Parse(config["Smtp:EnableSsl"]);
+
+            _ssl = false;
+
+            if (bool.TryParse(config["Smtp:EnableSsl"], out bool ssl))
+            {
+                _ssl = ssl;
+            }
 
             _sender = config["Smtp:FromAddress"];
         }
@@ -53,6 +66,11 @@ namespace Ekom.AspNetCore.Services
             string recipient = null,
             string sender = null)
         {
+            if (string.IsNullOrEmpty(_host))
+            {
+                throw new Exception("Smtp:Host is not configured");
+            }
+            
             // We do not catch the error here... let it pass direct to the caller
             using (var smtp = new SmtpClient(_host, _port))
             using (var message = new MailMessage(
