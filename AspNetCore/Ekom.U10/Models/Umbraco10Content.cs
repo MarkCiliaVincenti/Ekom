@@ -20,12 +20,15 @@ namespace Ekom.Umb.Models
                 { "__Path", content.Path },
                 { "createDate", content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
                 { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "__VariesByCulture", content.Cultures.Count > 1 ? "y" : "n" }
+                { "__VariesByCulture", content.Cultures.Count > 1 ? "y" : "n" },
+                { "url", content.Url() }
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
                 x => x.GetSourceValue()?.ToString()))
-        { }
+        {
+        
+        }
 
         public Umbraco10Content(IContent content)
             : base(new Dictionary<string, string>
@@ -40,7 +43,8 @@ namespace Ekom.Umb.Models
                 { "__Path", content.Path },
                 { "createDate", content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
                 { "updateDate", content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "__VariesByCulture", content.AvailableCultures.Count() > 1 ? "y" : "n" }
+                { "__VariesByCulture", content.AvailableCultures.Count() > 1 ? "y" : "n" },
+                { "url", "#" }
             },
             content.Properties.ToDictionary(
                 x => x.Alias,
@@ -60,7 +64,8 @@ namespace Ekom.Umb.Models
                 { "__Path", content.Content.Path },
                 { "createDate", content.Content.CreateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
                 { "updateDate", content.Content.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss:fff") },
-                { "__VariesByCulture", content.Content.Cultures.Count > 1 ? "y" : "n" }
+                { "__VariesByCulture", content.Content.Cultures.Count > 1 ? "y" : "n" },
+                { "url", content.Content.Url() }
             },
             content.Content.Properties.ToDictionary(
                 x => x.Alias,

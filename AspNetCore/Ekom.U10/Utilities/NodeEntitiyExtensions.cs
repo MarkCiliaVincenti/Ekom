@@ -118,7 +118,7 @@ namespace Ekom
             return (T)(object)val;
         }
 
-        private static IPublishedContent GetContent(string value)
+        internal static IPublishedContent GetContent(string value)
         {
 
             if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
@@ -148,7 +148,7 @@ namespace Ekom
             return null;
 
         }
-        private static IEnumerable<IPublishedContent> GetContents(string value)
+        internal static IEnumerable<IPublishedContent> GetContents(string value)
         {
             if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
             {
@@ -185,7 +185,7 @@ namespace Ekom
             return Enumerable.Empty<IPublishedContent>();
 
         }
-        private static IEnumerable<IProduct> GetProducts(string value)
+        internal static IEnumerable<IProduct> GetProducts(string value)
         {
             if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
             {
@@ -216,7 +216,7 @@ namespace Ekom
             return Enumerable.Empty<IProduct>();
 
         }
-        private static IProduct GetProduct(string value)
+        internal static IProduct GetProduct(string value)
         {
             if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
             {

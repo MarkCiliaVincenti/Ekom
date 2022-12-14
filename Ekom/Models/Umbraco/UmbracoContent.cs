@@ -26,6 +26,7 @@ namespace Ekom.Models
             Name = Properties.GetPropertyValue("nodeName");
             Path = Properties.GetPropertyValue("__Path");
             ContentTypeAlias = Properties.GetPropertyValue("ContentTypeAlias");
+            Url = Properties.GetPropertyValue("url");
         }
 
         readonly Dictionary<string, string> _properties;
@@ -45,8 +46,10 @@ namespace Ekom.Models
         {
             return ContentTypeAlias == alias;
         }
+
         public bool IsPublished()
-        {
+        {        
+            // TODO
             return true;
         }
 
