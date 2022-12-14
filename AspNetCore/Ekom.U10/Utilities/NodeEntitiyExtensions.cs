@@ -1,6 +1,8 @@
+using Ekom.API;
 using Ekom.Models;
 using Ekom.Umb.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
@@ -33,6 +35,14 @@ namespace Ekom
             {
                 return (T)(object)GetContents(val);
             }
+            if (typeof(T) == typeof(IProduct))
+            {
+                return (T)(object)GetProduct(val);
+            }
+            if (typeof(T) == typeof(IEnumerable<IProduct>))
+            {
+                return (T)(object)GetProducts(val);
+            }
 
             return (T)(object)val;
         }
@@ -60,6 +70,14 @@ namespace Ekom
             if (typeof(T) == typeof(IEnumerable<IPublishedContent>))
             {
                 return (T)(object)GetContents(val);
+            }
+            if (typeof(T) == typeof(IProduct))
+            {
+                return (T)(object)GetProduct(val);
+            }
+            if (typeof(T) == typeof(IEnumerable<IProduct>))
+            {
+                return (T)(object)GetProducts(val);
             }
 
             return (T)(object)val;
@@ -89,7 +107,14 @@ namespace Ekom
             {
                 return (T)(object)GetContents(val);
             }
-
+            if (typeof(T) == typeof(IProduct))
+            {
+                return (T)(object)GetProduct(val);
+            }
+            if (typeof(T) == typeof(IEnumerable<IProduct>))
+            {
+                return (T)(object)GetProducts(val);
+            }
             return (T)(object)val;
         }
 
@@ -158,6 +183,61 @@ namespace Ekom
             }
 
             return Enumerable.Empty<IPublishedContent>();
+
+        }
+        private static IEnumerable<IProduct> GetProducts(string value)
+        {
+            if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
+            {
+                var result = new List<IProduct>();
+
+                foreach (var udi in value.Split(','))
+                {
+                    if (udi.InvariantContains("document"))
+                    {
+                        if (UdiParser.TryParse(udi, out Udi _udiId))
+                        {
+                            var guid = _udiId.AsGuid();
+
+                            var product = Catalog.Instance.GetProduct(guid);
+
+                            if (product != null)
+                            {
+                                result.Add(product);
+                            }
+                        }
+                    }
+
+                }
+
+                return result;
+            }
+
+            return Enumerable.Empty<IProduct>();
+
+        }
+        private static IProduct GetProduct(string value)
+        {
+            if (!string.IsNullOrEmpty(value) && value.InvariantStartsWith("umb"))
+            {
+
+                if (value.InvariantContains("document"))
+                {
+                    if (UdiParser.TryParse(value, out Udi _udiId))
+                    {
+                        var guid = _udiId.AsGuid();
+
+                        var product = Catalog.Instance.GetProduct(guid);
+
+                        if (product != null)
+                        {
+                            return product;
+                        }
+                    }
+                }
+            }
+
+            return null;
 
         }
     }
