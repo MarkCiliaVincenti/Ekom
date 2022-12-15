@@ -20,11 +20,38 @@ namespace Ekom.Models
         /// Usually a two letter code, f.x. EU/IS/DK
         /// </summary>
         public virtual string Alias => Properties["nodeName"];
-        public virtual UmbracoContent StoreRootNode { get; set; }
-        public virtual int StoreRootNodeId { 
+        private UmbracoContent _storeRootNode;
+        public virtual UmbracoContent StoreRootNode {
+        
             get
             {
-                return StoreRootNode != null ? StoreRootNode.Id : 0;
+                if (_storeRootNode == null)
+                {
+                    if (Properties.HasPropertyValue("storeRootNode"))
+                    {
+                        var storeRootNodeUdi = GetValue("storeRootNode");
+
+                        var storeRootNode = nodeService.NodeById(storeRootNodeUdi);
+
+                        if (storeRootNode != null)
+                        {
+                            _storeRootNode = storeRootNode;
+                        }
+                    }
+                }
+
+                return _storeRootNode;
+            }
+        }
+        public virtual int StoreRootNodeId
+        {
+            get
+            {
+                if (StoreRootNode != null)
+                {
+                    return StoreRootNode.Id;
+                }
+                return 0;
             }
         }
         public virtual IEnumerable<UmbracoDomain> Domains { get; }
@@ -117,13 +144,6 @@ namespace Ekom.Models
             if (item.Properties.HasPropertyValue("storeRootNode"))
             {
                 var storeRootNodeUdi = item.GetValue("storeRootNode");
-
-                var storeRootNode = nodeService.NodeById(storeRootNodeUdi);
-
-                if (storeRootNode != null)
-                {
-                    StoreRootNode = storeRootNode;
-                }
 
                 Url = nodeService.GetUrl(storeRootNodeUdi);
             }
