@@ -26,13 +26,14 @@ namespace Ekom.Models
         CurrencyModel Currency { get; }
 
         CurrencyModel GetCurrentCurrency();
-
+        
         List<CurrencyModel> Currencies { get; }
         string Alias { get; }
         IEnumerable<UmbracoDomain> Domains { get; }
+        UmbracoContent StoreRootNode { get; }
+        int StoreRootNodeId { get; }
         string OrderNumberPrefix { get; }
         string OrderNumberTemplate { get; }
-        int StoreRootNode { get; }
         string Url { get; }
         bool VatIncludedInPrice { get; }
     }

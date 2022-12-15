@@ -11,7 +11,7 @@ namespace Ekom.Umb.Utilities
         {
             var r = Configuration.Resolver.GetService<NodeService>();
 
-            return r.GetNodeById(store.StoreRootNode);
+            return r.GetNodeById(store.StoreRootNodeId);
         }
     }
 }

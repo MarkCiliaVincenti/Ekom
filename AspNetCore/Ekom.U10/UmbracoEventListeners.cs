@@ -392,7 +392,7 @@ namespace Ekom.App_Start
                 {
                     var rootContent = _cs.GetById(domain.RootContentId.Value);
 
-                    var store = _storeCache.Cache.Values.FirstOrDefault(x => x.StoreRootNode == rootContent.Id);
+                    var store = _storeCache.Cache.Values.FirstOrDefault(x => x.StoreRootNodeId == rootContent.Id);
 
                     if (store != null)
                     {

@@ -57,7 +57,7 @@ namespace Ekom.Services
                 {
                     store = _storeCache.Cache
                                       .FirstOrDefault
-                                        (x => x.Value.StoreRootNode == storeDomain.RootContentId && x.Value.Culture.Name == culture)
+                                        (x => x.Value.StoreRootNodeId == storeDomain.RootContentId && x.Value.Culture.Name == culture)
                                       .Value;
                 }
             }
