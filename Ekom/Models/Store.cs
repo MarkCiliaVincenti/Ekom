@@ -123,6 +123,9 @@ namespace Ekom.Models
                 if (storeRootNode != null)
                 {
                     StoreRootNode = storeRootNode;
+                } else
+                {
+                    throw new Exception("Store root node not found. " + storeRootNodeUdi);
                 }
 
                 Url = nodeService.GetUrl(storeRootNodeUdi);
