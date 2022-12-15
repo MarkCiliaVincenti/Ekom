@@ -36,12 +36,6 @@ namespace Ekom
 
             return GetValue<T>(val);
         }
-        public static T GetValue<T>(this PerStoreNodeEntity node, string propAlias, string alias = null)
-        {
-            string val = node.GetValue(propAlias, alias);
-
-            return GetValue<T>(val);
-        }
         private static T GetValue<T>(string val)
         {
             if (typeof(T) == typeof(string))
