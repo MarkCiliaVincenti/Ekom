@@ -161,7 +161,7 @@ namespace Ekom.API
 
             if (!_productCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
+                return null;
             }
 
             if (_productCache.Cache[storeAlias].Any(x => x.Value.SKU == sku))
@@ -201,7 +201,7 @@ namespace Ekom.API
 
             if (!_productCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
+                return null;
             }
 
             return _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == Id).Value;
@@ -236,7 +236,7 @@ namespace Ekom.API
 
             if (!_productCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
+                return null;
             }
 
             return _productCache.Cache[storeAlias].Select(x => x.Value).OrderBy(x => x.SortOrder);
@@ -418,7 +418,7 @@ namespace Ekom.API
             }
             if (!_categoryCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+                return null;
             }
             return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == Id).Value;
         }
@@ -445,7 +445,7 @@ namespace Ekom.API
             
             if (!_categoryCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+                return null;
             }
 
 
@@ -489,7 +489,7 @@ namespace Ekom.API
             }
             if (!_categoryCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+                return null;
             }
             return _categoryCache.Cache[storeAlias]
                 .Where(x => x.Value.Level == _config.CategoryRootLevel)
@@ -520,7 +520,7 @@ namespace Ekom.API
             
             if (!_categoryCache.Cache.ContainsKey(storeAlias))
             {
-                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+                return null;
             }
 
             return _categoryCache.Cache[storeAlias]
