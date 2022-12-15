@@ -27,22 +27,6 @@ namespace Ekom.Models
                 return StoreRootNode != null ? StoreRootNode.Id : 0;
             }
         }
-        public UmbracoContent GetStoreNode()
-        {
-            if (Properties.HasPropertyValue("storeRootNode"))
-            {
-                var storeRootNodeUdi = GetValue("storeRootNode");
-
-                var storeRootNode = nodeService.NodeById(storeRootNodeUdi);
-
-                if (storeRootNode != null)
-                {
-                  return storeRootNode;
-                } 
-            }
-
-            return null;
-        }
         public virtual IEnumerable<UmbracoDomain> Domains { get; }
         public virtual bool VatIncludedInPrice => Properties["vatIncludedInPrice"].ConvertToBool();
         public virtual string OrderNumberTemplate => Properties.GetPropertyValue("orderNumberTemplate");

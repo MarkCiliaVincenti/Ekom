@@ -57,8 +57,6 @@ namespace Ekom.Umb
 
         private IEnumerable<UrlInfo> GetUrls(int id, Uri current)
         {
-            _logger.LogInformation("Geturls: " + id);
-
             return _reqCache.GetCacheItem(
                 "EkomUrlProvider-GetOtherUrls-" + id,
                 () =>
