@@ -15,112 +15,35 @@ namespace Ekom
         {
             string val = node.GetValue(propAlias, alias);
 
-            if (typeof(T) == typeof(string))
-            {
-                return (T)(object)val;
-            }
-            if (typeof(T) == typeof(int))
-            {
-                return (T)(object)Convert.ToInt32(val);
-            }
-            if (typeof(T) == typeof(bool))
-            {
-                return (T)(object)val.IsBoolean();
-            }
-            if (typeof(T) == typeof(IPublishedContent))
-            {
-                return (T)(object)GetContent(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IPublishedContent>))
-            {
-                return (T)(object)GetContents(val);
-            }
-            if (typeof(T) == typeof(IProduct))
-            {
-                return (T)(object)GetProduct(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IProduct>))
-            {
-                return (T)(object)GetProducts(val);
-            }
-
+            return GetValue<T>(val);
             return (T)(object)val;
         }
-
         public static T GetValue<T>(this ICategory node, string propAlias, string alias = null)
         {
             string val = node.GetValue(propAlias, alias);
 
-            if (typeof(T) == typeof(string))
-            {
-                return (T)(object)val;
-            }
-            if (typeof(T) == typeof(int))
-            {
-                return (T)(object)Convert.ToInt32(val);
-            }
-            if (typeof(T) == typeof(bool))
-            {
-                return (T)(object)val.IsBoolean();
-            }
-            if (typeof(T) == typeof(IPublishedContent))
-            {
-                return (T)(object)GetContent(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IPublishedContent>))
-            {
-                return (T)(object)GetContents(val);
-            }
-            if (typeof(T) == typeof(IProduct))
-            {
-                return (T)(object)GetProduct(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IProduct>))
-            {
-                return (T)(object)GetProducts(val);
-            }
-
-            return (T)(object)val;
+            return GetValue<T>(val);
         }
-
         public static T GetValue<T>(this INodeEntity node, string propAlias, string alias = null)
         {
             string val = node.GetValue(propAlias, alias);
 
-            if (typeof(T) == typeof(string))
-            {
-                return (T)(object)val;
-            }
-            if (typeof(T) == typeof(int))
-            {
-                return (T)(object)Convert.ToInt32(val);
-            }
-            if (typeof(T) == typeof(bool))
-            {
-                return (T)(object)val.IsBoolean();
-            }
-            if (typeof(T) == typeof(IPublishedContent))
-            {
-                return (T)(object)GetContent(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IPublishedContent>))
-            {
-                return (T)(object)GetContents(val);
-            }
-            if (typeof(T) == typeof(IProduct))
-            {
-                return (T)(object)GetProduct(val);
-            }
-            if (typeof(T) == typeof(IEnumerable<IProduct>))
-            {
-                return (T)(object)GetProducts(val);
-            }
-            return (T)(object)val;
+            return GetValue<T>(val);
         }
         public static T GetValue<T>(this IPerStoreNodeEntity node, string propAlias, string alias = null)
         {
             string val = node.GetValue(propAlias, alias);
 
+            return GetValue<T>(val);
+        }
+        public static T GetValue<T>(this PerStoreNodeEntity node, string propAlias, string alias = null)
+        {
+            string val = node.GetValue(propAlias, alias);
+
+            return GetValue<T>(val);
+        }
+        private static T GetValue<T>(string val)
+        {
             if (typeof(T) == typeof(string))
             {
                 return (T)(object)val;
