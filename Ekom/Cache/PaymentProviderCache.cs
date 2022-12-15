@@ -64,8 +64,9 @@ namespace Ekom.Cache
 
                 stopwatch.Stop();
                 _logger.LogInformation(
-                    "Finished filling per store cache with {Count} items. Time it took to fill: {Elapsed}",
+                    "Finished filling per store cache with {Count} items for {NodeAlias}. Time it took to fill: {Elapsed}",
                     count,
+                    NodeAlias,
                     stopwatch.Elapsed
                 );
             }

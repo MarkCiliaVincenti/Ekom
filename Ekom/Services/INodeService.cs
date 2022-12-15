@@ -17,7 +17,7 @@ namespace Ekom.Services
         UmbracoContent MediaById(Guid t);
         UmbracoContent MediaById(int t);
         UmbracoContent MediaById(string t);
-        string GetUrl(string t);
+        string GetUrl(string t, string url = null);
         IEnumerable<UmbracoContent> GetAllCatalogAncestors(UmbracoContent item);
     }
 }

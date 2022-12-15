@@ -58,7 +58,7 @@ namespace Ekom.Cache
 
             stopwatch.Stop();
             _logger.LogInformation(
-                "Finished filling cache with {Count} items. Time it took to fill: {Elapsed}",
+                "Finished filling Stock cache with {Count} items. Time it took to fill: {Elapsed}",
                 allStock.Count,
                 stopwatch.Elapsed);
         }

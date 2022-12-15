@@ -145,7 +145,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 return node != null && node.IsPublished() ? node : null;
             }
@@ -165,17 +165,17 @@ namespace Ekom.Umb.Services
 
                 if (int.TryParse(id, out int _intId))
                 {
-                    return cache.GetById(_intId);
+                    return cache.GetById(false, _intId);
                 }
 
                 if (Guid.TryParse(id, out Guid _guidId))
                 {
-                    return cache.GetById(_guidId);
+                    return cache.GetById(false, _guidId);
                 }
                 
                 if (UdiParser.TryParse(id, out Udi _udiId))
                 {
-                    return cache.GetById(_udiId);
+                    return cache.GetById(false,_udiId);
                 }
             }
 
@@ -193,7 +193,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -215,7 +215,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -239,7 +239,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Content;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -287,7 +287,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -308,7 +308,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -331,7 +331,7 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-                var node = cache.GetById(id);
+                var node = cache.GetById(false, id);
 
                 if (node != null && node.IsPublished())
                 {
@@ -379,20 +379,20 @@ namespace Ekom.Umb.Services
             {
                 var cache = cref.UmbracoContext.Media;
 
-
+                
                 if (int.TryParse(id, out int _intId))
                 {
-                    return cache.GetById(_intId);
+                    return cache.GetById(false, _intId);
                 }
 
                 if (Guid.TryParse(id, out Guid _guidId))
                 {
-                    return cache.GetById(_guidId);
+                    return cache.GetById(false, _guidId);
                 }
 
                 if (UdiParser.TryParse(id, out Udi _udiId))
                 {
-                    return cache.GetById(_udiId);
+                    return cache.GetById(false, _udiId);
                 }
             }
 
@@ -400,7 +400,7 @@ namespace Ekom.Umb.Services
         }
 
 
-        public string GetUrl(string id)
+        public string GetUrl(string id, string culture = null)
         {
 
             using (var cref = _context.EnsureUmbracoContext())
@@ -409,7 +409,7 @@ namespace Ekom.Umb.Services
 
                 if (node != null)
                 {
-                    var url = node.Url();
+                    var url = node.Url(culture);
 
                     return url;
                 }
