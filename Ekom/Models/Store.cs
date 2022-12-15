@@ -20,7 +20,7 @@ namespace Ekom.Models
         /// Usually a two letter code, f.x. EU/IS/DK
         /// </summary>
         public virtual string Alias => Properties["nodeName"];
-        public virtual UmbracoContent StoreRootNode { get; }
+        public virtual UmbracoContent StoreRootNode { get; set; }
         public virtual int StoreRootNodeId { 
             get
             {
