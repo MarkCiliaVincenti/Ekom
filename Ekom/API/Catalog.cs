@@ -159,6 +159,11 @@ namespace Ekom.API
                 throw new ArgumentException(nameof(sku));
             }
 
+            if (!_productCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
+            }
+
             if (_productCache.Cache[storeAlias].Any(x => x.Value.SKU == sku))
             {
                 return _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.SKU == sku).Value;
@@ -194,6 +199,11 @@ namespace Ekom.API
                 throw new ArgumentException(nameof(storeAlias));
             }
 
+            if (!_productCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
+            }
+
             return _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == Id).Value;
         }
 
@@ -222,6 +232,11 @@ namespace Ekom.API
             if (string.IsNullOrEmpty(storeAlias))
             {
                 throw new ArgumentException(nameof(storeAlias));
+            }
+
+            if (!_productCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in product cache");
             }
 
             return _productCache.Cache[storeAlias].Select(x => x.Value).OrderBy(x => x.SortOrder);
@@ -401,7 +416,10 @@ namespace Ekom.API
             {
                 throw new ArgumentException(nameof(storeAlias));
             }
-
+            if (!_categoryCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+            }
             return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == Id).Value;
         }
 
@@ -423,6 +441,11 @@ namespace Ekom.API
             if (string.IsNullOrEmpty(storeAlias))
             {
                 throw new ArgumentException(nameof(storeAlias));
+            }
+            
+            if (!_categoryCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
             }
 
 
@@ -464,7 +487,10 @@ namespace Ekom.API
             {
                 throw new ArgumentException(nameof(storeAlias));
             }
-
+            if (!_categoryCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
+            }
             return _categoryCache.Cache[storeAlias]
                 .Where(x => x.Value.Level == _config.CategoryRootLevel)
                 .Select(x => x.Value)
@@ -490,6 +516,11 @@ namespace Ekom.API
             if (string.IsNullOrEmpty(storeAlias))
             {
                 throw new ArgumentException(nameof(storeAlias));
+            }
+            
+            if (!_categoryCache.Cache.ContainsKey(storeAlias))
+            {
+                throw new ArgumentException("Storealias " + storeAlias + " not found in category cache");
             }
 
             return _categoryCache.Cache[storeAlias]

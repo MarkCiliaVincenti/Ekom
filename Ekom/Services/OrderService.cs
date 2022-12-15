@@ -4,7 +4,6 @@ using Ekom.Exceptions;
 using Ekom.JsonDotNet;
 using Ekom.Models;
 using Ekom.Repositories;
-using Ekom.Services;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 #endif

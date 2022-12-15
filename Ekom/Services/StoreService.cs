@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 
 using Ekom.Cache;
 using Ekom.Exceptions;
-using Ekom.Interfaces;
 using Ekom.Models;
 using System;
 using System.Collections.Generic;
