@@ -3,7 +3,6 @@ using Ekom.Cache;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Umb.Services;
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,10 +97,7 @@ class EkomStartup : IComponent
     readonly Configuration _config;
     readonly ILogger _logger;
     readonly IServiceProvider _factory;
-    readonly IUmbracoDatabaseFactory _databaseFactory;
     readonly ExamineService _es;
-    readonly ServerVariablesParser _svp;
-    BackgroundJobServer _hangfireServer;
 
     /// <summary>
     /// 
@@ -117,9 +113,7 @@ class EkomStartup : IComponent
         _config = config;
         _logger = logger;
         _factory = factory;
-        _databaseFactory = databaseFactory;
         _es = es;
-        _svp = svp;
     }
 
     /// <summary>
@@ -158,12 +152,7 @@ class EkomStartup : IComponent
             stockCache.FillCache();
 
             _factory.GetService<ICouponCache>()
-                .FillCache();
-
-            // Hangfire
-            GlobalConfiguration.Configuration.UseSqlServerStorage(_databaseFactory.ConnectionString);
-            // ReSharper disable once ObjectCreationAsStatement
-            _hangfireServer = new BackgroundJobServer();
+                .FillCache();;
 
             _logger.LogInformation("Ekom Started");
         }
@@ -175,6 +164,5 @@ class EkomStartup : IComponent
 
     public void Terminate()
     {
-        _hangfireServer.Dispose();
     }
 }

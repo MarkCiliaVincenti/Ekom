@@ -9,6 +9,7 @@ using Ekom.Models;
 using Ekom.Repositories;
 using Ekom.Services;
 using EkomCore.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -161,6 +162,11 @@ namespace Ekom.AspNetCore
             services.Configure<MvcOptions>(mvcOptions =>
             {
                 mvcOptions.Filters.Add<HttpResponseExceptionFilter>();
+            });
+            
+            services.AddHangfire(config =>
+            {
+                config.UseSqlServerStorage("umbracoDbDSN");
             });
 
             return services;
