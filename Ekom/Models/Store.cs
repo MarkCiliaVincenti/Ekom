@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace Ekom.Models
 {
@@ -21,6 +22,8 @@ namespace Ekom.Models
         /// </summary>
         public virtual string Alias => Properties["nodeName"];
         private UmbracoContent _storeRootNode;
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual UmbracoContent StoreRootNode {
         
             get
