@@ -8,6 +8,8 @@ using Ekom.Utilities;
 using System;
 using Ekom.Models;
 using Ekom.Exceptions;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Ekom.Controllers
 {
@@ -51,6 +53,183 @@ namespace Ekom.Controllers
             try
             {
                 return API.Catalog.Instance.GetProduct(Id);
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Product By Id
+        /// </summary>
+        /// <param name="Id">Int Id of product</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("product/{id:Int}")]
+        public IProduct GetProduct(int Id)
+        {
+            try
+            {
+                return API.Catalog.Instance.GetProduct(Id);
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Child Products Of A Category
+        /// </summary>
+        /// <param name="categoryId">Id of category</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("products/{categoryId:Int}")]
+        public IEnumerable<IProduct> GetProducts(int categoryId)
+        {
+            try
+            {
+                var category = API.Catalog.Instance.GetCategory(categoryId);
+
+                return category.Products;
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Recursive Products Of A Category
+        /// </summary>
+        /// <param name="categoryId">Id of category</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("productsrecursive/{categoryId:Int}")]
+        public IEnumerable<IProduct> GetProductsRecursive(int categoryId)
+        {
+            try
+            {
+                var category = API.Catalog.Instance.GetCategory(categoryId);
+
+                return category.ProductsRecursive;
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Category By Id
+        /// </summary>
+        /// <param name="Id">Int Id of category</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("category/{id:Int}")]
+        public ICategory GetCategory(int Id)
+        {
+            try
+            {
+                return API.Catalog.Instance.GetCategory(Id);
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Category By Id
+        /// </summary>
+        /// <param name="Id">Int Id of category</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("category/{id:Guid}")]
+        public ICategory GetCategory(Guid Id)
+        {
+            try
+            {
+                return API.Catalog.Instance.GetCategory(Id.ToString());
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Root Categories
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("rootcategories")]
+        public IEnumerable<ICategory> GetRootCategories()
+        {
+            try
+            {
+                return API.Catalog.Instance.GetRootCategories();
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get All Categories
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("allcategories")]
+        public IEnumerable<ICategory> GetAllCategories()
+        {
+            try
+            {
+                return API.Catalog.Instance.GetAllCategories();
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Sub Categories
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("subcategories")]
+        public IEnumerable<ICategory> GetSubCategories(int id)
+        {
+            try
+            {
+
+                var category = API.Catalog.Instance.GetCategory(id);
+
+                return category.SubCategories;
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get Sub Categories Recursive
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("subcategoriesrecursive")]
+        public IEnumerable<ICategory> GetSubCategoriesRecurisve(int id)
+        {
+            try
+            {
+
+                var category = API.Catalog.Instance.GetCategory(id);
+
+                return category.SubCategoriesRecursive;
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
             {

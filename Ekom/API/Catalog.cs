@@ -15,6 +15,7 @@ using System.Linq;
 using System.Data;
 using EkomCore.Services;
 using EkomCore.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Ekom.API
 {
@@ -457,6 +458,11 @@ namespace Ekom.API
                 {
                     return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Key == guid).Value;
                 }
+            }
+
+            if (Guid.TryParse(Id, out Guid _guid))
+            {
+                return _categoryCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Key == _guid).Value;
             }
 
             if (int.TryParse(Id, out int id))
