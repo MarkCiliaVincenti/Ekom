@@ -1,5 +1,7 @@
 using Ekom.Cache;
 using Ekom.Services;
+using EkomCore.Models;
+using EkomCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
@@ -19,6 +21,7 @@ namespace Ekom.Models
     {
         private IPerStoreCache<ICategory> _categoryCache => Configuration.Resolver.GetService<IPerStoreCache<ICategory>>();
         private IPerStoreCache<IProduct> _productCache => Configuration.Resolver.GetService<IPerStoreCache<IProduct>>();
+        private IMetafieldService _metafieldService => Configuration.Resolver.GetService<IMetafieldService>();
 
         /// <summary>
         /// Short spaceless descriptive title used to create URLs
@@ -32,6 +35,8 @@ namespace Ekom.Models
         /// <summary>
         /// Our eldest ancestor category
         /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
         public ICategory RootCategory
         {
             get
@@ -58,7 +63,8 @@ namespace Ekom.Models
             get
             {
                 return _categoryCache.Cache[Store.Alias]
-                    .Where(x => x.Value.Ancestors().Any(z => z.Id == Id))
+                    .Where(x => x.Value.Level > Level && 
+                        x.Value.Path.Split(',').Contains(Id.ToString()))
                     .Select(x => x.Value)
                     .OrderBy(x => x.SortOrder);
             }
@@ -68,6 +74,7 @@ namespace Ekom.Models
         /// All direct child products of category. (No descendants)
         /// </summary>
         [JsonIgnore]
+        [XmlIgnore]
         public IEnumerable<IProduct> Products
         {
             get
@@ -137,6 +144,11 @@ namespace Ekom.Models
             }
 
             return list;
+        }
+
+        
+        public IEnumerable<MetafieldGrouped> Filters(bool filterable = true) {
+            return _metafieldService.Filters(ProductsRecursive, filterable);
         }
 
         /// <summary>

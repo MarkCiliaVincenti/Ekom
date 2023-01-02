@@ -1,4 +1,6 @@
+using EkomCore.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ekom.Models
 {
@@ -34,5 +36,7 @@ namespace Ekom.Models
         /// </summary>
         /// <returns></returns>
         IEnumerable<ICategory> Ancestors();
+
+        IEnumerable<MetafieldGrouped> Filters(bool filterable = true);
     }
 }

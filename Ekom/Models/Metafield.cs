@@ -42,9 +42,14 @@ namespace EkomCore.Models
 
     public class MetafieldValues
     {
-
         public string Id { get; set; }
 
         public Dictionary<string, string> Values { get; set; } = new Dictionary<string, string>();
+    }
+
+    public class MetafieldGrouped
+    {
+        public Metafield Field { get; set; }
+        public List<Dictionary<string,string>> Values { get; set; } = new List<Dictionary<string, string>>();
     }
 }

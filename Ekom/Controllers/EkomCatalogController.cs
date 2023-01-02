@@ -10,6 +10,7 @@ using Ekom.Models;
 using Ekom.Exceptions;
 using System.Collections;
 using System.Collections.Generic;
+using EkomCore.Models;
 
 namespace Ekom.Controllers
 {
@@ -230,6 +231,27 @@ namespace Ekom.Controllers
                 var category = API.Catalog.Instance.GetCategory(id);
 
                 return category.SubCategoriesRecursive;
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                throw ExceptionHandler.Handle<HttpResponseException>(ex);
+            }
+        }
+
+
+        /// <summary>
+        /// Get Category Filters
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("categoryfilters/{id:Int}")]
+        public IEnumerable<MetafieldGrouped> GetCategoryFilters(int id)
+        {
+            try
+            {
+                var category = API.Catalog.Instance.GetCategory(id);
+
+                return category.Filters();
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
             {

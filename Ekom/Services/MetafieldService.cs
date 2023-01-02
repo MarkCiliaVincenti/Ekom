@@ -1,3 +1,4 @@
+using Ekom.Models;
 using Ekom.Services;
 using EkomCore.Models;
 using Newtonsoft.Json.Linq;
@@ -39,7 +40,7 @@ namespace EkomCore.Services
             {
                 if (item.ContainsKey("Key") && Guid.TryParse(item["Key"].ToString(), out Guid _metaFieldKey))
                 {
-                    var valuesList = new List<Dictionary<string,string>>();
+                    var valuesList = new List<Dictionary<string, string>>();
 
                     var field = fields.FirstOrDefault(x => x.Key == _metaFieldKey);
 
@@ -82,7 +83,7 @@ namespace EkomCore.Services
 
                                 if (fieldValues != null)
                                 {
-                                    valuesList.Add(fieldValues.Values);                                
+                                    valuesList.Add(fieldValues.Values);
                                 }
                             }
 
@@ -106,8 +107,34 @@ namespace EkomCore.Services
                         }
 
                     }
- 
+
                 }
+            }
+
+            return list;
+        }
+
+        public IEnumerable<MetafieldGrouped> Filters(IEnumerable<IProduct> products, bool filterable = true) {
+
+            var list = new List<MetafieldGrouped>();
+
+            var grouped = products
+                .SelectMany(x => x.Metafields)
+                .Where(x => x.Field.Filterable == filterable)
+                .GroupBy(x => x.Field, new MetafieldComparer());
+
+            foreach (var group in grouped)
+            {
+
+                list.Add(new MetafieldGrouped()
+                {
+                    Field = group.Key,
+                    Values = group
+                    .SelectMany(x => x.Values)
+                    .GroupBy(x => x.Values.FirstOrDefault())
+                    .Select(x => x.FirstOrDefault())
+                    .ToList()
+                });
             }
 
             return list;

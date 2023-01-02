@@ -2,6 +2,7 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Ekom.API;
+@using Ekom.Utilities;
 @{
     Layout = "Master.cshtml";
 
@@ -11,7 +12,7 @@
 
     var culture = "en-US";
 
-    var productMetaFields = products.SelectMany(x => x.Metafields).Where(x => x.Field.Filterable).GroupBy(x => x.Field, new MetafieldComparer());
+    var filters = products.Filters();
 }
 
 <h1>@category.Title</h1>
@@ -29,23 +30,22 @@
 
 <form method="get" action="@Model.Url()">
     <ol>
-        @foreach (var filterGroup in productMetaFields)
+        @foreach (var filter in filters)
         {
-            var values = filterGroup.SelectMany(x => x.Values);
-            var field = filterGroup.Key;
+
             <li>
-                @field.Title.GetValue(culture)
+                @filter.Field.Title.GetValue(culture)
 
                 <ul>
-                    @foreach (var val in values.DistinctBy(x => x.GetValue(culture)))
+                    @foreach (var val in filter.Values)
                     {
-                        var query = Context.Request.Query["filter_" + field.Id];
+                        var query = Context.Request.Query["filter_" + filter.Field.Id];
 
                         var value = val.GetValue(culture);
 
                         <li>
                             <label>
-                                <input type="checkbox" value="@value" name="filter_@field.Id" @(query.Contains(value) ? "checked" : "") /> @value
+                                <input type="checkbox" value="@value" name="filter_@filter.Field.Id" @(query.Contains(value) ? "checked" : "") /> @value
                             </label>
 
                         </li>
