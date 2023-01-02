@@ -76,6 +76,6 @@ namespace Ekom.Models
         /// <summary>
         /// Variant images
         /// </summary>
-        IEnumerable<Image> Images();
+        IEnumerable<Image> Images { get; }
     }
 }

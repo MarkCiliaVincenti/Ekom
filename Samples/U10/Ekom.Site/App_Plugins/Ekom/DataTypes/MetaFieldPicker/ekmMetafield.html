@@ -6,8 +6,9 @@
 
   <div class="metafields" ng-if="!loading"
        ng-repeat="field in fields track by $index" style="margin-bottom: 20px;">
-    <label for="metafield_{{$index}}">
+    <label for="metafield_{{$index}}" style="display:block;">
       {{ field.Name }}
+      <button type="button" ng-click="Reset($index)" class="btn" style="float:right; margin-bottom: 10px;">Clear</button>
       <small ng-if="field.Description.length > 0">{{ field.Description }}</small>
     </label>
     <div class="metafields__input">

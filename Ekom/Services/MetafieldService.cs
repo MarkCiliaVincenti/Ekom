@@ -22,7 +22,7 @@ namespace EkomCore.Services
             return metafieldNodes.Select(x => new Metafield(x));
         }
 
-        public List<Metavalue> SerializeMetafields(string jsonValue, string culture)
+        public List<Metavalue> SerializeMetafields(string jsonValue)
         {
             if (string.IsNullOrEmpty(jsonValue))
             {
@@ -39,7 +39,7 @@ namespace EkomCore.Services
             {
                 if (item.ContainsKey("Key") && Guid.TryParse(item["Key"].ToString(), out Guid _metaFieldKey))
                 {
-                    var valuesList = new List<string>();
+                    var valuesList = new List<Dictionary<string,string>>();
 
                     var field = fields.FirstOrDefault(x => x.Key == _metaFieldKey);
 
@@ -59,16 +59,11 @@ namespace EkomCore.Services
                                 {
                                     var valueId = valueObject["Id"].ToString();
 
-                                    var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId && x.Values.Any(z => z.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)));
+                                    var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId);
 
                                     if (fieldValues != null)
                                     {
-                                        var val = fieldValues.Values.FirstOrDefault(x => x.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)).Value;
-
-                                        if (!string.IsNullOrEmpty(val))
-                                        {
-                                            valuesList.Add(val);
-                                        }
+                                        valuesList.Add(fieldValues.Values);
                                     }
                                 }
                             }
@@ -83,17 +78,11 @@ namespace EkomCore.Services
                             {
                                 var valueId = valueObject["Id"].ToString();
 
-                                var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId && x.Values.Any(z => z.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)));
+                                var fieldValues = field.Values.FirstOrDefault(x => x.Id == valueId);
 
                                 if (fieldValues != null)
                                 {
-                                    var val = fieldValues.Values.FirstOrDefault(x => x.Key.Equals(culture, StringComparison.InvariantCultureIgnoreCase)).Value;
-
-                                    if (!string.IsNullOrEmpty(val))
-                                    {
-                                        valuesList.Add(val);
-                                    }
-                                    
+                                    valuesList.Add(fieldValues.Values);                                
                                 }
                             }
 
@@ -102,7 +91,8 @@ namespace EkomCore.Services
                         {
                             if (!string.IsNullOrEmpty(valuesToken.ToString()))
                             {
-                                valuesList.Add(valuesToken.ToString());
+                                valuesList.Add(new Dictionary<string, string>() {
+                                    { "", valuesToken.ToString() } });
                             }
                         }
 

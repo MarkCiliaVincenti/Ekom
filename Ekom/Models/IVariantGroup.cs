@@ -12,7 +12,7 @@ namespace Ekom.Models
         /// <summary>
         /// Variant group Images
         /// </summary>
-        IEnumerable<Image> Images();
+        IEnumerable<Image> Images { get; }
         /// <summary>
         /// Get the Primary variant price, if no variants then fallback to product price
         /// </summary>

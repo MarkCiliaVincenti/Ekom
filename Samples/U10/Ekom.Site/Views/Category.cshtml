@@ -1,3 +1,4 @@
+@using Ekom.Models
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Ekom.API;
@@ -8,9 +9,7 @@
 
     var products = category.ProductsRecursive;
 
-    var productMetaFields = products.SelectMany(x => x.Metafields("is-IS")).Where(x => x.Field.Filterable);
-
-    var filters = productMetaFields.GroupBy(x => x.Field.Key);
+    var productMetaFields = products.SelectMany(x => x.Metafields).Where(x => x.Field.Filterable).GroupBy(x => x.Field, new MetafieldComparer());
 }
 
 <h1>@category.Title</h1>
@@ -28,22 +27,23 @@
 
 <form method="get" action="@Model.Url()">
     <ol>
-        @foreach (var filterGroup in filters)
+        @foreach (var filterGroup in productMetaFields)
         {
-            var values = filterGroup.SelectMany(x => x.Values).DistinctBy(x => x).OrderBy(x => x);
-            var field = productMetaFields.FirstOrDefault(x => x.Field.Key == filterGroup.Key);
-
+            var values = filterGroup.SelectMany(x => x.Values);
+            var field = filterGroup.Key;
             <li>
-                @field.Field.Title.GetValue("is-IS")
+                @field.Title.GetValue("is-IS")
 
                 <ul>
-                    @foreach (var val in values)
+                    @foreach (var val in values.DistinctBy(x => x.GetValue("is-IS")))
                     {
-                        var query = Context.Request.Query["filter_" + field.Field.Id];
+                        var query = Context.Request.Query["filter_" + field.Id];
+
+                        var value = val.GetValue("is-IS");
 
                         <li>
                             <label>
-                                <input type="checkbox" value="@val" name="filter_@field.Field.Id" @(query.Contains(val) ? "checked" : "") /> @val
+                                <input type="checkbox" value="@value" name="filter_@field.Id" @(query.Contains(value) ? "checked" : "") /> @value
                             </label>
 
                         </li>

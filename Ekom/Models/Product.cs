@@ -86,27 +86,31 @@ namespace Ekom.Models
         // <summary>
         // Product images
         // </summary>
-        public virtual IEnumerable<Image> Images()
+        public virtual IEnumerable<Image> Images
         {
-            var primaryVariantGroup = PrimaryVariantGroup;
 
-            if (primaryVariantGroup != null)
+            get
             {
-                var imageNodes = primaryVariantGroup.Images();
+                var primaryVariantGroup = PrimaryVariantGroup;
 
-                if (!imageNodes.Any() && primaryVariantGroup.Variants.Any())
+                if (primaryVariantGroup != null)
                 {
-                    imageNodes = primaryVariantGroup.Variants.FirstOrDefault()?.Images();
-                }
+                    var imageNodes = primaryVariantGroup.Images;
 
-                if (imageNodes.Any())
-                {
-                    return imageNodes;
+                    if (!imageNodes.Any() && primaryVariantGroup.Variants.Any())
+                    {
+                        imageNodes = primaryVariantGroup.Variants.FirstOrDefault()?.Images;
+                    }
+
+                    if (imageNodes.Any())
+                    {
+                        return imageNodes;
+                    }
                 }
+                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
+
+                return _images.GetImages();
             }
-            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
-
-            return _images.GetImages();
         }
 
         /// <summary>
@@ -251,17 +255,20 @@ namespace Ekom.Models
             }
         }
 
-        public virtual List<Metavalue> Metafields(string culture)
+        public virtual List<Metavalue> Metafields
         {
-            
-            if (Properties.HasPropertyValue("metafields"))
+            get
             {
-                var value = GetValue("metafields");
+                if (Properties.HasPropertyValue("metafields"))
+                {
+                    var value = GetValue("metafields");
 
-                return Configuration.Resolver.GetService<IMetafieldService>().SerializeMetafields(value, culture);
+                    return Configuration.Resolver.GetService<IMetafieldService>().SerializeMetafields(value);
+                }
+
+                return new List<Metavalue>();
             }
-
-            return new List<Metavalue>();
+         
             
         }
 

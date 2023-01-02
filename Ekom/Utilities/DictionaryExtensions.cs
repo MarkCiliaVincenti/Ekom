@@ -61,6 +61,11 @@ namespace Ekom
             }
             else
             {
+                if (string.IsNullOrEmpty(val) && properties.ContainsKey(""))
+                {
+                    return properties.FirstOrDefault(x => string.IsNullOrEmpty(x.Key)).Value;
+                }
+
                 return val ?? string.Empty;
             }
         }

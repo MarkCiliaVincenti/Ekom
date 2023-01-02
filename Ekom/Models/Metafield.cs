@@ -25,7 +25,6 @@ namespace EkomCore.Models
 
             if (!string.IsNullOrEmpty(values))
             {
-
                 Values = JsonConvert.DeserializeObject<List<MetafieldValues>>(values);
             }
         }

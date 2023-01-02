@@ -62,13 +62,16 @@ namespace Ekom.Models
         // <summary>
         // Variant Group images
         // </summary>
-        public virtual IEnumerable<Image> Images()
+        public virtual IEnumerable<Image> Images
         {
-            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
+            get
+            {
+                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
 
-            var imageNodes = _images.GetImages();
+                var imageNodes = _images.GetImages();
 
-            return imageNodes;
+                return imageNodes;
+            }
         }
 
         /// <summary>

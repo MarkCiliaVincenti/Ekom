@@ -1,3 +1,4 @@
+@using Newtonsoft.Json
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @using Ekom.API;
 
@@ -44,6 +45,8 @@
             @foreach (var product in cat.ProductsRecursive)
             {
 
+                var metaJson = JsonConvert.SerializeObject(product.Metafields);
+
                 var testContent = product.GetValue<IPublishedContent>("test");
 
                 <li>
@@ -84,12 +87,14 @@
                     <h4>Metafields</h4>
 
                     @if (product.Metafields != null)  {
-                        foreach (var field in product.Metafields("is-IS")) {
+                        foreach (var field in product.Metafields) {
                             <p>
                                 @field.Field.Title.GetValue("is-IS") - @(string.Join(",", field.Values))
                             </p>
                         }
                     }
+
+                    <p>*@metaJson*</p>
                 </li>
             }
         </ul>

@@ -54,6 +54,12 @@
 
       });
 
+      $scope.Reset = function (index) {
+
+        $scope.values[index] = "";
+        
+      };
+
       $scope.$on("formSubmitting", function (ev, args) {
         var modifiedValues = [];
 

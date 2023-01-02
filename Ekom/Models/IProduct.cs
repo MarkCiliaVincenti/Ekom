@@ -33,7 +33,7 @@ namespace Ekom.Models
         /// </value>
         decimal Vat { get; }
 
-        List<Metavalue> Metafields(string culture);
+        List<Metavalue> Metafields { get; }
 
         /// <summary>
         /// Gets the stock.
@@ -67,7 +67,7 @@ namespace Ekom.Models
         /// <summary>
         /// Product images
         /// </summary>
-        IEnumerable<Image> Images();
+        IEnumerable<Image> Images { get; }
 
         /// <summary>
         /// A product can have multiple variant groups, 
