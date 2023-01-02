@@ -107,7 +107,8 @@ namespace Ekom.Models
                         return imageNodes;
                     }
                 }
-                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
+                
+                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage);
 
                 return _images.GetImages();
             }
@@ -267,11 +268,8 @@ namespace Ekom.Models
                 }
 
                 return new List<Metavalue>();
-            }
-         
-            
+            } 
         }
-
 
         /// <summary>
         /// All child variant groups of this product

@@ -201,7 +201,7 @@ namespace Ekom.Models
         {
             get
             {
-                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage, Store.Alias);
+                var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage);
 
                 var imageNodes = _images.GetImages();
 

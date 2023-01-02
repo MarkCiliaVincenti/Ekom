@@ -9,6 +9,8 @@
 
     var products = category.ProductsRecursive;
 
+    var culture = "en-US";
+
     var productMetaFields = products.SelectMany(x => x.Metafields).Where(x => x.Field.Filterable).GroupBy(x => x.Field, new MetafieldComparer());
 }
 
@@ -32,14 +34,14 @@
             var values = filterGroup.SelectMany(x => x.Values);
             var field = filterGroup.Key;
             <li>
-                @field.Title.GetValue("is-IS")
+                @field.Title.GetValue(culture)
 
                 <ul>
-                    @foreach (var val in values.DistinctBy(x => x.GetValue("is-IS")))
+                    @foreach (var val in values.DistinctBy(x => x.GetValue(culture)))
                     {
                         var query = Context.Request.Query["filter_" + field.Id];
 
-                        var value = val.GetValue("is-IS");
+                        var value = val.GetValue(culture);
 
                         <li>
                             <label>

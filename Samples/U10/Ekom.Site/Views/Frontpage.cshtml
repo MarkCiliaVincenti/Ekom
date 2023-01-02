@@ -75,6 +75,20 @@
                         <strong>Test3 - @(product.GetValue<bool>("test3"))</strong>
                     </p>
 
+                    @if (product.Images.Any()) {
+                        <p>
+                            <strong>Images</strong>
+                            <ul>
+                                @foreach (var img in product.Images)
+                                {
+                                    <li>
+                                        <img src="@img.Url" />
+                                    </li>
+                                }
+                            </ul>
+                        </p>
+                    }
+
                     <ul>
                         @foreach (var prop in product.Properties)
                         {
