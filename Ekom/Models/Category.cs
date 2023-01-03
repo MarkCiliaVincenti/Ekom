@@ -1,5 +1,6 @@
 using Ekom.Cache;
 using Ekom.Services;
+using Ekom.Utilities;
 using EkomCore.Models;
 using EkomCore.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -86,6 +87,18 @@ namespace Ekom.Models
             }
         }
 
+        public IEnumerable<IProduct> ProductsQuery(ProductQuery query)
+        {
+            var products = Products;
+
+            if (query?.Filters?.Any() == true)
+            {
+                products = products.Filter(query);
+            }
+
+            return products;
+        }
+
         /// <summary>
         /// All descendant categories, includes grandchild categories
         /// </summary>
@@ -119,6 +132,18 @@ namespace Ekom.Models
                                     .OrderBy(x => x.SortOrder)
                                     .SelectMany(x => x.Products);
             }
+        }
+        public IEnumerable<IProduct> ProductsRecursiveQuery(ProductQuery query)
+        {
+
+            var products = ProductsRecursive;
+
+            if (query?.Filters?.Any() == true)
+            {
+                products = products.Filter(query);
+            }
+
+            return products;
         }
 
         /// <summary>

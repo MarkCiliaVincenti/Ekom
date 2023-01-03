@@ -8,9 +8,10 @@ using Ekom.Utilities;
 using System;
 using Ekom.Models;
 using Ekom.Exceptions;
-using System.Collections;
 using System.Collections.Generic;
 using EkomCore.Models;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Ekom.Controllers
 {
@@ -85,13 +86,19 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="categoryId">Id of category</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost, HttpGet]
         [Route("products/{categoryId:Int}")]
-        public IEnumerable<IProduct> GetProducts(int categoryId)
+        public IEnumerable<IProduct> GetProducts(int categoryId, [FromBody] ProductQuery query)
         {
             try
             {
                 var category = API.Catalog.Instance.GetCategory(categoryId);
+
+                if (query?.Filters?.Any() == true)
+                {
+
+                    return category.ProductsQuery(query);
+                }
 
                 return category.Products;
             }
@@ -106,13 +113,19 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="categoryId">Id of category</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost, HttpGet]
         [Route("productsrecursive/{categoryId:Int}")]
-        public IEnumerable<IProduct> GetProductsRecursive(int categoryId)
+        public IEnumerable<IProduct> GetProductsRecursive(int categoryId, [FromBody] ProductQuery query)
         {
             try
             {
                 var category = API.Catalog.Instance.GetCategory(categoryId);
+
+                if (query?.Filters?.Any() == true)
+                {
+                    
+                    return category.ProductsRecursiveQuery(query);
+                }
 
                 return category.ProductsRecursive;
             }
@@ -258,5 +271,6 @@ namespace Ekom.Controllers
                 throw ExceptionHandler.Handle<HttpResponseException>(ex);
             }
         }
+
     }
 }

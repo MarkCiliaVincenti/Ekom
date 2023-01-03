@@ -14,10 +14,21 @@ namespace Ekom.Models
         /// All direct child products of category. (No descendants)
         /// </summary>
         IEnumerable<IProduct> Products { get; }
+
+        /// <summary>
+        /// All direct child products of category as is queried. (No descendants)
+        /// </summary>
+        IEnumerable<IProduct> ProductsQuery(ProductQuery query);
+
         /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
         IEnumerable<IProduct> ProductsRecursive { get; }
+        /// <summary>
+        /// All descendant products of category, this includes child products of sub-categories and is queryied
+        /// </summary>
+        IEnumerable<IProduct> ProductsRecursiveQuery(ProductQuery query);
+
         /// <summary>
         /// Our eldest ancestor category
         /// </summary>

@@ -139,5 +139,10 @@ namespace EkomCore.Services
 
             return list;
         }
+
+        public IEnumerable<IProduct> FilterProducts(IEnumerable<IProduct> products, ProductQuery query) 
+        {
+            return products;
+        } 
     }
 }

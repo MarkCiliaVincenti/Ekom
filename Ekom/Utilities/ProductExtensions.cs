@@ -3,7 +3,6 @@ using EkomCore.Models;
 using EkomCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ekom.Utilities
 {
@@ -14,6 +13,12 @@ namespace Ekom.Utilities
             var ms = Configuration.Resolver.GetService<IMetafieldService>();
 
             return ms.Filters(products, filterable);
+        }
+        public static IEnumerable<IProduct> Filter(this IEnumerable<IProduct> products, ProductQuery query)
+        {
+            var ms = Configuration.Resolver.GetService<IMetafieldService>();
+
+            return ms.FilterProducts(products, query);
         }
     }
 }
