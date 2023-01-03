@@ -142,6 +142,16 @@ namespace EkomCore.Services
 
         public IEnumerable<IProduct> FilterProducts(IEnumerable<IProduct> products, ProductQuery query) 
         {
+            products = products
+                .Where(x => 
+                    x.Metafields.Any(metaField =>
+                        query.Filters.Any(filter => 
+                            filter.Key == metaField.Field.Id.ToString() &&
+                            filter.Value.Intersect(metaField.Values.SelectMany(v => v.Values.Select(c => c).ToList())).Any()
+                            )
+                    )
+            );
+
             return products;
         } 
     }

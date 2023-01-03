@@ -53,7 +53,7 @@
         <h4>Products</h4>
 
         <ul>
-            @foreach (var product in cat.ProductsRecursive)
+            @foreach (var product in cat.ProductsRecursive())
             {
 
                 var metaJson = JsonConvert.SerializeObject(product.Metafields);

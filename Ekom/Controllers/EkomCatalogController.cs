@@ -121,13 +121,7 @@ namespace Ekom.Controllers
             {
                 var category = API.Catalog.Instance.GetCategory(categoryId);
 
-                if (query?.Filters?.Any() == true)
-                {
-                    
-                    return category.ProductsRecursiveQuery(query);
-                }
-
-                return category.ProductsRecursive;
+                return category.ProductsRecursive(query);
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
             {

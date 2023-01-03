@@ -119,24 +119,15 @@ namespace Ekom.Models
         /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
-        [JsonIgnore]
-        [XmlIgnore]
-        public IEnumerable<IProduct> ProductsRecursive
+        public IEnumerable<IProduct> ProductsRecursive(ProductQuery query = null)
         {
-            get
-            {
-                return _categoryCache.Cache[Store.Alias]
+
+            var products = _categoryCache.Cache[Store.Alias]
                                     .Where(x => x.Value.Level >= Level &&
                                                 x.Value.Path.Split(',').Contains(Id.ToString()))
                                     .Select(x => x.Value)
                                     .OrderBy(x => x.SortOrder)
                                     .SelectMany(x => x.Products);
-            }
-        }
-        public IEnumerable<IProduct> ProductsRecursiveQuery(ProductQuery query)
-        {
-
-            var products = ProductsRecursive;
 
             if (query?.Filters?.Any() == true)
             {
@@ -173,7 +164,7 @@ namespace Ekom.Models
 
         
         public IEnumerable<MetafieldGrouped> Filters(bool filterable = true) {
-            return _metafieldService.Filters(ProductsRecursive, filterable);
+            return _metafieldService.Filters(ProductsRecursive(), filterable);
         }
 
         /// <summary>

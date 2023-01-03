@@ -23,11 +23,7 @@ namespace Ekom.Models
         /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
-        IEnumerable<IProduct> ProductsRecursive { get; }
-        /// <summary>
-        /// All descendant products of category, this includes child products of sub-categories and is queryied
-        /// </summary>
-        IEnumerable<IProduct> ProductsRecursiveQuery(ProductQuery query);
+        IEnumerable<IProduct> ProductsRecursive(ProductQuery query = null);
 
         /// <summary>
         /// Our eldest ancestor category
