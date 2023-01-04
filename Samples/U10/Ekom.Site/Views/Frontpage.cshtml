@@ -15,7 +15,7 @@
 }
 
 <h2>Total Categories (@categories.Count())</h2>
-<h2>Total Products (@allProducts.Count())</h2>
+<h2>Total Products (@allProducts.Products.Count())</h2>
 <h3>Culture: @Model.GetCultureFromDomains()</h3>
 <h3>Store: @store.Alias</h3>
 
@@ -53,7 +53,7 @@
         <h4>Products</h4>
 
         <ul>
-            @foreach (var product in cat.ProductsRecursive())
+            @foreach (var product in cat.ProductsRecursive().Products)
             {
 
                 var metaJson = JsonConvert.SerializeObject(product.Metafields);

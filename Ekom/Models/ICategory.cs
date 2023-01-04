@@ -1,6 +1,5 @@
 using EkomCore.Models;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ekom.Models
 {
@@ -13,17 +12,12 @@ namespace Ekom.Models
         /// <summary>
         /// All direct child products of category. (No descendants)
         /// </summary>
-        IEnumerable<IProduct> Products { get; }
-
-        /// <summary>
-        /// All direct child products of category as is queried. (No descendants)
-        /// </summary>
-        IEnumerable<IProduct> ProductsQuery(ProductQuery query);
+        ProductResponse Products(ProductQuery query = null);
 
         /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
-        IEnumerable<IProduct> ProductsRecursive(ProductQuery query = null);
+        ProductResponse ProductsRecursive(ProductQuery query = null);
 
         /// <summary>
         /// Our eldest ancestor category

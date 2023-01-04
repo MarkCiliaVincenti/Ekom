@@ -8,13 +8,13 @@
 
     var category = Catalog.Instance.GetCategory();
 
-    var products = category.ProductsRecursive(new ProductQuery() {
+    var productResponse = category.ProductsRecursive(new ProductQuery() {
         Filters = null
     });
 
     var culture = "en-US";
 
-    var filters = products.Filters();
+    var filters = productResponse.Filters();
 }
 
 <h1>@category.Title</h1>
@@ -22,7 +22,7 @@
 <h2>Products</h2>
 
 <ul>
-    @foreach (var prod in products)
+    @foreach (var prod in productResponse.Products)
     {
         <li>@prod.Title</li>
     }

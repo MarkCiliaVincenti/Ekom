@@ -88,19 +88,13 @@ namespace Ekom.Controllers
         /// <returns></returns>
         [HttpPost, HttpGet]
         [Route("products/{categoryId:Int}")]
-        public IEnumerable<IProduct> GetProducts(int categoryId, [FromBody] ProductQuery query)
+        public ProductResponse GetProducts(int categoryId, [FromBody] ProductQuery query)
         {
             try
             {
                 var category = API.Catalog.Instance.GetCategory(categoryId);
 
-                if (query?.Filters?.Any() == true)
-                {
-
-                    return category.ProductsQuery(query);
-                }
-
-                return category.Products;
+                return category.Products(query);
             }
             catch (Exception ex) when (!(ex is HttpResponseException))
             {
@@ -115,7 +109,7 @@ namespace Ekom.Controllers
         /// <returns></returns>
         [HttpPost, HttpGet]
         [Route("productsrecursive/{categoryId:Int}")]
-        public IEnumerable<IProduct> GetProductsRecursive(int categoryId, [FromBody] ProductQuery query)
+        public ProductResponse GetProductsRecursive(int categoryId, [FromBody] ProductQuery query)
         {
             try
             {

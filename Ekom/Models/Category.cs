@@ -72,34 +72,6 @@ namespace Ekom.Models
         }
 
         /// <summary>
-        /// All direct child products of category. (No descendants)
-        /// </summary>
-        [JsonIgnore]
-        [XmlIgnore]
-        public IEnumerable<IProduct> Products
-        {
-            get
-            {
-                return _productCache.Cache[Store.Alias]
-                                   .Where(x => x.Value.Categories.Any(z => z.Id == Id))
-                                   .Select(x => x.Value)
-                                   .OrderBy(x => x.SortOrder);
-            }
-        }
-
-        public IEnumerable<IProduct> ProductsQuery(ProductQuery query)
-        {
-            var products = Products;
-
-            if (query?.Filters?.Any() == true)
-            {
-                products = products.Filter(query);
-            }
-
-            return products;
-        }
-
-        /// <summary>
         /// All descendant categories, includes grandchild categories
         /// </summary>
         [JsonIgnore]
@@ -117,9 +89,23 @@ namespace Ekom.Models
         }
 
         /// <summary>
+        /// All direct child products of category. (No descendants)
+        /// </summary>
+        public ProductResponse Products(ProductQuery query = null)
+        {
+
+            var products = _productCache.Cache[Store.Alias]
+                                .Where(x => x.Value.Categories.Any(z => z.Id == Id))
+                                .Select(x => x.Value)
+                                .OrderBy(x => x.SortOrder).AsEnumerable();
+
+            return new ProductResponse(products, query);
+        }
+
+        /// <summary>
         /// All descendant products of category, this includes child products of sub-categories
         /// </summary>
-        public IEnumerable<IProduct> ProductsRecursive(ProductQuery query = null)
+        public ProductResponse ProductsRecursive(ProductQuery query = null)
         {
 
             var products = _categoryCache.Cache[Store.Alias]
@@ -127,14 +113,9 @@ namespace Ekom.Models
                                                 x.Value.Path.Split(',').Contains(Id.ToString()))
                                     .Select(x => x.Value)
                                     .OrderBy(x => x.SortOrder)
-                                    .SelectMany(x => x.Products);
+                                    .SelectMany(x => x.Products().Products);
 
-            if (query?.Filters?.Any() == true)
-            {
-                products = products.Filter(query);
-            }
-
-            return products;
+            return new ProductResponse(products, query);
         }
 
         /// <summary>
@@ -164,7 +145,7 @@ namespace Ekom.Models
 
         
         public IEnumerable<MetafieldGrouped> Filters(bool filterable = true) {
-            return _metafieldService.Filters(ProductsRecursive(), filterable);
+            return ProductsRecursive().Filters();
         }
 
         /// <summary>
