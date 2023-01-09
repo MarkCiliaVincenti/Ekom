@@ -9,6 +9,8 @@ namespace Ekom.Models
         public ProductResponse(IEnumerable<IProduct> products, ProductQuery query)
         {
 
+            ProductCount = products.Count();
+
             if (query?.Filters?.Any() == true)
             {
                 products = products.Filter(query);
@@ -16,11 +18,9 @@ namespace Ekom.Models
 
             if (query?.PageSize.HasValue == true && query?.Page.HasValue == true)
             {
-                var totalProducts = products.Count();
-
                 Page = query.Page;
                 PageSize = query.PageSize;
-                PageCount = (totalProducts + PageSize - 1) / PageSize;
+                PageCount = (ProductCount + PageSize - 1) / PageSize;
 
                 Products = products.Skip((Page.Value - 1) * PageSize.Value).Take(PageSize.Value);
 
@@ -28,11 +28,13 @@ namespace Ekom.Models
             {
                 Products = products;
             }
+
         }
 
         public IEnumerable<IProduct> Products { get; set; }
         public int? PageCount { get; set; }
         public int? PageSize { get; set; }
         public int? Page { get; set; }
+        public int? ProductCount { get; set; }
     }
 }

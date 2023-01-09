@@ -8,9 +8,7 @@
 
     var category = Catalog.Instance.GetCategory();
 
-    var productResponse = category.ProductsRecursive(new ProductQuery() {
-        Filters = null
-    });
+    var productResponse = category.ProductsRecursive(new ProductQuery(Context.Request) { Page = 1, PageSize = 10 });
 
     var culture = "en-US";
 
