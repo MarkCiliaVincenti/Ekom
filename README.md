@@ -1,7 +1,7 @@
 # Ekom
 ## Open Source Ecommerce solution for Umbraco
 
-Supports Umbraco version 10+
+Supports Umbraco version 8+
 
 ## Features
 
