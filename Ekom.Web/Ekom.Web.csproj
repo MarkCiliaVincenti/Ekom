@@ -6,12 +6,12 @@
       <!-- Package properties -->
       <PackageId>EkomCore.Web</PackageId>
       <Version>0.0.9</Version>
-      <Title>EkomCore.Web</Title>
+      <Title>Ekom.Web</Title>
       <Authors>Vettvangur</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
       <PackageIcon>images\VV_Logo.png</PackageIcon>
-      <Description>EkomCore Web. This Package has all the web files that EkomCore requires.</Description>
+      <Description>Ekom Web. This Package has all the web files that Ekom requires.</Description>
       <PackageReleaseNotes>Create nuget package</PackageReleaseNotes>
       <Copyright>Copyright 2022</Copyright>
       <PackageTags>umbraco</PackageTags>

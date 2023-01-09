@@ -11,12 +11,12 @@
       <!-- Package properties -->
       <PackageId>EkomCore.AspNetCore</PackageId>
       <Version>0.0.1</Version>
-      <Title>EkomCore AspNetCore</Title>
+      <Title>Ekom AspNetCore</Title>
       <Authors>Vettvangur</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
       <PackageIcon>images\VV_Logo.png</PackageIcon>
-      <Description>EkomCore ASP.NET Core - Vettvangur E-Commerce solution</Description>
+      <Description>Ekom ASP.NET Core - Vettvangur E-Commerce solution</Description>
       <PackageReleaseNotes></PackageReleaseNotes>
       <Copyright>Copyright 2022</Copyright>
       <PackageTags></PackageTags>
@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Ekom\EkomCore.csproj" />
+      <ProjectReference Include="..\..\Ekom\Ekom.csproj" />
     </ItemGroup>
 
 </Project>

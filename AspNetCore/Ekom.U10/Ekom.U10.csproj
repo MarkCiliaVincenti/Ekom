@@ -12,12 +12,12 @@
         <!-- Package properties -->
         <PackageId>EkomCore.U10</PackageId>
         <Version>0.0.1</Version>
-        <Title>EkomCore Umbraco 10</Title>
+        <Title>Ekom Umbraco 10</Title>
         <Authors>Vettvangur</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
         <PackageIcon>images\VV_Logo.png</PackageIcon>
-        <Description>EkomCore Umbraco 10 - Vettvangur E-Commerce solution</Description>
+        <Description>Ekom Umbraco 10 - Vettvangur E-Commerce solution</Description>
         <PackageReleaseNotes></PackageReleaseNotes>
         <Copyright>Copyright 2022</Copyright>
         <PackageTags></PackageTags>
@@ -66,7 +66,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Ekom\EkomCore.csproj" />
-      <ProjectReference Include="..\Ekom.AspNetCore\EkomCore.AspNetCore.csproj" />
+      <ProjectReference Include="..\..\Ekom\Ekom.csproj" />
+      <ProjectReference Include="..\Ekom.AspNetCore\Ekom.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

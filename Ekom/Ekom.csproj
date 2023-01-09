@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net461;net6.0</TargetFrameworks>
@@ -7,12 +7,12 @@
       <!-- Package properties -->
       <PackageId>EkomCore</PackageId>
       <Version>0.0.1</Version>
-      <Title>EkomCore</Title>
+      <Title>Ekom</Title>
       <Authors>Vettvangur</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/Vettvangur/Ekom</PackageProjectUrl>
       <PackageIcon>images\VV_Logo.png</PackageIcon>
-      <Description>EkomCore - Vettvangur E-Commerce solution</Description>
+      <Description>Ekom - Vettvangur E-Commerce solution</Description>
       <PackageReleaseNotes></PackageReleaseNotes>
       <Copyright>Copyright 2022</Copyright>
       <PackageTags></PackageTags>
