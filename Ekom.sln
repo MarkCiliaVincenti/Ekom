@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Extensions", "EkomOld\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Web", "EkomOld\Ekom.Web\Ekom.Web.csproj", "{6AA6D77B-F7F7-4F36-9D42-FB24E9B16CFD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom.Core", "Ekom\Ekom.Core.csproj", "{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ekom", "Ekom\Ekom.csproj", "{EBA991EB-CDAA-4939-B22D-8C8CCF8ED470}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ekom.Extensions", "Ekom.Extensions", "{97BB32C0-AF60-484C-BC68-FE3DE03061C1}"
 EndProject
