@@ -142,6 +142,14 @@ namespace EkomCore.Services
 
         public IEnumerable<IProduct> FilterProducts(IEnumerable<IProduct> products, ProductQuery query) 
         {
+
+            var emptyItems = query.Filters.Where(x => !x.Value.Any());
+
+            foreach (var emptyItem in emptyItems)
+            {
+                query.Filters.Remove(emptyItem.Key);
+            }
+
             products = products
                 .Where(x => 
                     x.Metafields.Any(metaField =>
