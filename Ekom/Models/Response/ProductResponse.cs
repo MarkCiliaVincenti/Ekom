@@ -8,13 +8,13 @@ namespace Ekom.Models
     {
         public ProductResponse(IEnumerable<IProduct> products, ProductQuery query)
         {
-
-            ProductCount = products.Count();
-
+            
             if (query?.Filters?.Any() == true)
             {
                 products = products.Filter(query);
             }
+
+            ProductCount = products.Count();
 
             if (query?.PageSize.HasValue == true && query?.Page.HasValue == true)
             {
