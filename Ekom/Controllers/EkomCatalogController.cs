@@ -202,7 +202,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("subcategories")]
+        [Route("subcategories/{id:Int}")]
         public IEnumerable<ICategory> GetSubCategories(int id)
         {
             try
@@ -218,12 +218,14 @@ namespace Ekom.Controllers
             }
         }
 
+        
+
         /// <summary>
         /// Get Sub Categories Recursive
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("subcategoriesrecursive")]
+        [Route("subcategoriesrecursive/{id:Int}")]
         public IEnumerable<ICategory> GetSubCategoriesRecurisve(int id)
         {
             try
