@@ -5,14 +5,8 @@ using System.Web.Mvc.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 #endif
-using Ekom.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ekom.U10.Utilities
+namespace Ekom.Utilities
 {
     public static class HtmlHelperExtensions
     {
@@ -51,11 +45,6 @@ namespace Ekom.U10.Utilities
                 case FormType.AddToOrderCart:
 
                     actionName = "AddToOrder";
-                    defaultClassName = "cart__quantity-form";
-                    break;
-                case FormType.UpdateOrderLineQuantity:
-
-                    actionName = "UpdateOrderlineQuantity";
                     defaultClassName = "cart__quantity-form";
                     break;
                 case FormType.RemoveOrderLine:

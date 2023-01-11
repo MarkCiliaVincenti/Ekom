@@ -3,6 +3,7 @@ using Ekom.Exceptions;
 using Ekom.Interfaces;
 using Ekom.Models;
 using Ekom.Services;
+using Ekom.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -308,6 +309,16 @@ namespace Ekom.API
         {
             if (string.IsNullOrEmpty(storeAlias))
             {
+                var store = _storeSvc.GetStoreFromCache();
+
+                if (store != null)
+                {
+                    storeAlias = store.Alias;
+                }
+            }
+      
+            if (string.IsNullOrEmpty(storeAlias))
+            {
                 throw new ArgumentException("Null or empty storeAlias", nameof(storeAlias));
             }
 
@@ -414,7 +425,7 @@ namespace Ekom.API
         /// <summary>
         /// Sets quantity to specified amount
         /// </summary>
-        /// <param name="orderLineId"></param>
+        /// <param name="lineId"></param>
         /// <param name="quantity"></param>
         /// <param name="storeAlias"></param>
         /// <param name="settings"></param>

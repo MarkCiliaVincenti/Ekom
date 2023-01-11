@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Ekom.Utilities;
 #if NET461
 using System.Web.Script.Serialization;
 #endif

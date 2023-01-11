@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
-namespace Ekom.Umb.Utilities
+namespace Ekom.Utilities
 {
     public static class ContentExtensions
     {

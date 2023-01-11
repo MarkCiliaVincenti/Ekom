@@ -22,7 +22,7 @@ namespace Ekom.Controllers
     public partial class EkomOrderController : ApiController
     {
 #else
-    [Route("ekom/order/discounts")]
+    [Route("ekom/order")]
     public partial class EkomOrderController : ControllerBase
     {
 #endif

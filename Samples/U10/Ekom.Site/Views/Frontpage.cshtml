@@ -1,6 +1,5 @@
 @using Newtonsoft.Json
 @using Umbraco.Cms.Web.Common.PublishedModels;
-@using Ekom.API;
 
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
@@ -12,16 +11,16 @@
     var allProducts = Catalog.Instance.GetAllProducts();
 
     var o = Order.Instance.GetOrder();
-
-
-    var pp = Catalog.Instance.GetProductsByIds(new List<int>() { 1166, 1167 });
 }
 
-<h4>Test: @pp.Products.Count()</h4>
 <h2>Total Categories (@categories.Count())</h2>
 <h2>Total Products (@allProducts.Products.Count())</h2>
 <h3>Culture: @Model.GetCultureFromDomains()</h3>
 <h3>Store: @store.Alias</h3>
+
+<div>
+    <a href="/checkout">Checkout</a>
+</div>
 
 <div style="margin-left:40px; border-top:1px solid #ccc;">
     @foreach (var cat in categories)

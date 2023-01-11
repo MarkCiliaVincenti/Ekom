@@ -3,7 +3,7 @@ using Ekom.Umb.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace Ekom.Umb.Utilities
+namespace Ekom.Utilities
 {
     public static class StoreExtensions
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EkomCore.Utilities
+namespace Ekom.Utilities
 {
     class SingleOrArrayConverter<T> : JsonConverter
     {

@@ -1,3 +1,4 @@
+using Ekom.Utilities;
 using System.Collections.Generic;
 
 namespace Ekom.Models
@@ -9,7 +10,7 @@ namespace Ekom.Models
 
             get
             {
-                return Properties.GetPropertyValue("shippingName");
+                return Properties.GetValue("shippingName");
             }
         }
         public string FirstName
@@ -17,7 +18,7 @@ namespace Ekom.Models
 
             get
             {
-                return Properties.GetPropertyValue("shippingFirstName");
+                return Properties.GetValue("shippingFirstName");
             }
         }
         public string LastName
@@ -25,42 +26,42 @@ namespace Ekom.Models
 
             get
             {
-                return Properties.GetPropertyValue("shippingLastName");
+                return Properties.GetValue("shippingLastName");
             }
         }
         public string Address
         {
             get
             {
-                return Properties.GetPropertyValue("shippingAddress");
+                return Properties.GetValue("shippingAddress");
             }
         }
         public string City
         {
             get
             {
-                return Properties.GetPropertyValue("shippingCity");
+                return Properties.GetValue("shippingCity");
             }
         }
         public string Apartment
         {
             get
             {
-                return Properties.GetPropertyValue("shippingApartment");
+                return Properties.GetValue("shippingApartment");
             }
         }
         public string Country
         {
             get
             {
-                return Properties.GetPropertyValue("shippingCountry");
+                return Properties.GetValue("shippingCountry");
             }
         }
         public string ZipCode
         {
             get
             {
-                return Properties.GetPropertyValue("shippingZipCode");
+                return Properties.GetValue("shippingZipCode");
             }
         }
 

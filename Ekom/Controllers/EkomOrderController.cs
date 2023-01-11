@@ -13,7 +13,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
@@ -87,7 +86,7 @@ namespace Ekom.Controllers
                     request.productId,
                     request.quantity,
                     request.storeAlias,
-                    new Ekom.API.AddOrderSettings
+                    new AddOrderSettings
                     {
                         OrderAction = request.action ?? OrderAction.AddOrUpdate,
                         VariantKey = request.variantId,

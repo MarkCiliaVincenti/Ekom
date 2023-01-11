@@ -6,8 +6,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using System.Xml.Serialization;
+using Ekom.Utilities;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 #else

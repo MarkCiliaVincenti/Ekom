@@ -1,7 +1,4 @@
-using Ekom.U10;
-using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json.Serialization;
-using Umbraco.Cms.Core.Configuration.Models;
 using Vettvangur.Shared;
 
 namespace Ekom.Site

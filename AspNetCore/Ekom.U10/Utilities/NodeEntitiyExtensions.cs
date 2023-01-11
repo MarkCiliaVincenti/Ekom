@@ -6,7 +6,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace Ekom
+namespace Ekom.Utilities
 {
     public static class NodeEntitiyExtensions
     {

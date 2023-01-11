@@ -1,3 +1,4 @@
+using Ekom.Utilities;
 using LinqToDB.Mapping;
 using System;
 using System.ComponentModel.DataAnnotations;

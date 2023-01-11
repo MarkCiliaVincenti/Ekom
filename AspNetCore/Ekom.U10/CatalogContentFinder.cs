@@ -1,6 +1,7 @@
 using Ekom.Cache;
 using Ekom.Models;
 using Ekom.Services;
+using Ekom.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;

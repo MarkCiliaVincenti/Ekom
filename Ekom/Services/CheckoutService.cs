@@ -2,6 +2,7 @@ using Ekom.API;
 using Ekom.Exceptions;
 using Ekom.Models;
 using Ekom.Repositories;
+using Ekom.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;

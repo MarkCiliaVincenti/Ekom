@@ -1,13 +1,13 @@
 using Ekom.API;
 using Ekom.Exceptions;
 using Ekom.Models;
-using Ekom.Services;
+using Ekom.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Ekom.Services
 {

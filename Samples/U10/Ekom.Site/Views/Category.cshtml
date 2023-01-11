@@ -1,14 +1,11 @@
-@using Ekom.Models
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
-@using Ekom.API;
-@using Ekom.Utilities;
 @{
     Layout = "Master.cshtml";
+    
+    var category = Ekom.API.Catalog.Instance.GetCategory();
 
-    var category = Catalog.Instance.GetCategory();
-
-    var productResponse = category.ProductsRecursive(new ProductQuery(Context.Request) { Page = 1, PageSize = 10 });
+    var productResponse = category.ProductsRecursive(new ProductQuery() { Page = 1, PageSize = 10 });
 
     var culture = "en-US";
 

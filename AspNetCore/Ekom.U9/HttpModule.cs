@@ -1,10 +1,8 @@
-using Ekom.Core;
 using Ekom.Models;
+using Ekom.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
-using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.UmbracoContext;
 

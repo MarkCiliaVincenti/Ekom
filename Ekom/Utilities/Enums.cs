@@ -1,6 +1,6 @@
 using System;
 
-namespace Ekom
+namespace Ekom.Utilities
 {
     /// <summary>
     /// 
@@ -127,10 +127,6 @@ namespace Ekom
         /// AddOrderLine action with cart view styles
         /// </summary>
         AddToOrderCart,
-        /// <summary>
-        /// Update orderline quantity
-        /// </summary>
-        UpdateOrderLineQuantity,
         /// <summary>
         /// 
         /// </summary>
