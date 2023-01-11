@@ -134,9 +134,7 @@ namespace Ekom.Models
         // </summary>
         public virtual IEnumerable<Image> Images()
         {
-            var value = config["ekmCustomImage"];
-
-            var _images = Properties.GetPropertyValue(value ?? "images", StoreInfo.Alias);
+            var _images = Properties.GetPropertyValue(Configuration.Instance.CustomImage);
 
             var imageNodes = _images.GetImages();
 
