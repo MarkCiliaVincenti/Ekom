@@ -88,7 +88,7 @@ namespace Ekom.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("products/{categoryId:Int}")]
-        public ProductResponse GetProducts(int categoryId, [FromBody] ProductQuery query)
+        public ProductResponse GetProducts(int categoryId, [FromBody] ProductQuery query = null)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace Ekom.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("productsrecursive/{categoryId:Int}")]
-        public ProductResponse GetProductsRecursive(int categoryId, [FromBody] ProductQuery query)
+        public ProductResponse GetProductsRecursive(int categoryId, [FromBody] ProductQuery query = null)
         {
             try
             {

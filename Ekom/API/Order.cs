@@ -423,12 +423,12 @@ namespace Ekom.API
         /// <exception cref="NotEnoughStockException"></exception>
         /// <returns></returns>
         public async Task<IOrderInfo> UpdateOrderlineQuantityAsync(
-            Guid orderLineId,
+            Guid lineId,
             int quantity,
             string storeAlias,
             OrderSettings settings = null)
         {
-            return await _orderService.UpdateOrderLineQuantityAsync(orderLineId, quantity, storeAlias, settings)
+            return await _orderService.UpdateOrderLineQuantityAsync(lineId, quantity, storeAlias, settings)
                 .ConfigureAwait(false);
         }
 
