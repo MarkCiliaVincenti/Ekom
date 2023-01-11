@@ -259,7 +259,7 @@ namespace Ekom.API
 
             if (store != null)
             {
-                var products = GetProductsByIds(productIds, store.Alias, query);
+                return GetProductsByIds(productIds, store.Alias, query);
             }
 
             return new ProductResponse(Enumerable.Empty<IProduct>(), query);
@@ -283,7 +283,6 @@ namespace Ekom.API
 
             foreach (var id in productIds)
             {
-
                 var product = _productCache.Cache[storeAlias].FirstOrDefault(x => x.Value.Id == id).Value;
 
                 if (product != null)
@@ -311,9 +310,7 @@ namespace Ekom.API
 
             if (store != null)
             {
-                var products = GetProductsByKeys(productKeys, store.Alias);
-
-                return products;
+               return GetProductsByKeys(productKeys, store.Alias);
             }
 
             return new ProductResponse(Enumerable.Empty<IProduct>(), query);

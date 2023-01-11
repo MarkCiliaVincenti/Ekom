@@ -12,8 +12,12 @@
     var allProducts = Catalog.Instance.GetAllProducts();
 
     var o = Order.Instance.GetOrder();
+
+
+    var pp = Catalog.Instance.GetProductsByIds(new List<int>() { 1166, 1167 });
 }
 
+<h4>Test: @pp.Products.Count()</h4>
 <h2>Total Categories (@categories.Count())</h2>
 <h2>Total Products (@allProducts.Products.Count())</h2>
 <h3>Culture: @Model.GetCultureFromDomains()</h3>

@@ -35,6 +35,6 @@ namespace Ekom.Models
         public int? PageCount { get; set; }
         public int? PageSize { get; set; }
         public int? Page { get; set; }
-        public int? ProductCount { get; set; }
+        public int ProductCount { get; set; }
     }
 }
