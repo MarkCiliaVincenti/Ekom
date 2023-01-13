@@ -2,7 +2,9 @@ using Ekom.Exceptions;
 using Ekom.Umb.DataEditors;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Composing;
+using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -11,7 +13,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace Ekom.App_Start
 {
-    class EnsureNodesExist : IComponent
+    class EnsureNodesExist : INotificationHandler<UmbracoApplicationStartingNotification>
     {
         private readonly ILogger<EnsureNodesExist> _logger;
         private readonly Configuration _configuration;
@@ -48,8 +50,10 @@ namespace Ekom.App_Start
             _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         }
 
-        public void Initialize()
+        public void Handle(UmbracoApplicationStartingNotification notification)
         {
+            if (notification.RuntimeLevel < Umbraco.Cms.Core.RuntimeLevel.Run) return;
+
             _logger.LogDebug("Ensuring Umbraco nodes exist");
 
             try
@@ -285,7 +289,7 @@ namespace Ekom.App_Start
                             Filter = "ekmProduct, ekmProductVariant, ekmCategory",
                             TreeSource = new MultiNodePickerConfigurationTreeSource()
                             {
-                                 
+
                                 StartNodeQuery = "$root/ekom/ekmCatalog",
                             }
                         }
@@ -438,7 +442,7 @@ namespace Ekom.App_Start
                                     Type = PropertyGroupType.Tab
                                 },
                             }),
-                        }
+                      }
                     );
 
                     var rangeComposition = EnsureContentTypeExists(
@@ -466,7 +470,7 @@ namespace Ekom.App_Start
                                             SortOrder = 21
                                         },
                                     }))
-                                { 
+                                {
                                     Alias = "settings",
                                     Name = "Settings",
                                     Type = PropertyGroupType.Tab
@@ -711,7 +715,7 @@ namespace Ekom.App_Start
                                         new PropertyType(_shortStringHelper, propertyTextDt, "title")
                                         {
                                             Name = "Title",
-                                            Mandatory = true 
+                                            Mandatory = true
                                         },
                                         new PropertyType(_shortStringHelper, propertyTextDt, "slug")
                                         {
@@ -828,7 +832,7 @@ namespace Ekom.App_Start
                                                 Description = "This couponless discount will be automatically applied to orders that match it's constraints"
                                             },
                                         }))
-                                    { 
+                                    {
                                         Alias = "settings",
                                         Name = "Settings",
                                         Type = PropertyGroupType.Tab
@@ -842,7 +846,7 @@ namespace Ekom.App_Start
                                                 Name = "Coupons",
                                             },
                                         }))
-                                    { 
+                                    {
                                         Alias = "coupons",
                                         Name = "Coupons",
                                         Type = PropertyGroupType.Tab
@@ -898,7 +902,7 @@ namespace Ekom.App_Start
                                                 Description = "Discount is automatically applied to selected items if the other constraints are valid.",
                                             },
                                         }))
-                                    { 
+                                    {
                                         Alias = "settings",
                                         Name = "Settings",
                                         Type = PropertyGroupType.Tab
@@ -1084,7 +1088,7 @@ namespace Ekom.App_Start
                                     },
                                 })
                             )
-                            { 
+                            {
                                 Alias = "store",
                                 Name = "Store",
                                 Type = PropertyGroupType.Tab
@@ -1125,7 +1129,7 @@ namespace Ekom.App_Start
                                         Name = "Zone Selector",
                                     },
                                 })
-                            ){ 
+                            ){
                                 Alias = "zones",
                                 Name = "Zones",
                                 Type = PropertyGroupType.Tab
@@ -1271,6 +1275,7 @@ namespace Ekom.App_Start
             {
                 _logger.LogError(ex, "Failed to Initialize EnsureNodesExist");
             }
+
         }
 
         private EntityContainer EnsureDataTypeContainerExists()
