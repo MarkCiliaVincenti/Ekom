@@ -258,7 +258,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("update/shippingprovider/{shippingProvider:Guid}/storealias/{storeAlias}")]
+        [Route("update/shippingprovider/")]
         public async Task<IOrderInfo> UpdateShippingProvider(Guid ShippingProvider, string storeAlias)
         {
             try
@@ -284,7 +284,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("update/paymentprovider/{PaymentProvider:Guid}/storealias/{storeAlias}")]
+        [Route("update/paymentprovider/")]
         public async Task<IOrderInfo> UpdatePaymentProvider(Guid PaymentProvider, string storeAlias)
         {
             try
@@ -313,7 +313,7 @@ namespace Ekom.Controllers
         /// <param name="quantity"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("line/Id/{lineId:Guid}/storealias/{storeAlias}/quantity/{quantity}")]
+        [Route("update")]
         [Obsolete("Deprecated, use AddToOrder and specify OrderAction")]
         public async Task<IOrderInfo> UpdateOrder(Guid lineId, string storeAlias, int quantity)
         {
@@ -385,8 +385,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="currency">Currency value</param>
         /// <returns></returns>
-        [HttpPatch]
-        [Route("currency/{currency}")]
+        [HttpPost]
+        [Route("currency")]
         public async Task<object> ChangeCurrency(string currency)
         {
             var store = API.Store.Instance.GetStore();
@@ -436,7 +436,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("coupon/{coupon}/storealias/{storeAlias}")]
+        [Route("coupon/apply")]
         public async Task ApplyCouponToOrder(string coupon, string storeAlias)
         {
             try
@@ -478,8 +478,8 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("coupon/storealias/{storeAlias}")]
+        [HttpPost]
+        [Route("coupon/remove")]
         public async Task RemoveCouponFromOrder(string storeAlias)
         {
             try
@@ -503,8 +503,8 @@ namespace Ekom.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("productkey/{productKey}/coupon/{coupon}/storealias/{storeAlias}")]
+        [HttpPost]
+        [Route("coupon/orderline/apply")]
         public async Task ApplyCouponToOrderLine(Guid productKey, string coupon, string storeAlias)
         {
             try
@@ -538,8 +538,8 @@ namespace Ekom.Controllers
         /// </summary>
         /// <exception cref="OrderLineNotFoundException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        [HttpDelete]
-        [Route("productkey/{productKey}/storealias/{storeAlias}")]
+        [HttpPost]
+        [Route("coupon/orderline/remove")]
         public async Task RemoveCouponFromOrderLine(Guid productKey, string storeAlias)
         {
             try
