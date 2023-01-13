@@ -4,17 +4,14 @@ using System.Web.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 #endif
-using Ekom.Domain.Repositories;
 using Ekom.Exceptions;
 using Ekom.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Ekom.Services;
 using Ekom.Authorization;
-using EkomCore.Services;
 
 namespace Ekom.Controllers
 {

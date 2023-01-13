@@ -13,9 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
-using EkomCore.Services;
-using EkomCore.Models;
-using Newtonsoft.Json.Linq;
 
 namespace Ekom.API
 {

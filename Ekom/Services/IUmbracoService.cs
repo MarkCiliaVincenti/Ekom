@@ -1,7 +1,6 @@
 using Ekom.Models;
-using EkomCore.Models.Umbraco;
+using Ekom.Models.Umbraco;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Ekom.Services

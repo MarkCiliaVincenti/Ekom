@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EkomCore.Models
+namespace Ekom.Models
 {
     public class Metafield
     {

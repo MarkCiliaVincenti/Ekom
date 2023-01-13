@@ -1,6 +1,5 @@
 using Ekom.Models;
-using EkomCore.Models;
-using EkomCore.Services;
+using Ekom.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 

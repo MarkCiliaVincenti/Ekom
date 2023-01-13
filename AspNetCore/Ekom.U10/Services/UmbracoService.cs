@@ -1,7 +1,7 @@
+using Ekom.Models.Umbraco;
 using Ekom.Services;
 using Ekom.Umb.Models;
 using Ekom.Utilities;
-using EkomCore.Models.Umbraco;
 using Newtonsoft.Json;
 using System.Net;
 using Umbraco.Cms.Core.Cache;

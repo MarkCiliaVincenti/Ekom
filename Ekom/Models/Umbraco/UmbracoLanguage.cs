@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace EkomCore.Models.Umbraco
+namespace Ekom.Models.Umbraco
 {
     public class UmbracoLanguage
     {

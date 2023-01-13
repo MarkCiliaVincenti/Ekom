@@ -9,9 +9,6 @@ using System;
 using Ekom.Models;
 using Ekom.Exceptions;
 using System.Collections.Generic;
-using EkomCore.Models;
-using Newtonsoft.Json;
-using System.Linq;
 
 namespace Ekom.Controllers
 {

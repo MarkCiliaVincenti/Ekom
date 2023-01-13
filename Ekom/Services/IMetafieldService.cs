@@ -1,8 +1,7 @@
 using Ekom.Models;
-using EkomCore.Models;
 using System.Collections.Generic;
 
-namespace EkomCore.Services
+namespace Ekom.Services
 {
     public interface IMetafieldService
     {

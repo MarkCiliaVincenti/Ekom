@@ -1,6 +1,5 @@
 using Ekom.Models;
 using Ekom.Services;
-using EkomCore.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

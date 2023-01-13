@@ -1,14 +1,11 @@
 using Ekom.Cache;
 using Ekom.Services;
 using Ekom.Utilities;
-using EkomCore.Models;
-using EkomCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Xml.Serialization;
 
 

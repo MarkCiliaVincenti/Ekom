@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EkomCore.Models
+namespace Ekom.Models
 {
     public class Metavalue
     {

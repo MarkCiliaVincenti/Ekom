@@ -1,10 +1,11 @@
 @using Newtonsoft.Json
 @using Umbraco.Cms.Web.Common.PublishedModels;
-
+@using Ekom;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Master.cshtml";
 
+   
     var categories = Catalog.Instance.GetAllCategories();
     var store = Store.Instance.GetStore();
     var allStores = Store.Instance.GetAllStores();
@@ -160,7 +161,7 @@
         <h4>All Domains</h4>
 
         <ul>
-            @foreach (var prop in Store.Instance.GetDomains())
+            @foreach (var prop in Ekom.API.Store.Instance.GetDomains())
             {
                 <li>
                     @prop.Key: @prop.DomainName - @prop.RootContentId
