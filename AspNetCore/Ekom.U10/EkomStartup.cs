@@ -45,6 +45,8 @@ public class EkomComposer : IComposer
         builder.UrlProviders()
             .InsertBefore<DefaultUrlProvider, CatalogUrlProvider>();
 
+        builder.Components()
+            .Append<AspnetCoreStartup>();
         builder
             .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureTablesExist>()
             .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureNodesExist>()
@@ -83,6 +85,23 @@ public class RemoveCoreMemberSearchableTreeComposer : IComposer
     }
 }
 
+class AspnetCoreStartup : IComponent
+{
+    public AspnetCoreStartup(IServiceProvider serviceProvider)
+    {
+        // get the root scope provider
+        Configuration.Resolver = serviceProvider;
+    }
+
+    public void Initialize()
+    {
+
+    }
+
+    public void Terminate()
+    {
+    }
+}
 
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
 /// <summary>
@@ -125,8 +144,6 @@ class EkomStartup : INotificationHandler<UmbracoApplicationStartingNotification>
         try
         {
             _logger.LogInformation("Initializing...");
-
-            Configuration.Resolver = _factory;
 
             if (_config.ExamineRebuild)
             {
