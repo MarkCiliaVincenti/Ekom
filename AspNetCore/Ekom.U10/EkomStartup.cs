@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -45,12 +44,14 @@ public class EkomComposer : IComposer
         builder.UrlProviders()
             .InsertBefore<DefaultUrlProvider, CatalogUrlProvider>();
 
-        builder
-            .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureTablesExist>()
-            .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureNodesExist>()
-            .AddNotificationHandler<UmbracoApplicationStartingNotification, EkomStartup>();
+        builder.Components()
+            // Can't use umbraco npoco for this since we use linq2db in core
+            .Append<EnsureTablesExist>()
+            .Append<EnsureNodesExist>()
+            .Append<EkomStartup>()
+            ;
 
-
+       
         // VirtualContent=true allows for configuration of content nodes to use for matching all requests
         // Use case: Ekom populated by adapter, used as in memory cache with no backing umbraco nodes
 
@@ -90,7 +91,7 @@ public class RemoveCoreMemberSearchableTreeComposer : IComposer
 /// We use ApplicationEventHandler so that these lifecycle methods are only run
 /// when umbraco is in a stable condition.
 /// </summary>
-class EkomStartup : INotificationHandler<UmbracoApplicationStartingNotification>
+class EkomStartup : IComponent
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
 {
     readonly Configuration _config;
@@ -118,10 +119,8 @@ class EkomStartup : INotificationHandler<UmbracoApplicationStartingNotification>
     /// <summary>
     /// Umbraco startup lifecycle method
     /// </summary>
-    public void Handle(UmbracoApplicationStartingNotification notification)
+    public void Initialize()
     {
-        if (notification.RuntimeLevel < Umbraco.Cms.Core.RuntimeLevel.Run) return;
-
         try
         {
             _logger.LogInformation("Initializing...");
