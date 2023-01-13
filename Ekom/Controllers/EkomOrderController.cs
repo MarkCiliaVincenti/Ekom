@@ -215,7 +215,7 @@ namespace Ekom.Controllers
         /// </summary>
         /// <param name="form">FormData</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPost]
         [Route("updatecustomer")]
         public async Task<IOrderInfo> UpdateCustomerInformation()
         {
@@ -257,7 +257,7 @@ namespace Ekom.Controllers
         /// Update Shipping Information
         /// </summary>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPost]
         [Route("update/shippingprovider/{shippingProvider:Guid}/storealias/{storeAlias}")]
         public async Task<IOrderInfo> UpdateShippingProvider(Guid ShippingProvider, string storeAlias)
         {
@@ -283,7 +283,7 @@ namespace Ekom.Controllers
         /// Update Payment Information
         /// </summary>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPost]
         [Route("update/paymentprovider/{PaymentProvider:Guid}/storealias/{storeAlias}")]
         public async Task<IOrderInfo> UpdatePaymentProvider(Guid PaymentProvider, string storeAlias)
         {
@@ -312,7 +312,7 @@ namespace Ekom.Controllers
         /// <param name="storeAlias"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost]
         [Route("line/Id/{lineId:Guid}/storealias/{storeAlias}/quantity/{quantity}")]
         [Obsolete("Deprecated, use AddToOrder and specify OrderAction")]
         public async Task<IOrderInfo> UpdateOrder(Guid lineId, string storeAlias, int quantity)
@@ -353,8 +353,8 @@ namespace Ekom.Controllers
         /// <param name="lineId">Guid Key of product/line</param>
         /// <param name="storeAlias"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("line/Id/{lineId:Guid}/storealias/{storeAlias}")]
+        [HttpPost]
+        [Route("removeorderline")]
         public async Task<IOrderInfo> RemoveOrderLine(Guid lineId, string storeAlias)
         {
             if (string.IsNullOrEmpty(storeAlias))
@@ -424,6 +424,139 @@ namespace Ekom.Controllers
 #endif
 
 
+        }
+
+        /// <summary>
+        /// Http status code custom response
+        /// </summary>
+        public const int NoChangeResponse = 450;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("coupon/{coupon}/storealias/{storeAlias}")]
+        public async Task ApplyCouponToOrder(string coupon, string storeAlias)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(coupon))
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Coupon code can not be empty"),
+                    };
+                    throw new HttpResponseException(resp);
+                }
+
+                if (await Order.Instance.ApplyCouponToOrderAsync(coupon, storeAlias))
+                {
+                    throw new HttpResponseException(HttpStatusCode.OK);
+                }
+                else
+                {
+                    throw new HttpResponseException(new HttpResponseMessage((HttpStatusCode)NoChangeResponse)
+                    {
+                        Content = new StringContent("Discount not modified, better discount found"),
+                    });
+                }
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                var r = ExceptionHandler.Handle<HttpResponseException>(ex);
+                if (r != null)
+                {
+                    throw r;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("coupon/storealias/{storeAlias}")]
+        public async Task RemoveCouponFromOrder(string storeAlias)
+        {
+            try
+            {
+                await Order.Instance.RemoveCouponFromOrderAsync(storeAlias);
+                throw new HttpResponseException(HttpStatusCode.OK);
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                var r = ExceptionHandler.Handle<HttpResponseException>(ex);
+                if (r != null)
+                {
+                    throw r;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("productkey/{productKey}/coupon/{coupon}/storealias/{storeAlias}")]
+        public async Task ApplyCouponToOrderLine(Guid productKey, string coupon, string storeAlias)
+        {
+            try
+            {
+                if (await Order.Instance.ApplyCouponToOrderLineAsync(productKey, coupon, storeAlias))
+                {
+                    throw new HttpResponseException(HttpStatusCode.OK);
+                }
+                else
+                {
+                    throw new HttpResponseException(new HttpResponseMessage((HttpStatusCode)NoChangeResponse)
+                    {
+                        Content = new StringContent("Discount not modified, better discount found"),
+                    });
+                }
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                var r = ExceptionHandler.Handle<HttpResponseException>(ex);
+                if (r != null)
+                {
+                    throw r;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="OrderLineNotFoundException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        [HttpDelete]
+        [Route("productkey/{productKey}/storealias/{storeAlias}")]
+        public async Task RemoveCouponFromOrderLine(Guid productKey, string storeAlias)
+        {
+            try
+            {
+                await Order.Instance.RemoveCouponFromOrderLineAsync(productKey, storeAlias);
+                throw new HttpResponseException(HttpStatusCode.OK);
+            }
+            catch (Exception ex) when (!(ex is HttpResponseException))
+            {
+                var r = ExceptionHandler.Handle<HttpResponseException>(ex);
+                if (r != null)
+                {
+                    throw r;
+                }
+
+                throw;
+            }
         }
     }
 }

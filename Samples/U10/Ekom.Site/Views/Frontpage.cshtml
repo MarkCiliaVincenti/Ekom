@@ -1,17 +1,14 @@
 @using Newtonsoft.Json
-@using Umbraco.Cms.Web.Common.PublishedModels;
-@using Ekom;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Master.cshtml";
 
-   
-    var categories = Catalog.Instance.GetAllCategories();
-    var store = Store.Instance.GetStore();
-    var allStores = Store.Instance.GetAllStores();
-    var allProducts = Catalog.Instance.GetAllProducts();
+    var categories = _catalog.GetAllCategories();
+    var store = _store.GetStore();
+    var allStores = _store.GetAllStores();
+    var allProducts = _catalog.GetAllProducts();
 
-    var o = Order.Instance.GetOrder();
+    var o = _order.GetOrder();
 }
 
 <h2>Total Categories (@categories.Count())</h2>
@@ -161,7 +158,7 @@
         <h4>All Domains</h4>
 
         <ul>
-            @foreach (var prop in Ekom.API.Store.Instance.GetDomains())
+            @foreach (var prop in _store.GetDomains())
             {
                 <li>
                     @prop.Key: @prop.DomainName - @prop.RootContentId

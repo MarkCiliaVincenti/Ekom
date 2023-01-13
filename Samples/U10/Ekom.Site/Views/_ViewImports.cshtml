@@ -7,6 +7,11 @@
 @using Ekom.Utilities
 @using Ekom.API
 @using Ekom
+@using Ekom.Models;
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Smidge
 @inject Smidge.SmidgeHelper SmidgeHelper
+@inject Order _order;
+@inject Catalog _catalog;
+@inject global::Ekom.API.Store _store;

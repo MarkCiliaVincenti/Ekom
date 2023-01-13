@@ -3,7 +3,7 @@
 @{
     Layout = "Master.cshtml";
     
-    var category = Ekom.API.Catalog.Instance.GetCategory();
+    var category = _catalog.GetCategory();
 
     var productResponse = category.ProductsRecursive(new ProductQuery() { Page = 1, PageSize = 10 });
 
