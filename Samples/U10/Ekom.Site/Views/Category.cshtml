@@ -2,10 +2,17 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Master.cshtml";
-    
+
     var category = _catalog.GetCategory();
 
-    var productResponse = category.ProductsRecursive(new ProductQuery() { Page = 1, PageSize = 10 });
+    var searchQuery = Context.Request.Query["q"];
+
+    var productResponse = category.ProductsRecursive(
+        new ProductQuery() { 
+            Page = 1, 
+            PageSize = 10,
+            SearchQuery = searchQuery
+        });
 
     var culture = "en-US";
 
@@ -26,6 +33,10 @@
 <h2>Filters</h2>
 
 <form method="get" action="@Model.Url()">
+
+    <label>Search:</label>
+    <input type="search" value="@searchQuery" name="q" />
+
     <ol>
         @foreach (var filter in filters)
         {

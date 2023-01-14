@@ -45,8 +45,6 @@ public class EkomComposer : IComposer
         builder.UrlProviders()
             .InsertBefore<DefaultUrlProvider, CatalogUrlProvider>();
 
-        builder.Components()
-            .Append<AspnetCoreStartup>();
         builder
             .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureTablesExist>()
             .AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureNodesExist>()

@@ -22,7 +22,14 @@ namespace Ekom.Models
 
                 var searchResults = _searhService.QueryCatalog(query.SearchQuery, out long total, int.MaxValue);
 
-                products = products.Where(x => searchResults.Any(y => y.Id == x.Id));
+                if (searchResults == null || total <= 0)
+                {
+                    products = Enumerable.Empty<IProduct>();
+                } else
+                {
+                    products = products.Where(x => searchResults.Any(y => y.Id == x.Id));
+                }
+                
             }
 
             ProductCount = products.Count();
