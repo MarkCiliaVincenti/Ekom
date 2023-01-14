@@ -22,7 +22,6 @@ static class ApplicationBuilderExtensions
 
         services.AddTransient<IMemberService, MemberService>();
         services.AddTransient<INodeService, NodeService>();
-        services.AddScoped<ICatalogSearchService, CatalogSearchService>();
         services.AddTransient<NodeService>();
         services.AddTransient<IMetafieldService, MetafieldService>();
         services.AddTransient<IUmbracoService, UmbracoService>();
@@ -30,6 +29,7 @@ static class ApplicationBuilderExtensions
         services.AddTransient<ExamineService>();
         services.AddScoped<BackofficeUserAccessor>();
         services.AddScoped<ISecurityService, SecurityService>();
+        services.AddScoped<ICatalogSearchService, CatalogSearchService>();
 
         return services;
     }

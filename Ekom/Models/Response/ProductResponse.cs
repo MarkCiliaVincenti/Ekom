@@ -18,10 +18,11 @@ namespace Ekom.Models
 
             if (!string.IsNullOrEmpty(query?.SearchQuery))
             {
-                var _searhService = Configuration.Resolver.GetService<ICatalogSearchService>();
-
+                var scope = Configuration.Resolver.CreateScope();
+                var _searhService = scope.ServiceProvider.GetService<ICatalogSearchService>();
                 var searchResults = _searhService.QueryCatalog(query.SearchQuery, out long total, int.MaxValue);
-
+                
+                scope.Dispose();
                 if (searchResults == null || total <= 0)
                 {
                     products = Enumerable.Empty<IProduct>();

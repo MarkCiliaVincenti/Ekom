@@ -1,9 +1,7 @@
 using Ekom.Services;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Migrations;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
@@ -49,7 +47,7 @@ namespace Ekom.App_Start
         }
     }
 
-    class EnsureTablesExist : INotificationHandler<UmbracoApplicationStartingNotification>
+    class EnsureTablesExist : IComponent
     {
         private readonly IScopeProvider scopeProvider;
         private readonly IMigrationPlanExecutor _migrationPlanExecutor;
@@ -68,10 +66,8 @@ namespace Ekom.App_Start
             _migrationPlanExecutor = migrationPlanExecutor;
         }
 
-        public void Handle(UmbracoApplicationStartingNotification notification)
+        public void Initialize()
         {
-            if (notification.RuntimeLevel < Umbraco.Cms.Core.RuntimeLevel.Run) return;
-
             logger.LogDebug("Ensuring Ekom db tables exist");
 
             // perform any upgrades (as needed)
@@ -80,5 +76,7 @@ namespace Ekom.App_Start
 
             logger.LogDebug("Done");
         }
+
+        public void Terminate() { }
     }
 }

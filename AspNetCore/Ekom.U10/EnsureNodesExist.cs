@@ -2,9 +2,7 @@ using Ekom.Exceptions;
 using Ekom.Umb.DataEditors;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -13,7 +11,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace Ekom.App_Start
 {
-    class EnsureNodesExist : INotificationHandler<UmbracoApplicationStartingNotification>
+    class EnsureNodesExist : IComponent
     {
         private readonly ILogger<EnsureNodesExist> _logger;
         private readonly Configuration _configuration;
@@ -50,10 +48,8 @@ namespace Ekom.App_Start
             _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         }
 
-        public void Handle(UmbracoApplicationStartingNotification notification)
+        public void Initialize()
         {
-            if (notification.RuntimeLevel < Umbraco.Cms.Core.RuntimeLevel.Run) return;
-
             _logger.LogDebug("Ensuring Umbraco nodes exist");
 
             try
@@ -1275,7 +1271,6 @@ namespace Ekom.App_Start
             {
                 _logger.LogError(ex, "Failed to Initialize EnsureNodesExist");
             }
-
         }
 
         private EntityContainer EnsureDataTypeContainerExists()

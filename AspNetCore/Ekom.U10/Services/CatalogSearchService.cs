@@ -62,7 +62,12 @@ namespace Ekom.Umb.Services
                         }
                     };
 
-                    _examineManager.TryGetSearcher("InternalIndex", out var searcher);
+                    var searcher = index.Searcher;
+
+                    if (searcher == null)
+                    {
+                        throw new Exception("Searcher not found. InternalIndex");
+                    }
 
                     var queryWithOutStopWords = query.RemoveStopWords();
 
@@ -148,7 +153,7 @@ namespace Ekom.Umb.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to query catalog search service. Query: " + query);
+                _logger.LogError(ex, "Failed to query catalog search service. Query: " + query + " Message: " + ex.Message);
                 _logger.LogInformation(luceneQuery.ToString());
             }
 
