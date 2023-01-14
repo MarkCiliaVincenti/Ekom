@@ -1,13 +1,7 @@
 using Ekom.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Cms.Core.Trees;
-using Umbraco.Cms.Core.Models.ContentEditing;
-using Umbraco.Extensions;
 using Ekom.Umb.Services;
+using Umbraco.Cms.Core.Models.ContentEditing;
+using Umbraco.Cms.Core.Trees;
 
 namespace Ekom.Tree
 {
@@ -16,8 +10,8 @@ namespace Ekom.Tree
     {
         public string TreeAlias => Umbraco.Cms.Core.Constants.Trees.Content;
 
-        private readonly CatalogSearchService _searchService;
-        public EkomSearchTree(CatalogSearchService searchService)
+        private readonly ICatalogSearchService _searchService;
+        public EkomSearchTree(ICatalogSearchService searchService)
         {
             _searchService = searchService;
         }
@@ -25,7 +19,7 @@ namespace Ekom.Tree
         public Task<EntitySearchResults> SearchAsync(string query, int pageSize, long pageIndex, string? searchFrom = null)
         {
             long totalFound = 0;
-            List<SearchResultEntity?> searchResults = new List<SearchResultEntity?>();
+            var searchResults = new List<SearchResultEntity?>();
             if (!string.IsNullOrEmpty(query) && query.Length > 2)
             {
                 var results = _searchService.QueryCatalog(query, out totalFound);
@@ -33,15 +27,14 @@ namespace Ekom.Tree
                 foreach (var result in results)
                 {
                     var icon = "icon-document";
-
-                    var content = result.Content;
-                    var alias = content.ContentType.Alias;
-                    var name = content.Name;
+;
+                    var alias = result.DocType;
+                    var name = result.Name;
 
                     if (alias == "ekmProduct")
                     {
                         icon = "icon-loupe";
-                        name = content.Name + " (" + content.Value<string>("sku") + ")" + " (" + content.Parent.Name + ")";
+                        name = result.Name + " (" + result.SKU + ")" + " (" + result.ParentName + ")";
                     } else if (alias == "ekmCategory")
                     {
                         icon = "icon-folder";
@@ -53,14 +46,14 @@ namespace Ekom.Tree
                     var item = new SearchResultEntity()
                     {
                         Name = name,
-                        Id = content.Id,
-                        Key = content.Key,
+                        Id = result.Id,
+                        Key = result.Key,
                         Score = result.Score,
-                        Path = content.Path,
+                        Path = result.Path,
                         Icon = icon
                     };
 
-                    item.AdditionalData["Url"] = content.Url();
+                    item.AdditionalData["Url"] = result.Url;
 
                     searchResults.Add(item);
                 }

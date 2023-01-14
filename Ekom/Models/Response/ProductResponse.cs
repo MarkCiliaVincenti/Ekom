@@ -1,4 +1,6 @@
+using Ekom.Services;
 using Ekom.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +14,15 @@ namespace Ekom.Models
             if (query?.Filters?.Any() == true)
             {
                 products = products.Filter(query);
+            }
+
+            if (!string.IsNullOrEmpty(query?.SearchQuery))
+            {
+                var _searhService = Configuration.Resolver.GetService<ICatalogSearchService>();
+
+                var searchResults = _searhService.QueryCatalog(query.SearchQuery, out long total, int.MaxValue);
+
+                products = products.Where(x => searchResults.Any(y => y.Id == x.Id));
             }
 
             ProductCount = products.Count();

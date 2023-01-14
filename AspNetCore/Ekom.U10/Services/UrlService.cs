@@ -19,7 +19,7 @@ namespace Ekom.Umb.Services
         readonly IShortStringHelper _shortStringHelper;
 
         public UrlService(
-            ILogger<CatalogSearchService> logger,
+            ILogger<UrlService> logger,
             IUmbracoContextFactory context,
             IHttpContextAccessor httpContextAccessor,
             IShortStringHelper shortStringHelper)

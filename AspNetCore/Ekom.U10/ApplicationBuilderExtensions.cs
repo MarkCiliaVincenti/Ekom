@@ -22,9 +22,9 @@ static class ApplicationBuilderExtensions
 
         services.AddTransient<IMemberService, MemberService>();
         services.AddTransient<INodeService, NodeService>();
+        services.AddTransient<ICatalogSearchService, CatalogSearchService>();
         services.AddTransient<NodeService>();
         services.AddTransient<IMetafieldService, MetafieldService>();
-        services.AddTransient<CatalogSearchService>();
         services.AddTransient<IUmbracoService, UmbracoService>();
         services.AddTransient<IUrlService, UrlService>();
         services.AddTransient<ExamineService>();

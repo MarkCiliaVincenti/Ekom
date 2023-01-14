@@ -1,20 +1,19 @@
 using Ekom.Models;
-using Ekom.Umb.Models;
+using Ekom.Services;
 using Examine;
-using Examine.Lucene.Providers;
 using Examine.Lucene.Search;
 using Examine.Search;
 using Lucene.Net.QueryParsers.Classic;
+using Microsoft.Extensions.Logging;
 using System.Text;
 using Umbraco.Cms.Core;
-using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Infrastructure.Examine;
+using Umbraco.Extensions;
 using static Ekom.Utilities.SearchHelper;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace Ekom.Umb.Services
 {
-    class CatalogSearchService
+    class CatalogSearchService : ICatalogSearchService
     {
         private readonly ILogger _logger;
         private readonly IPublishedContentQuery _query;
@@ -28,7 +27,7 @@ namespace Ekom.Umb.Services
             _query = query;
             _examineManager = examineManager;
         }
-        public IEnumerable<PublishedSearchResult> QueryCatalog(string query, out long totalRecords)
+        public IEnumerable<SearchResultEntity> QueryCatalog(string query, out long totalRecords, int take = 30)
         {
             totalRecords = 0;
             var luceneQuery = new StringBuilder();
@@ -47,7 +46,7 @@ namespace Ekom.Umb.Services
                         new SearchField()
                         {
                             Name = "sku",
-                            Booster = "^3.0",
+                            Booster = "^5.0",
                             SearchType = SearchType.Wildcard
                         },
                         new SearchField()
@@ -119,7 +118,7 @@ namespace Ekom.Umb.Services
                             }
                             luceneQuery.Append(")");
                         }
-
+                        
                         i++;
                     }
 
@@ -129,11 +128,23 @@ namespace Ekom.Umb.Services
 
                     var booleanOperation = searchQuery.NativeQuery(luceneQuery.ToString());
 
-                    var results = _query.Search(booleanOperation, 0, 30, out totalRecords).OrderByDescending(x => x.Score);
+                    var results = _query.Search(booleanOperation, 0, take, out totalRecords).OrderByDescending(x => x.Score);
 
-                    return results;
+                    var searchResultEntities = results.Select(x => new SearchResultEntity()
+                    {
+                        Name = x.Content.Name,
+                        Id = x.Content.Id,
+                        Key = x.Content.Key,
+                        Score = x.Score,
+                        Path = x.Content.Path,
+                        DocType = x.Content.ContentType.Alias,
+                        ParentName = x.Content.Parent != null ? x.Content.Parent.Name : "",
+                        SKU = x.Content.HasProperty("sku") ? x.Content.Value<string>("sku") : "",
+                        Url = x.Content.Url()
+                    });
+
+                    return searchResultEntities;
                 }
-
             }
             catch (Exception ex)
             {
