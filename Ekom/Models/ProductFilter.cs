@@ -9,7 +9,8 @@ namespace Ekom.Models
         {
             
         }
-        public Dictionary<string, List<string>> Filters { get; set; }
+        public Dictionary<string, List<string>> MetaFilters { get; set; }
+        public Dictionary<string, string> PropertyFilters { get; set; }
         public int? Page { get; set; }
         public int? PageSize { get; set; }
         public string SearchQuery { get; set; }

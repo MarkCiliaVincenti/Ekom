@@ -142,22 +142,29 @@ namespace EkomCore.Services
         public IEnumerable<IProduct> FilterProducts(IEnumerable<IProduct> products, ProductQuery query) 
         {
 
-            var emptyItems = query.Filters.Where(x => !x.Value.Any());
-
-            foreach (var emptyItem in emptyItems)
+            if (query?.MetaFilters?.Any() == true)
             {
-                query.Filters.Remove(emptyItem.Key);
+                products = products
+                    .Where(x =>
+                        x.Metafields.Any(metaField =>
+                            query.MetaFilters.Any(filter =>
+                                filter.Key == metaField.Field.Id.ToString() &&
+                                filter.Value.Intersect(metaField.Values.SelectMany(v => v.Values.Select(c => c).ToList())).Any()
+                                )
+                        )
+                );
             }
 
-            products = products
-                .Where(x => 
-                    x.Metafields.Any(metaField =>
-                        query.Filters.Any(filter => 
-                            filter.Key == metaField.Field.Id.ToString() &&
-                            filter.Value.Intersect(metaField.Values.SelectMany(v => v.Values.Select(c => c).ToList())).Any()
-                            )
-                    )
-            );
+            if (query?.PropertyFilters?.Any() == true)
+            {
+                products = products.Where(x => 
+                x.Properties.Any(p => 
+                    query.PropertyFilters.Where(f => 
+                        !string.IsNullOrEmpty(f.Key) && !string.IsNullOrEmpty(f.Value) && !string.IsNullOrEmpty(p.Value)).Any(filter =>
+                        filter.Key == p.Key &&
+                        p.Value.Contains(filter.Value)))
+                );
+            }
 
             return products;
         } 

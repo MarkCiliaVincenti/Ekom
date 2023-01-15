@@ -11,7 +11,7 @@ namespace Ekom.Models
         public ProductResponse(IEnumerable<IProduct> products, ProductQuery query)
         {
             
-            if (query?.Filters?.Any() == true)
+            if (query?.MetaFilters?.Any() == true || query?.PropertyFilters?.Any() == true)
             {
                 products = products.Filter(query);
             }

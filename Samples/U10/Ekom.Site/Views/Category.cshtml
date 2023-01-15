@@ -11,7 +11,11 @@
         new ProductQuery() { 
             Page = 1, 
             PageSize = 10,
-            SearchQuery = searchQuery
+            SearchQuery = searchQuery,
+            PropertyFilters = new Dictionary<string, string>()
+            {
+                { "test2", "umb://document/94f72228719441d78bd781fd32860184" }
+            }
         });
 
     var culture = "en-US";
@@ -36,7 +40,6 @@
 
     <label>Search:</label>
     <input type="search" value="@searchQuery" name="q" />
-
     <ol>
         @foreach (var filter in filters)
         {
